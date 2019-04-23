@@ -1,0 +1,315 @@
+<!-- Quick panels for Hold, Issue, Cancel, Stop, Complete, Close, and Reject actions -->
+<view version="2.0">
+    <js file="ab-bldgops-console-common.js"/>
+    <js file="ab-bldgops-console-wr-quick-panels.js"/>
+
+    <message name="supervisorOrWorkteam" translatable="true">Select a supervisor OR a work team</message>
+    <message name="closeFailed" translatable="true">You cannot close this work request until all other work requests of the same work order are also completed.</message>
+    <message name="noCommentsForReject" translatable="true">Please add your comments before reject work request.</message>
+    <message name="noCommentsForCancel" translatable="true">Please add your comments before canceling the work request.</message>
+    <message name="dispatchStepEnded" translatable="true">This request has already been Dispatched by another user. Please refresh this view by running the Filter again.</message>
+    <message name="requestor" translatable="true">Requestor</message>
+    <message name="estimator" translatable="true">Estimator</message>
+    <message name="scheduler" translatable="true">Scheduler</message>
+    <message name="issuer" translatable="true">Issuer</message>
+    <message name="completer" translatable="true">Completer</message>
+    <message name="approver" translatable="true">Approver</message>
+    
+
+    <dataSource id="stepWaitingDS">
+        <table name="wr" role="main"/>
+        <table name="wr_step_waiting" role="standard"/>
+        <field table="wr" name="wr_id"/>
+        <field table="wr" name="satisfaction"/>
+        <field table="wr" name="satisfaction_notes"/>
+        <field table="wr" name="work_team_id"/>
+        <field table="wr" name="supervisor"/>
+        <field table="wr" name="priority"/>
+        <field table="wr_step_waiting" name="step_log_id"/>
+    </dataSource>
+    
+    <!-- IFM - Mehran added for request quote email on 26-06-2017 -->
+    <dataSource id="requestQuoteDS">
+    	<table name="wr" role="main"/>
+    	<table name="wrcf" role="standard"/>
+    	<field table="wr" name="wr_id"/>
+    	<field table="wrcf" name="cf_id" />
+    </dataSource>
+    <!-- IFM - Added for saving wr.cai fields (04-03-2019) -->
+    <dataSource id="caiDS">
+    <table name="wr" role="main"/>
+    	<field table="wr" name="wr_id" />
+    	<field table="wr" name="cai_contractor" />
+		<field table="wr" name="cai_user" />
+		<field table="wr" name="cai_date" />
+		<field table="wr" name="cai_approved_by" />
+		<field table="wr" name="cost_est_total" />
+    </dataSource>
+
+    <!-- Quick panel for Issue action -->
+    <panel type="form" id="issuePanel" dataSource="none" showOnLoad="false" hidden="true" showLabels="false" buttonsPosition="footer">
+        <instructions>This action issues the request to the field personnel, at which point it cannot be canceled, only completed, put on hold, or stopped.</instructions>
+        <action id="issueYes" mainAction="true">
+            <action id="issue">
+            </action>
+            <title>Yes</title>
+        </action>
+        <action id="issueNo">
+            <title>No</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+
+    <!-- Quick panel for Cancel action -->
+    <panel type="form" id="cancelPanel" dataSource="none" showOnLoad="false" hidden="true" showLabels="false" buttonsPosition="footer">
+        <instructions>This action cancels a request before any work has begun.  Canceling a request ends the request workflow.</instructions>
+        <action id="cancelYes" mainAction="true">
+            <title>Yes</title>
+        </action>
+        <action id="cancelNo">
+            <title>No</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+
+    <!-- Quick panel for Hold action -->
+    <panel type="form" id="holdPanel" dataSource="none" showOnLoad="false" hidden="true" buttonsPosition="footer">
+        <instructions>This action puts a request on hold while waiting for parts, the appropriate trade, or security access. You can stop or complete a request that is on hold.</instructions>
+        <fieldset layout="fluid">
+            <field id="holdRadioEl">
+                <title>Reason for Hold:</title>
+                <html>
+                    <br/>
+                    <div>
+                        <input type="radio" name="holdRadio" value="HP" checked="1">
+                            <span translatable="true" style="padding-left:4px;">Hold for Parts</span>
+                        </input>
+                    </div>
+                    <br/>
+                    <div>
+                        <input type="radio" name="holdRadio" value="HL">
+                            <span translatable="true" style="padding-left:4px;">Hold for Labor</span>
+                        </input>
+                    </div>
+                    <br/>
+                    <div>
+                        <input type="radio" name="holdRadio" value="HA">
+                            <span translatable="true" style="padding-left:4px;">Hold for Access</span>
+                        </input>
+                    </div>
+                    <br/>
+                </html>
+            </field>
+            <field/>
+        </fieldset>
+        <action id="holdYes" mainAction="true">
+            <title>Yes</title>
+        </action>
+        <action id="holdCancel">
+            <title>No</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+
+    <!-- Quick panel for Stop action -->
+    <panel type="form" id="stopPanel" dataSource="none" showOnLoad="false" hidden="true" showLabels="false" buttonsPosition="footer">
+        <instructions>This action stops a request on which some work has already been performed and which may be billed. Stopping a request ends the request workflow. [br/][br/]Are you sure you want to stop this work request?</instructions>
+        <action id="stopYes" mainAction="true">
+            <title>Yes</title>
+        </action>
+        <action id="stopNo">
+            <title>No</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+
+    <!-- Quick panel for Complete action -->
+    <panel type="form" id="completePanel" dataSource="none" showOnLoad="false" hidden="true" showLabels="false" buttonsPosition="footer">
+        <instructions>This action marks the request as Completed. You can update labor, parts, comments, and other work details until the request is Closed.</instructions>
+        <action id="completeYes" mainAction="true">
+            <title>Yes</title>
+        </action>
+        <action id="completeNo">
+            <title>No</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+	
+	<!-- IFM - Mehran added 03-06-2017 Quick panel for IFM Completed Awaiting Invoice action (IFM Mehran added for cai status)-->
+	<!-- IFM - Michael modified to remove SelectValue from "cai_contractor" and retitle buttons -->
+	<!-- IFM - This panel MUST have the same panel definition as in the ab-ifm-helpdesk-cf-workrequest-select.axvw view -->
+    <panel type="form" id="caiIFMPanel" dataSource="caiDS" showOnLoad="false" hidden="true" showLabels="true" buttonsPosition="footer" afterRefresh="caiIFMPanel_afterRefresh">
+        <instructions>This action marks the request as Completed Awaiting Invoice. This action send email to requester to inform of completion.</instructions>
+        <action id="caiIFMYes" mainAction="true">
+            <title>Save</title>
+        </action>
+        <action id="caiIFMNo">
+            <title>Cancel</title>
+            <command type="closeDialog"/>
+        </action>
+        <field table="wr" name="cai_contractor" readOnly="false" required="true">
+			<!-- IFM - disable selectValue on Rob Vin request (06/03/2019) -->
+			<!--  <action>
+                <title translatable="false">...</title>
+                <command type="selectValue"
+                    fieldNames="wr.cai_contractor"
+                    selectFieldNames="cf.cf_id"
+                    visibleFieldNames="cf.cf_id,cf.name,cf.email"/>
+            </action>  -->
+		</field>
+		<field table="wr" name="wr_id" hidden="true"/>
+		<field table="wr" name="cai_user" readOnly="true"/>
+		<field table="wr" name="cai_date" readOnly="true"/>
+		<field table="wr" name="cai_approved_by" readOnly="false" required="true" >
+			<action>
+                <title translatable="false">...</title>
+                <command type="selectValue"
+                    fieldNames="wr.cai_approved_by"
+                    selectFieldNames="cf.cf_id"
+					restriction="cf.is_approver = 1"
+                    visibleFieldNames="cf.cf_id,cf.name,cf.email"/>
+            </action>
+		</field>
+    </panel>
+    
+    <!-- IFM - Mehran Added for request a quote on 23-06-2017  -->
+    <panel type="form" id="ifmRequestQuotePanel" dataSource="none" showOnLoad="false" hidden="true" showLabels="false"  buttonsPosition="footer">
+    <instructions>This action sends email to the added Trades Person. The status remains unchanged.</instructions>
+        <action id="ifmSendRequestQuoteYes" mainAction="true">
+            <title>Yes</title>
+        </action>        
+        <action id="ifmRequestQuoteCancel">
+            <title>Cancel</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+    
+    <!-- Quick panel for Close action -->
+    <panel type="form" id="closePanel" dataSource="none" showOnLoad="false" hidden="true" showLabels="false" buttonsPosition="footer">
+        <instructions>This action archives the request and prevents any further updates to it. [br/][br/]Close this work request?</instructions>
+        <action id="closeYes" mainAction="true">
+            <title>Yes</title>
+        </action>
+        <action id="closeNo">
+            <title>No</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+
+    <!-- Quick panel for Reject action -->
+    <panel type="form" id="approvePanel" dataSource="none" showOnLoad="false" hidden="true" buttonsPosition="footer">
+        <fieldset layout="fluid">
+            <field id="approve_comments">
+                <title>Comments</title>
+                <html>
+                    <textarea id="approve_comments" style="width: 100%; border: 1px solid #BBBBCC"></textarea>
+                </html>
+            </field>
+            <field id="returnTo">
+                <title>Return To:</title>
+                <html>
+                    <table id="returnToOptions">
+                    </table>
+                </html>
+            </field>
+        </fieldset>
+        <action id="forwardApproval">
+            <title>Forward</title>
+        </action>
+        <action id="approve">
+            <title>Approve</title>
+            <command type="callFunction" functionName="approveRequest"/>
+        </action>
+        <action id="reject">
+            <title>Reject</title>
+            <command type="callFunction" functionName="rejectRequest"/>
+        </action>
+        <action id="cancel">
+            <title>Cancel Work Reqeust</title>
+            <command type="callFunction" functionName="cancelRequest"/>
+        </action>
+    </panel>
+
+    <panel type="form" id="dispatchPanel" dataSource="stepWaitingDS" showOnLoad="false" hidden="true" buttonsPosition="footer">
+        <action>
+            <title translatable="true">Dispatch</title>
+            <command type="callFunction" functionName="dispatchRequest"/>
+        </action>
+        <action  id="reject">
+            <title translatable="true">Reject</title>
+            <command type="callFunction" functionName="rejectDispatchRequest"/>
+        </action>
+        <action id="cancel">
+            <title>Cancel Work Reqeust</title>
+            <command type="callFunction" functionName="cancelRequest('dispatch')"/>
+        </action>
+
+        <field table="wr" name="work_team_id" onchange="onChangeWorkTeam()">
+            <action>
+                <title translatable="true">...</title>
+                <command type="selectValue" fieldNames="wr.work_team_id" selectFieldNames="work_team.work_team_id" visibleFieldNames="work_team.work_team_id,work_team.description" actionListener="onChangeWorkTeam">
+                    <title>Work Team Code</title>
+                </command>
+            </action>
+        </field>
+        <field table="wr" name="supervisor" onchange="onChangeSupervisor()">
+            <action>
+                <title>...</title>
+                <command type="selectValue" fieldNames="wr.supervisor" selectFieldNames="em.em_id" visibleFieldNames="em.em_id,em.em_std,em.email" restriction="EXISTS (select cf_id from cf where cf.email = em.email AND cf.is_supervisor = 1)" actionListener="onChangeSupervisor">
+                    <title>Supervisor</title>
+                </command>
+            </action>
+        </field>
+        <field id="dispatch_comments">
+            <title>Comments</title>
+            <html>
+                <textarea id="dispatch_comments" style="width: 100%;"></textarea>
+            </html>
+        </field>
+        <field id="dispatchReturnTo">
+                <title>Return To:</title>
+                <html>
+                        <table id="dispatchReturnToOptions">
+                        </table>
+                </html>
+            </field>
+        <field table="wr_step_waiting" name="step_log_id" hidden="true"/>
+    </panel>
+
+    <panel type="form" id="verifyPanel" dataSource="stepWaitingDS" showOnLoad="false" hidden="true" buttonsPosition="footer">
+        <action>
+            <title translatable="true">Confirm</title>
+            <command type="callFunction" functionName="verifyRequest"/>
+        </action>
+        <action>
+            <title translatable="true">Return Incomplete</title>
+            <command type="callFunction" functionName="rejectVerifyRequest"/>
+        </action>
+        
+        <fieldset layout="fluid">
+            <field id="verify_comments">
+                <title>Comments</title>
+                <html>
+                    <textarea id="verify_comments" style="width: 100%; border: 1px solid #BBBBCC"></textarea>
+                </html>
+            </field>
+        </fieldset>
+        <field table="wr_step_waiting" name="step_log_id" hidden="true"/>
+    </panel>
+
+    <panel type="form" id="surveyPanel" dataSource="stepWaitingDS" showOnLoad="false" hidden="true" buttonsPosition="footer">
+        <action>
+            <title translatable="true">Save</title>
+            <command type="callFunction" functionName="saveSurvey"/>
+        </action>
+
+        <field table="wr" name="satisfaction"/>
+        <field table="wr" name="satisfaction_notes" required="true"/>
+        <field table="wr_step_waiting" name="step_log_id" hidden="true"/>
+    </panel>
+        
+    
+    <!-- Forward Approval panel -->
+    <panel type="view" id="forwardView" file="ab-bldgops-console-wr-step-forward.axvw"/>
+
+</view>

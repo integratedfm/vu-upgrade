@@ -1,0 +1,268 @@
+<!-- Default filter console / "Easy Filter" -->
+<view version="2.0">
+
+    <js file="ab-bldgops-console-filters.js"/>
+    <js file="ab-bldgops-console-filter-print-action.js"/>
+    <js file="ab-bldgops-console-filter-recent-search.js"/>
+    <js file="ab-bldgops-console-filter-restriction.js"/>
+    
+    <style type="text/css">
+        .filterPanel {height:40px}
+        .filterWhiteSpace {padding:15px}
+    </style>
+
+    <message name="filterOptions">Filter Options</message>
+    <message name="filterMore">More</message>
+    <message name="filterLess">Less</message>
+    <message name="selectNoWorkRequests">Please select work requests firstly.</message>
+    <message name="trId">Trade</message>
+    <message name="partId">Part</message>
+    <message name="cfId">Craftsperson</message>
+    <message name="dateRequestedFrom">Date Requested From</message>
+    <message name="dateRequestedTo">Date Requested To</message>
+    <message name="dateAssignedFrom">Date Assigned From</message>
+    <message name="dateAssignedTo">Date Assigned To</message>
+    <message name="workType">Work Type</message>
+    <message name="escalated">Escalated?</message>
+    <message name="EstimatedCost">Estimated Cost</message>
+    <message name="OD">On Demand</message>
+    <message name="PM">PM</message>
+    <message name="returned">Returned</message>
+    <message name="escalatedTrue">Escalated</message>
+    <message name="estimatedCost">Estimated Cost</message>
+    <message name="status">Status</message>
+    <message name="priority">Priority</message>
+    <message name="NR">In Stock Not Reserved</message>
+    <message name="NI">Not in Stock</message>
+    <message name="R">Reserved</message>
+    <message name="onHold">On Hold</message>
+    
+     <!-- Work Request Filter DataSource -->
+    <panel type="view" id="wrFilterDataSource" file="ab-bldgops-console-wr-ds.axvw"/>
+
+    <panel type="console" id="wrFilter" dataSource="wrDetailsDS" layout="main" region="north" bodyCssClass="panel-light filterPanel">
+        <!-- Create New Work Request Button -->
+		<!-- IFM - Disable the "Report Problem" so that the Create Request view is the only source of new requests (13/02/2019) --> 
+        <!-- <action id="createRequest" mainAction="true">
+            <title>Report Problem</title>
+            <command type="openDialog" viewName="ab-bldgops-console-wr-create.axvw" width="1200" height="770" closeButton="false" applyParentRestriction="false">
+            </command>
+        </action>
+		-->
+
+        <!-- menu buttons -->
+        <action id="exportMenu" type="menu" imageName="/schema/ab-core/graphics/icons/view/export.png">
+            <title></title>
+            <action id="exportXLS">
+                <title>Export to XLS</title>
+                <command type="exportPanel" outputType="xls" panelId="wrList" printRestriction="true"/>
+            </action>
+            <action id="exportDOCX">
+                <title>Export to DOCX</title>
+                <command type="exportPanel" outputType="docx" panelId="wrList" orientation="landscape" printRestriction="true"/>
+            </action>
+            <action id="printDetailsDocx">
+                <title>DOCX Selected Work Request Details</title>
+                <command type="callFunction" functionName="opsConsolePrintActionController.onPrintDetailsDocx()"/>
+            </action>
+            <action id="PrintDetailsPlanDocx">
+                <title>DOCX Selected Work Requests with Floor Plans</title>
+                <command type="callFunction" functionName="opsConsolePrintActionController.onPrintDetailsPlanDocx()"/>
+            </action>
+            <action id="printDetailsPdf">
+                <title>PDF Selected Work Request Details</title>
+                <command type="callFunction" functionName="opsConsolePrintActionController.onPrintDetailsPdf()"/>
+            </action>
+            <action id="printDetailsPlanPdf">
+                <title>PDF Selected Work Requests with Floor Plans</title>
+                <command type="callFunction" functionName="opsConsolePrintActionController.onPrintDetailsPlanPdf()"/>
+            </action>
+        </action>
+
+        <!-- Tools Menu -->
+        <action id="toolsMenu" type="menu" imageName="/schema/ab-core/graphics/icons/view/gear.png">
+            <title></title>
+            <action id="selectFields">
+                <title>Select Work Request Fields</title>
+                <command type="selectFields" panelId="wrList"/>
+            </action>
+            <action id="selectDoubleLineDisplay" checked="false">
+                <title>Display Two Lines for Work Request Description</title>
+                <command type="callFunction" functionName="opsConsoleWrListController.displayDoubleLineForDescription(this.context)"/>
+            </action>
+            <action id="higlightEscalatedRequests" checked="false">
+                <title>Highlight escalated requests</title>
+                <command type="callFunction" functionName="opsConsoleWrListController.onHighlightEscalatedRequests(this.context)"/>
+            </action>
+        </action>
+
+        <fieldset layout="fluid">
+            <!-- Easy Filter - Clients and Business Managers and Step Completers -->
+            <!-- What To Show -->
+            <field id="wrFilter_activity_log_whatToShow">
+                <title>Show</title>
+                <html>
+                    <select id="wrFilter_activity_log_whatToShow" class="inputField_box">
+                        <option value="all">
+                            <span translatable="true">All</span>
+                        </option>
+                        <option value="esc">
+                            <span translatable="true">Escalated</span>
+                        </option>
+                        <option value="my">
+                            <span translatable="true">My Requests</span>
+                        </option>
+                        <option value="requiringMyApproval">
+                            <span translatable="true">Requests Requiring My Approval</span>
+                        </option>
+                        <option value="myApproved">
+                            <span translatable="true">My Approved Requests</span>
+                        </option>
+                        <option value="pendingSteps">
+                            <span translatable="true">Pending Steps</span>
+                        </option>
+                    </select>
+                </html>
+            </field>
+
+            <!-- What To Show -->
+            <field id="wrFilter_wr_whatToShow">
+                <title>Show</title>
+                <html>
+                    <select id="wrFilter_wr_whatToShow" class="inputField_box">
+                        <option value="all">
+                            <span translatable="true">All</span>
+                        </option>
+                        <option value="esc">
+                            <span translatable="true">Escalated</span>
+                        </option>
+                        <option value="my">
+                            <span translatable="true">My Requests</span>
+                        </option>
+                        <option value="requiringMyApproval">
+                            <span translatable="true">Requests Requiring My Approval</span>
+                        </option>
+                        <option value="myApproved">
+                            <span translatable="true">My Approved Requests</span>
+                        </option>
+                        <option value="unassigned">
+                            <span translatable="true">Unassigned Requests</span>
+                        </option>
+                        <option value="newest">
+                            <span translatable="true">10 Newest Requests</span>
+                        </option>
+                        <option value="oldest">
+                            <span translatable="true">10 Oldest Requests</span>
+                        </option>
+                        <option value="near">
+                            <span translatable="true">10 Nearing Escalation</span>
+                        </option>
+                        <option value="pendingSteps">
+                            <span translatable="true">Pending Steps</span>
+                        </option>
+                    </select>
+                </html>
+            </field>
+            <field id="wr.site_id" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Site</title>
+                <action id="bigBadFilter_wr.site_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.site_id" selectFieldNames="site.site_id,site.name" selectValueType="multiple"/>
+                </action>
+            </field>
+            <field id="wr.bl_id" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Building</title>
+                <action id="bigBadFilter_wr.bl_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.site_id,wr.bl_id" selectFieldNames="bl.site_id,bl.bl_id,bl.name" selectValueType="multiple"/>
+                </action>
+            </field>
+            <field id="wr.fl_id" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Floor</title>
+                <action id="bigBadFilter_wr.fl_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.bl_id,wr.fl_id" selectFieldNames="fl.bl_id,fl.fl_id,fl.name" selectValueType="multiple"/>
+                </action>
+            </field>
+            <!-- Problem Type: Show two levels of hierarchy -->
+            <field id="wr.prob_type" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Problem Type</title>
+                <action id="bigBadFilter_wr.prob_type_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.prob_type" selectValueType="multiple" selectFieldNames="probtype.prob_type" restriction="probtype.prob_class = 'OD' AND ((prob_type NOT LIKE '%|%')OR( prob_type LIKE '%|%' AND prob_type NOT LIKE '%|%|%'))"/>
+                </action>
+            </field>
+            
+            <!-- Filter actions -->
+            <field id="filterActions">
+                <!-- Actions -->
+                <action id="moreOptions">
+                    <title>More</title>
+                </action>
+                <action id="clear">
+                    <title>Clear</title>
+                </action>
+                <action id="filter" mainAction="true">
+                    <title>Filter</title>
+                </action>
+                <action id="recentSearchMenu" type="menu">
+                    <title>Recent</title>
+                </action>
+            </field>
+            
+            <!-- white space -->
+            <field id="wrFilter_activity_log_whitespace">
+                <html>
+                    <span id="wrFilter_activity_log_whitespace_span" class="filterWhiteSpace"></span>
+                </html>
+            </field>
+            
+            <!-- What To Group -->
+            <field id="wrFilter_activity_log_whatToGroup">
+                <title>Group By</title>
+                <html>
+                    <select id="wrFilter_activity_log_whatToGroup" class="inputField_box" onchange="switchGroupBy()">
+                        <option value="statusDS">
+                            <span translatable="true">Status</span>
+                        </option>
+                        <option value="probTypeDS">
+                            <span translatable="true">Problem Type</span>
+                        </option>
+                    </select>
+                </html>
+            </field>
+
+            <!-- What To Group -->
+            <field id="wrFilter_wr_whatToGroup">
+                <title>Group By</title>
+                <html>
+                    <select id="wrFilter_wr_whatToGroup" class="inputField_box" onchange="switchGroupBy()">
+                        <option value="statusDS">
+                            <span translatable="true">Status</span>
+                        </option>
+                        <option value="siteIdDS">
+                            <span translatable="true">Site</span>
+                        </option>
+                        <option value="blIdDS">
+                            <span translatable="true">Building</span>
+                        </option>
+                        <option value="probTypeDS">
+                            <span translatable="true">Problem Type</span>
+                        </option>
+                        <option value="cfIdDS">
+                            <span translatable="true">Craftsperson</span>
+                        </option>
+                        <option value="woIdDS">
+                            <span translatable="true">Work Order</span>
+                        </option>
+                        <option value="none">
+                            <span translatable="true">None</span>
+                        </option>
+                    </select>
+                </html>
+            </field>
+
+            <field name="wr_id" hidden="true"/>
+        </fieldset>
+    </panel>
+</view>

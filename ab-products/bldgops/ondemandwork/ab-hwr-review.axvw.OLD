@@ -1,0 +1,101 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Historical Work Requests</title>
+    
+    <dataSource id="abHwrEdit_ds_0">
+        <table name="hwr" role="main"/>
+        <field table="hwr" name="wr_id"/>
+		<field table="hwr" name="wo_id"/>
+        <field table="hwr" name="invoice_no"/>
+    
+    </dataSource>
+      
+    <panel type="grid" id="abHwrEdit_treePanel" dataSource="abHwrEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Select Work Requests</title>
+        <action id="abHwrEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="abHwrEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abHwrEdit_treePanel"/>
+        </action>    
+        <field name="wr_id" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+		        <field name="wo_id" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="invoice_no" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <indexField table="hwr" name="wr_id"/>
+    </panel>
+    
+    <dataSource id="abHwrEdit_ds_1">
+        <table name="hwr" role="main"/>
+        <field table="hwr" name="wr_id"/>
+        <field table="hwr" name="wo_id"/>
+        <field table="hwr" name="cc_id"/>
+        <field table="hwr" name="ac_id"/>
+        <field table="hwr" name="prob_type"/>
+        <field table="hwr" name="supplier_id"/>
+        <field table="hwr" name="priority_label"/>
+        <field table="hwr" name="site_id"/>
+        <field table="hwr" name="cost_other"/>
+        <field table="hwr" name="cost_total"/>
+		<field table="hwr" name="gst_inclusive"/>
+        <field table="hwr" name="invoice_no"/>
+        <field table="hwr" name="invoice_date"/>
+        <field table="hwr" name="invoice_file_name"/>
+		<field table="hwr" name="accrual_batchno"/>
+		<field table="hwr" name="accrual_date"/>
+		<field table="hwr" name="payment_batchno"/>
+		<field table="hwr" name="payment_date"/>
+		<field table="hwr" name="description"/>
+		<field table="hwr" name="closed_by"/> 
+		<field table="hwr" name="date_closed"/> 
+    </dataSource>
+      
+    <panel type="form" id="abHwrEdit_detailsPanel" dataSource="abHwrEdit_ds_1" showOnLoad="false" labelsPosition="left" columns="2" region="center">
+        <title translatable="true">Historical Work Requests</title>     
+	<!-- remove the save and delete
+        <action id="abHwrEdit_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="abHwrEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abHwrEdit_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" show="true"/>
+            <command type="showPanel" panelId="abHwrEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+	-->	
+        <action id="abHwrEdit_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" show="false"/>
+        </action>    
+        <field name="wr_id" table="hwr" showSelectValueAction=""/>
+        <field name="wo_id" table="hwr" showSelectValueAction=""/>
+        <field name="cc_id" table="hwr" readOnly="true"/>
+		<field name="ac_id" table="hwr" readOnly="true"/>
+		<field name="prob_type" table="hwr" readOnly="true"/>
+		<field name="supplier_id" table="hwr" readOnly="true"/>
+		<field name="priority_label" table="hwr" readOnly="true"/>
+		<field name="site_id" table="hwr" readOnly="true"/>
+        <field name="cost_other" table="hwr" readOnly="true"/>
+        <field name="cost_total" table="hwr" readOnly="true"/>
+		<field name="gst_inclusive" table="hwr" readOnly="true"/>
+        <field name="invoice_no" table="hwr" readOnly="true"/>
+        <field name="invoice_date" table="hwr" readOnly="true"/>
+        <field name="invoice_file_name" table="hwr" readOnly="true"/>
+		<field name="accrual_batchno" table="hwr" readOnly="true"/>
+		<field name="accrual_date" table="hwr" readOnly="true"/>
+		<field name="payment_batchno" table="hwr" readOnly="true"/>
+		<field name="payment_date" table="hwr" readOnly="true"/>
+		<field name="description" table="hwr" readOnly="true" colspan="2"/>
+		<field name="closed_by" table="hwr" readOnly="true"/>
+    </panel>
+</view>

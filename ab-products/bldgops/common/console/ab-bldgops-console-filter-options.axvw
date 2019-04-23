@@ -1,0 +1,311 @@
+<!-- Big Bad filter console displayed as a quick action -->
+<view version="2.0">
+    <message name="costRequired">Please provide an estimated cost.</message>
+    <message name="errDateFromGreaterThanDateTo" translatable="true">'To' date must be greater than 'From' date.</message>
+    
+    <style type="text/css">
+        .morePanel {z-index:200;position:absolute;margin-top:0;padding:0 0 0 220px;width:795px;border:0 none;box-shadow:none;}
+    </style>
+    
+      <!-- Work Request Filter Option DataSource -->
+    <panel type="view" id="wrFilterOptionDataSource" file="ab-bldgops-console-wr-ds.axvw"/>
+    
+    <panel type="console" id="bigBadFilter" dataSource="wrDetailsDS" showOnLoad="false" collapsed="true" newRecord="true" buttonsPosition="footer" bodyCssClass="panel-light morePanel">
+
+        <!-- Organization: Division, Department -->
+        <fieldset layout="fluid">
+            <field id="wr.rm_id" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Room</title>
+                <action id="bigBadFilter_wr.rm_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.bl_id,wr.fl_id,wr.rm_id" selectFieldNames="rm.bl_id,rm.fl_id,rm.rm_id,rm.name,rm.rm_cat,rm.rm_type" selectValueType="multiple"/>
+                </action>
+            </field>
+             <!-- Requestor -->
+            <field id="wr.requestor" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Requestor</title>
+                <action id="bigBadFilter_requestor_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.requestor" selectFieldNames="em.em_id" visibleFieldNames="em.em_id,em.em_std" selectValueType="multiple"/>
+                </action>
+            </field>
+            <field id="wr.dv_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Division</title>
+                <action id="bigBadFilter_dv_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.dv_id" selectFieldNames="dv.dv_id" visibleFieldNames="dv.dv_id" selectValueType="multiple"/>
+                </action>
+            </field>
+            <field id="wr.dp_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Department</title>
+                <action id="bigBadFilter_dp_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.dv_id,wr.dp_id" selectFieldNames="dp.dv_id,dp.dp_id" visibleFieldNames="dp.dp_id,dp.dv_id" selectValueType="multiple"/>
+                </action>
+            </field>
+        </fieldset>
+
+        <fieldset layout="fluid">
+            <!-- Equipment Standard -->
+            <field id="eq.eq_std" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Equipment Standard</title>
+                <action id="bigBadFilter_eq_std_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="eq.eq_std" selectFieldNames="eqstd.eq_std" visibleFieldNames="eqstd.eq_std, eqstd.description" selectValueType="multiple">
+                        <title translatable="true">Equipment Standard</title>
+                    </command>
+                </action>
+            </field>
+            <!-- Equipment -->
+            <field id="wr.eq_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Equipment</title>
+                <action id="bigBadFilter_eq_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.eq_id" selectFieldNames="eq.eq_id" visibleFieldNames="eq.eq_id, eq.eq_std" selectValueType="multiple"/>
+                </action>
+            </field>
+            
+            <!-- description field -->
+            <field id="wr.description" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Description</title>
+            </field>
+            
+            <!-- Work Type -->
+            <field>
+                <title>Work Type</title>
+                <html>
+                    <select id="bigBadFilter_worktype" name="worktype" class="inputField_box">
+                        <option value="">
+                            <span translatable="true">Both</span>
+                        </option>
+                        <option value="OD">
+                            <span translatable="true">On Demand</span>
+                        </option>
+                        <option value="PM">
+                            <span translatable="true">PM</span>
+                        </option>
+                    </select>
+                </html>
+            </field>
+            
+        </fieldset>
+
+        <fieldset layout="fluid">
+            <!-- Date Requested From -->
+            <field id="wr.date_requested.from" dataType="date" showLabel="false">
+                <title>Date Requested From</title>
+            </field>
+            <!-- Date Requested To -->
+            <field id="wr.date_requested.to" dataType="date" showLabel="false">
+                <title>Date Requested To</title>
+            </field>
+
+            <!-- Work Request Code -->
+            <field id="wr.wr_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Work Request Code</title>
+                <action id="bigBadFilter_wr_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.wr_id" selectFieldNames="wr.wr_id" visibleFieldNames="wr.wr_id,wr.description" selectValueType="multiple" autoComplete="true" isDistinct="true"/>
+                </action>
+            </field>
+
+            <!-- Work Order Code -->
+            <field id="wr.wo_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title>Work Order Code</title>
+                <action id="bigBadFilter_wo_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.wo_id" selectFieldNames="wo.wo_id" autoComplete="true" visibleFieldNames="wo.wo_id,wo.description" selectValueType="multiple" isDistinct="true"/>
+                </action>
+            </field>
+        </fieldset>
+
+        <fieldset layout="fluid">
+            <!-- Work Team -->
+            <field id="wr.work_team_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title translatable="true">Work Team</title>
+                <action id="bigBadFilter_work_team_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.work_team_id" selectFieldNames="work_team.work_team_id" visibleFieldNames="work_team.work_team_id,work_team.description" selectValueType="multiple" isDistinct="true">
+                        <title translatable="true">Work Team</title>
+                    </command>
+                </action>
+            </field>
+            <!-- Craftsperson -->
+            <field id="wrcf.cf_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title translatable="true">Craftsperson</title>
+                <action id="bigBadFilter_cf_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wrcf.cf_id" selectFieldNames="cf.cf_id" visibleFieldNames="cf.cf_id" selectValueType="multiple" isDistinct="true">
+                        <title translatable="true">Craftsperson</title>
+                    </command>
+                </action>
+            </field>
+            <!-- Date Assigned From -->
+            <field id="wr.date_assigned.from" dataType="date" showLabel="false">
+                <title>Date to Perform From</title>
+            </field>
+            <!-- Date Assigned To -->
+            <field id="wr.date_assigned.to" dataType="date" showLabel="false">
+                <title>Date to Perform To</title>
+            </field>
+        </fieldset>
+        <fieldset layout="fluid">
+            <!-- Trade -->
+            <field id="wrtr.tr_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title translatable="true">Trade</title>
+                <action id="bigBadFilter_tr_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wrtr.tr_id" selectFieldNames="tr.tr_id" visibleFieldNames="tr.tr_id,tr.description" selectValueType="multiple" isDistinct="true">
+                        <title translatable="true">Trade</title>
+                    </command>
+                </action>
+            </field>
+            <!-- PM Procedure -->
+            <field id="wr.pmp_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title translatable="true">PM Procedure</title>
+                <action id="bigBadFilter_pmp_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.pmp_id" selectFieldNames="pmp.pmp_id" visibleFieldNames="pmp.pmp_id,pmp.description" selectValueType="multiple" isDistinct="true">
+                        <title translatable="true">PM Procedure</title>
+                    </command>
+                </action>
+            </field>
+           <!-- PM Schedule -->
+            <field id="wr.pms_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title translatable="true">PM Schedule</title>
+                <action id="bigBadFilter_pms_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wr.pmp_id,wr.pms_id" selectFieldNames="pms.pmp_id,pms.pms_id" visibleFieldNames="pms.pmp_id,pms.pms_id" selectValueType="multiple" isDistinct="true">
+                        <title translatable="true">PM Schedule</title>
+                    </command>
+                </action>
+            </field>
+			<!--IFM Added SDM -->
+            <field id="wr.manager" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title translatable="true">Service Desk Manager</title>
+                <action id="bigBadFilter_sdm_selectValue">
+                    <title>...</title>
+					<command type="selectValue" fieldNames="wr.manager" selectFieldNames="em.em_id" visibleFieldNames="em.em_id,em.name_first,em.name_last" selectValueType="multiple" isDistinct="true" restriction="em.em_id IN (SELECT DISTINCT wr.manager FROM wr)">
+                        <title translatable="true">Service Desk Manager</title>
+                    </command>
+                </action>
+            </field>
+        </fieldset>
+        <fieldset layout="fluid">
+            <!-- Part -->
+            <field id="wrpt.part_id" selectValueType="multiple" dataType="text" cssClass="shortField" showLabel="false">
+                <title translatable="true">Part Code</title>
+                <action id="bigBadFilter_part_id_selectValue">
+                    <title>...</title>
+                    <command type="selectValue" fieldNames="wrpt.part_id" selectFieldNames="pt.part_id" visibleFieldNames="pt.part_id" selectValueType="multiple" isDistinct="true">
+                        <title translatable="true">Part</title>
+                    </command>
+                </action>
+            </field>
+            <field>
+                <title translatable="true">Part Estimation Status</title>
+                <html>
+                <input name="bigBadFilter_wrpt.status" value="NR" type="checkbox" translatable="true">In Stock Not Reserved</input>
+                <input name="bigBadFilter_wrpt.status" value="NI" type="checkbox" translatable="true">Not in Stock</input>
+                <input name="bigBadFilter_wrpt.status" value="R" type="checkbox" translatable="true">Reserved</input>
+                </html>
+            </field>
+            
+        </fieldset>
+        <fieldset layout="fluid">
+            <!-- Estimated Cost -->
+            <field>
+                <title>Estimated Cost</title>
+                <html>
+                    <select id="bigBadFilter_operator" class="inputField_box" onchange="showCostEst(this.value)" style="width: 100px">
+                        <option value="">
+                            <span translatable="false"/>
+                        </option>
+                        <option value="=">
+                            <span translatable="false">=</span>
+                        </option>
+                        <option value="&gt;">
+                            <span translatable="false">&gt;</span>
+                        </option>
+                        <option value="&lt;">
+                            <span translatable="false">&lt;</span>
+                        </option>
+                        <option value="&gt;=">
+                            <span translatable="false">&gt;=</span>
+                        </option>
+                        <option value="&lt;=">
+                            <span translatable="false">&lt;=</span>
+                        </option>
+                    </select>
+                    <input id="bigBadFilter_wr.cost_est_total" name="bigBadFilter_wr.cost_est_total" type="text" class="inputField_cell" disabled="true" style="width: 104px"/>
+                </html>
+            </field>
+        
+        </fieldset>
+        <fieldset layout="fluid">
+            <!-- Status -->
+            <field>
+                <html>
+                    <table cellspacing="0" cellpadding="0" border="0">
+                        <tbody>
+                          <tr>
+                                <td style="padding-left: 0px;" width="120">
+                                    <span translatable="true">Work Request Status</span>
+                                </td>
+                                <td width="120"/>
+                                <td width="120"/>
+                                <td width="160">
+                                    <span translatable="true">Priority</span>
+                                </td>
+                                <td width="120"/>
+                                <td>
+                                    <span translatable="true">Escalated?</span><input id="bigBadFilter_wr.escalated" type="checkbox"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-left: 0px;">
+                                    <input name="bigBadFilter_wr.status" value="A" type="checkbox" translatable="true">Approved</input>
+                                </td>
+                                <td>
+                                    <span><input name="bigBadFilter_wr.status" value="AA" type="checkbox" translatable="true">Assigned</input></span>
+                                </td>
+                                <td>
+                                    <input name="bigBadFilter_wr.status" value="I" type="checkbox" translatable="true">Issued</input>
+                                </td>
+                                <td>
+                                    <input name="bigBadFilter_wr.priority" value="1" type="checkbox">1</input>
+                                    <input name="bigBadFilter_wr.priority" value="2" type="checkbox">2</input>
+                                    <input name="bigBadFilter_wr.priority" value="3" type="checkbox">3</input>
+                                    <input name="bigBadFilter_wr.priority" value="4" type="checkbox">4</input>
+                                    <input name="bigBadFilter_wr.priority" value="5" type="checkbox">5</input>
+                                </td>
+                                <td width="120"/>
+                                <td align="right">
+                                    <span translatable="true">Returned?</span><span>  </span><input id="bigBadFilter_wr.returned" type="checkbox"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-left: 0px;">
+                                    <input name="bigBadFilter_wr.status" value="S" type="checkbox" translatable="true">Stopped</input>
+                                </td>
+                                <td>
+                                    <input name="bigBadFilter_wr.status" value="H" type="checkbox" translatable="true">On Hold</input>
+                                </td>
+								<!-- IFM added  -->
+								<td>
+                                    <input name="bigBadFilter_wr.status" value="Cai" type="checkbox" translatable="true">Completed Awaiting Invoice</input>
+                                </td>
+                                
+                                <td>
+                                    <input name="bigBadFilter_wr.status" value="Com" type="checkbox" translatable="true">Completed</input>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </html>
+            </field>
+            <!-- Priority -->
+            <field name="priority" hidden="true"/>
+        </fieldset>
+    </panel>
+</view>

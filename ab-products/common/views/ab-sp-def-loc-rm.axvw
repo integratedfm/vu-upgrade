@@ -1,0 +1,571 @@
+<view version="2.0">
+    <message name="site" translatable="true">Site</message>
+    <message name="building" translatable="true">Building</message>
+    <message name="floor" translatable="true">Floor</message>
+    <message name="room" translatable="true">Room</message>
+    <message name="errorSelectBuilding" translatable="true">Please select building.</message>
+    <message name="errorSelectFloor" translatable="true">Please select floor.</message>
+    <message name="messageConfirmDelete" translatable="true">Are you sure you want to delete '{0}' ?</message>
+    <message name="errorDelete" translatable="true">Could not delete '{0}'.</message>
+    <message name="formSaved" translatable="true">Form saved successfully.</message>
+    <message name="noSite" translatable="true">No Site</message>
+	<message name="confirmChange" translatable="true">You are about to change the building location so that it does not match the site location. Proceed?</message>
+    <message name="existFutureRmpct" translatable="true">There is a pending request that involves this room. If you continue, please edit that pending request. Do you wish to continue?</message>
+    <message name="geocode" translatable="true">Geocode</message>
+    <message name="locate" translatable="true">Locate on Map</message>
+
+	<layout type="borderLayout" id="mainLayout">
+        <north autoScroll="true" split="true" initialSize="90"/>
+        <center autoScroll="true"/>
+    </layout>
+    <layout type="borderLayout" id="centerLayout" containingLayout="mainLayout" region="center">
+        <west autoScroll="true" split="true" initialSize="35%"/>
+        <center autoScroll="true"/>
+    </layout>
+    <title translatable="true">Define Rooms</title>
+    
+    <dataSource id="ds_ab-sp-def-loc-rm_console_bl_rm">
+        <table name="rm" role="main"/>
+        <table name="bl" role="standard"/>
+        <field table="bl" name="site_id"/>
+        <field table="rm" name="bl_id"/>
+        <field table="rm" name="fl_id"/>
+		<field table="rm" name="rm_id"/>
+    </dataSource>
+    
+    <panel type="console" columns="4" id="sbfFilterPanel" labelsPosition="top" dataSource="ds_ab-sp-def-loc-rm_console_bl_rm" layout="mainLayout" region="north">
+        <title translatable="true">Filter</title>
+        <action id="show">
+            <title translatable="true">Show</title>
+        </action>
+        <action id="clear">
+            <title translatable="true">Clear</title>
+            <command type="clearPanel" panelId="sbfFilterPanel"/>
+        </action>
+        
+        <field table="bl" name="site_id"/>
+        <field table="rm" name="bl_id">
+        	<action>
+        		<title translatable="false">...</title>
+				<command type="selectValue"
+					fieldNames="bl.site_id,rm.bl_id"
+					selectFieldNames="bl.site_id,bl.bl_id"
+					visibleFieldNames="bl.site_id,bl.bl_id,bl.name">
+					<title>Building Code</title>
+				</command>
+        	</action>
+        </field>
+        <field table="rm" name="fl_id">
+        	<action>
+        		<title translatable="false">...</title>
+				<command type="selectValue"
+					fieldNames="bl.site_id,rm.bl_id,rm.fl_id"
+					selectFieldNames="bl.site_id,fl.bl_id,fl.fl_id"
+					visibleFieldNames="bl.site_id,fl.bl_id,fl.fl_id,fl.name">
+					<title>Floor Code</title>
+				</command>
+        	</action>
+        </field>
+		<field table="rm" name="rm_id">
+        	<action>
+        		<title translatable="false">...</title>
+				<command type="selectValue"
+					fieldNames="bl.site_id,rm.bl_id,rm.fl_id,rm.rm_id"
+					selectFieldNames="bl.site_id,rm.bl_id,rm.fl_id,rm.rm_id"
+					visibleFieldNames="bl.site_id,rm.bl_id,rm.fl_id,rm.rm_id,rm.name">
+					<title>Room Code</title>
+				</command>
+        	</action>
+		</field>
+    </panel>
+    
+    <dataSource id="ds_ab-sp-def-loc-rm_tree_site">
+        <sql dialect="generic">
+            (SELECT DISTINCT site.site_id ${sql.as} site_id,
+            site.name ${sql.as} name
+            FROM site 
+	    	WHERE 
+	     		( NOT EXISTS(SELECT 1 FROM bl WHERE bl.site_id=site.site_id) AND ${parameters['siteOfNullBl']} )
+	     		OR
+	     		( NOT EXISTS(SELECT 1 FROM bl,fl WHERE fl.bl_id = bl.bl_id AND bl.site_id=site.site_id) 
+				  AND EXISTS(SELECT 1 FROM bl WHERE bl.site_id=site.site_id AND ${parameters['blOfNullFl']} )  
+				  AND ${parameters['siteOfNullFl']} 
+				) 
+	     		OR
+	     		( NOT EXISTS(SELECT 1 FROM bl,fl,rm WHERE rm.bl_id = fl.bl_id AND rm.fl_id = fl.fl_id AND fl.bl_id = bl.bl_id AND bl.site_id=site.site_id)
+				  AND EXISTS(SELECT 1 FROM bl,fl WHERE fl.bl_id = bl.bl_id AND bl.site_id=site.site_id AND ${parameters['flOfNullRm']})
+				  AND EXISTS(SELECT 1 FROM bl WHERE bl.site_id=site.site_id AND ${parameters['blOfNullRm']})  
+				  AND ${parameters['siteOfNullRm']} 
+	     	)
+	     	)
+            UNION
+			(
+            	(SELECT DISTINCT site.site_id ${sql.as} site_id,
+            		site.name ${sql.as} name
+            	FROM rm,fl,bl LEFT OUTER JOIN site ON site.site_id = bl.site_id
+            	WHERE rm.bl_id = fl.bl_id AND rm.fl_id = fl.fl_id
+					AND fl.bl_id = bl.bl_id
+					AND bl.bl_id ${parameters['blId']}
+					AND fl.fl_id ${parameters['flId']}
+					AND rm.rm_id ${parameters['rmId']}
+					AND ${parameters['siteId']}
+				)
+
+				UNION
+            	(SELECT DISTINCT site.site_id ${sql.as} site_id,
+            		site.name ${sql.as} name
+            	FROM fl,bl LEFT OUTER JOIN site ON site.site_id = bl.site_id
+            	WHERE NOT EXISTS(SELECT 1 FROM rm WHERE rm.bl_id = fl.bl_id AND rm.fl_id = fl.fl_id)
+					AND fl.bl_id = bl.bl_id
+					AND bl.bl_id ${parameters['blId']}
+            		AND fl.fl_id ${parameters['flId']}
+					AND ${parameters['siteId']})
+			
+				UNION 
+				(SELECT DISTINCT site.site_id ${sql.as} site_id,
+            		site.name ${sql.as} name
+            	FROM bl LEFT OUTER JOIN site ON site.site_id = bl.site_id
+            	WHERE NOT EXISTS(SELECT 1 FROM fl WHERE fl.bl_id = bl.bl_id) 
+				  AND bl.bl_id ${parameters['blId']} AND ${parameters['siteId']})
+			)
+        </sql>
+        <table name="site" role="main"/>
+        <field table="site" name="site_id" dataType="text"/>
+        <field table="site" name="name" dataType="text"/>
+        <sortField table="site" name="site_id" ascending="true"/>
+        <parameter name="blId" dataType="verbatim" value="IS NOT NULL"/>
+        <parameter name="flId" dataType="verbatim" value="IS NOT NULL"/>
+        <parameter name="rmId" dataType="verbatim" value="IS NOT NULL"/>
+        <parameter name="siteId" dataType="verbatim" value=" 1=1 "/>
+        <parameter name="siteOfNullBl" dataType="verbatim" value=" 1=1 "/>
+        <parameter name="blOfNullFl" dataType="verbatim" value=" 1=1 "/>
+        <parameter name="siteOfNullFl" dataType="verbatim" value=" 1=1 "/>
+        <parameter name="flOfNullRm" dataType="verbatim" value=" 1=1 "/>
+        <parameter name="blOfNullRm" dataType="verbatim" value=" 1=1 "/>
+        <parameter name="siteOfNullRm" dataType="verbatim" value=" 1=1 "/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-loc-rm_form_site">
+        <table name="site" role="main"/>
+        <field table="site" name="site_id"/>
+        <field table="site" name="name"/>
+        <field table="site" name="city_id"/>
+        <field table="site" name="state_id"/>
+        <field table="site" name="regn_id"/>
+        <field table="site" name="ctry_id"/>
+        <field table="site" name="no_bldgs"/>
+        <field table="site" name="acres"/>
+		<field table="site" name="area_ocup"/>
+		<field table="site" name="area_nocup"/>
+		<field table="site" name="area_rm"/>
+		<field table="site" name="area_gross_int"/>
+		<field table="site" name="area_gross_ext"/>
+		<!-- Ami Added 18-Jan-2019 -->
+		<field table="site" name="lon"/>
+		<field table="site" name="lat"/>
+		<field table="site" name="geo_objectid"/>
+		
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-loc-rm_tree_bl">
+        <sql dialect="generic">
+            (SELECT DISTINCT bl.site_id ${sql.as} site_id,
+            bl.bl_id ${sql.as} bl_id,
+            bl.name ${sql.as} name
+            FROM bl
+            WHERE NOT EXISTS(SELECT 1 FROM fl WHERE fl.bl_id=bl.bl_id) AND bl.bl_id ${parameters['blId']})
+			
+            UNION
+            (SELECT DISTINCT bl.site_id ${sql.as} site_id,
+            bl.bl_id ${sql.as} bl_id,
+            bl.name ${sql.as} name
+            FROM fl,bl
+            WHERE NOT EXISTS(SELECT 1 FROM rm WHERE rm.bl_id = fl.bl_id AND rm.fl_id = fl.fl_id)
+			AND fl.bl_id =bl.bl_id
+            AND bl.bl_id ${parameters['blId']}
+            AND fl.fl_id ${parameters['flId']})
+			
+			UNION
+			(SELECT DISTINCT bl.site_id ${sql.as} site_id,
+            bl.bl_id ${sql.as} bl_id,
+            bl.name ${sql.as} name
+            FROM rm,fl,bl
+            WHERE rm.bl_id = fl.bl_id AND rm.fl_id = fl.fl_id
+			AND fl.bl_id = bl.bl_id
+			AND bl.bl_id ${parameters['blId']}
+			AND fl.fl_id ${parameters['flId']}
+			AND rm.rm_id ${parameters['rmId']})
+        </sql>
+        <table name="bl" role="main"/>
+        <field table="bl" name="site_id" dataType="text"/>
+        <field table="bl" name="bl_id" dataType="text"/>
+        <field table="bl" name="name" dataType="text"/>
+        <sortField table="bl" name="bl_id" ascending="true"/>
+        <parameter name="blId" dataType="verbatim" value="IS NOT NULL"/>
+        <parameter name="flId" dataType="verbatim" value="IS NOT NULL"/>
+        <parameter name="rmId" dataType="verbatim" value="IS NOT NULL"/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-loc-rm_form_bl">
+        <table name="bl" role="main"/>
+        <field table="bl" name="bl_id"/>
+		<field table="bl" name="build_no"/>
+        <field table="bl" name="name"/>
+		<field table="bl" name="bldg_photo"/>
+        <field table="bl" name="address1"/>
+        <field table="bl" name="address2"/>
+        <field table="bl" name="ctry_id"/>
+        <field table="bl" name="state_id"/>
+        <field table="bl" name="zip"/>
+        <field table="bl" name="site_id"/>
+        <field table="bl" name="regn_id"/>
+        <field table="bl" name="city_id"/>
+        <field table="bl" name="pr_id"/>
+        <field table="bl" name="ac_id"/>
+        <field table="bl" name="contact_name"/>
+        <field table="bl" name="contact_phone"/>
+        <field table="bl" name="use1"/>
+        <field table="bl" name="date_bl"/>
+        <field table="bl" name="date_rehab"/>
+        <field table="bl" name="construction_type"/>
+        <field table="bl" name="count_occup"/>
+        <field table="bl" name="count_fl"/>
+        <field table="bl" name="comments"/>
+        <field table="bl" name="cost_sqft"/>
+        <field table="bl" name="area_gross_ext"/>
+        <field table="bl" name="area_gross_int"/>
+        <field table="bl" name="area_usable"/>		
+        <field table="bl" name="count_max_occup"/>
+        <field table="bl" name="lat"/>
+        <field table="bl" name="lon"/>
+		<!-- IFM Mehran Added for VU. 22-Dec-2016 -->
+		<field table="bl" name="area_ocup"/>
+		<field table="bl" name="area_nocup"/>
+		<field table="bl" name="area_rm"/>
+        <!-- IFM - Added fields for Building Depreciation (Apr 2019) -->
+		<field table="bl" name="ownership"/>
+		<field table="bl" name="depreciate"/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-loc-rm_tree_fl">
+        <sql dialect="generic">
+            (SELECT bl.site_id ${sql.as} site_id,
+            bl.bl_id ${sql.as} bl_id,
+            fl.fl_id ${sql.as} fl_id,
+            fl.name ${sql.as} name
+            FROM fl,bl
+            WHERE NOT EXISTS(SELECT 1 FROM rm WHERE rm.bl_id = fl.bl_id AND rm.fl_id = fl.fl_id)
+			AND fl.bl_id =bl.bl_id
+            AND fl.fl_id ${parameters['flId']})
+			
+			UNION
+            (SELECT bl.site_id ${sql.as} site_id,
+            bl.bl_id ${sql.as} bl_id,
+            fl.fl_id ${sql.as} fl_id,
+            fl.name ${sql.as} name
+            FROM rm,fl,bl
+			WHERE rm.bl_id = fl.bl_id AND rm.fl_id = fl.fl_id
+			AND fl.bl_id = bl.bl_id
+            AND fl.fl_id ${parameters['flId']}
+			AND rm.rm_id ${parameters['rmId']})
+        </sql>
+        <table name="fl" role="main"/>
+        <table name="bl" role="standard"/>
+        <field table="bl" name="site_id" dataType="text"/>
+        <field table="fl" name="bl_id" dataType="text"/>
+        <field table="fl" name="fl_id" dataType="text"/>
+        <field table="fl" name="name" dataType="text"/>
+        <sortField table="fl" name="fl_id" ascending="true"/>
+        <parameter name="flId" dataType="verbatim" value="IS NOT NULL"/>
+        <parameter name="rmId" dataType="verbatim" value="IS NOT NULL"/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-loc-rm_form_fl">
+        <table name="fl" role="main"/>
+        <field table="fl" name="bl_id"/>
+        <field table="fl" name="fl_id"/>
+		<field table="fl" name="fl_order"/>
+		<field table="fl" name="fl_label"/>
+        <field table="fl" name="name"/>
+        <field table="fl" name="cost_sqft"/>
+        <field table="fl" name="area_gross_ext"/>
+        <field table="fl" name="area_gross_int"/>
+        <field table="fl" name="area_rm"/>
+		
+		<field table="fl" name="area_ocup"/>
+		<field table="fl" name="area_nocup"/>
+        
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-loc-rm_tree_rm" applyVpaRestrictions="false">
+    	<sql dialect="generic">
+    		SELECT bl.site_id ${sql.as} site_id,
+            bl.bl_id ${sql.as} bl_id,
+            fl.fl_id ${sql.as} fl_id,
+			rm.rm_id ${sql.as} rm_id,
+            rm.name ${sql.as} name
+            FROM rm,fl,bl
+			WHERE ${sql.vpaRestriction} and rm.bl_id = fl.bl_id AND rm.fl_id = fl.fl_id
+			AND fl.bl_id = bl.bl_id
+			AND rm.rm_id ${parameters['rmId']}
+    	</sql>
+        <table name="rm" role="main"/>
+        <table name="bl" role="standard"/>
+        <field table="bl" name="site_id"/>
+        <field table="rm" name="bl_id"/>
+        <field table="rm" name="fl_id"/>
+        <field table="rm" name="rm_id"/>
+        <field table="rm" name="name"/>
+        <sortField table="rm" name="rm_id" ascending="true"/>
+		<parameter name="rmId" dataType="verbatim" value="IS NOT NULL"/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-loc-rm_form_rm">
+        <table name="rm" role="main"/>
+		<table name="ifm_costcentre" role="standard"/>
+		<table name="fl" role="standard"/>
+		<table name="bl" role="standard"/>
+        <field table="rm" name="bl_id"/>
+        <field table="rm" name="fl_id"/>
+		<field table="bl" name="build_no"/>
+		<field table="fl" name="fl_label"/>
+        <field table="rm" name="rm_id"/>
+        <field table="rm" name="name"/>
+        <field table="rm" name="rm_cat"/>
+        <field table="rm" name="rm_type"/>
+        <field table="rm" name="rm_std"/>
+        <field table="rm" name="dv_id"/>
+        <field table="rm" name="dp_id"/>
+        <field table="rm" name="area_manual"/>
+        <field table="rm" name="cap_em"/>
+		<field table="rm" name="area"/>
+        <field table="rm" name="prorate"/>
+        <field table="rm" name="survey_redline_rm"/>
+        <field table="rm" name="date_last_surveyed"/>
+        <field table="rm" name="survey_photo"/>
+		<field table="rm" name="fl_cover"/>
+        <field table="rm" name="fl_type"/>
+		<field table="rm" name="capacity_exam"/>
+		<field table="rm" name="syllabus_host_key"/>
+		<field table="rm" name="cc_id"/>
+		<field table="ifm_costcentre" name="name"/>
+		<field table="ifm_costcentre" name="cc_id"/>
+		<field table="ifm_costcentre" name="dp_id"/>
+		<field table="rm" name="rm_use"/>
+		<field table="rm" name="rm_comments"/>
+		<field table="rm" name="loc_code" />
+
+    </dataSource>
+    
+    <panel type="tree" id="site_tree" dataSource="ds_ab-sp-def-loc-rm_tree_site" layout="centerLayout" region="west">
+        <title translatable="true">Select Sites, Buildings, Floors, or Rooms</title>
+        <action id="addNew">
+            <title translatable="true">Add New</title>
+        </action>
+        <event type="onClickNode">
+            <command type="callFunction" functionName="onClickSiteNode"/>
+        </event>
+        <panel type="tree" id="bl_tree" dataSource="ds_ab-sp-def-loc-rm_tree_bl">
+            <event type="onClickNode">
+                <command type="selectTabPage" tabPanelId="sbfDetailTabs" tabPageName="blTab"/>
+                <command type="showPanel" panelId="bl_detail"/>
+                <command type="callFunction" functionName="onClickTreeNode"/>
+            </event>
+            <field table="bl" name="bl_id" dataType="text"/>
+            <field table="bl" name="name" dataType="text"/>
+        </panel>
+        <panel type="tree" id="fl_tree" dataSource="ds_ab-sp-def-loc-rm_tree_fl">
+            <event type="onClickNode">
+                <command type="selectTabPage" tabPanelId="sbfDetailTabs" tabPageName="flTab"/>
+                <command type="showPanel" panelId="fl_detail"/>
+                <command type="callFunction" functionName="onClickTreeNode"/>
+            </event>
+            <field table="fl" name="fl_id" dataType="text"/>
+            <field table="fl" name="name" dataType="text"/>
+        </panel>
+        <panel type="tree" id="rm_tree" dataSource="ds_ab-sp-def-loc-rm_tree_rm">
+            <event type="onClickNode">
+                <command type="selectTabPage" tabPanelId="sbfDetailTabs" tabPageName="rmTab"/>
+                <command type="showPanel" panelId="rm_detail"/>
+                <command type="callFunction" functionName="onClickTreeNode"/>
+            </event>
+            <field table="rm" name="rm_id" dataType="text"/>
+            <field table="rm" name="name" dataType="text"/>
+        </panel>
+        <field table="site" name="site_id" dataType="text"/>
+        <field table="site" name="name" dataType="text"/>
+    </panel>
+    
+    <tabs id="sbfDetailTabs" workflow="enforced" cssClass="wizard" layout="centerLayout" region="center">
+        <tab name="siteTab" selected="true">
+            <title translatable="true">Site</title>
+            <panel type="form" id="site_detail" showOnLoad="false" dataSource="ds_ab-sp-def-loc-rm_form_site" columns="2">
+                <action id="save">
+                    <title translatable="true">Save</title>
+                </action>
+                <action id="delete">
+                    <title translatable="true">Delete</title>
+                </action>
+                <field table="site" name="site_id"/>
+                <field table="site" name="name"/>
+                <field table="site" name="city_id"/>
+                <field table="site" name="state_id"/>
+                <field table="site" name="regn_id"/>
+                <field table="site" name="ctry_id"/>
+                <field table="site" name="no_bldgs"/>
+                <field table="site" name="acres"/>
+				<field table="site" name="area_ocup" />
+				<field table="site" name="area_nocup" />
+				<field table="site" name="area_rm" />
+				<field table="site" name="area_gross_int" />
+				<field table="site" name="area_gross_ext" />
+				<!-- Ami Added 18-Jan-2019 -->
+				<field table="site" name="lon"/>
+				<field table="site" name="lat"/>
+				<field table="site" name="geo_objectid"/>
+            </panel>
+        </tab>
+        <tab name="blTab" selected="false">
+            <title translatable="true">Building</title>
+            <panel type="form" id="bl_detail" showOnLoad="false" dataSource="ds_ab-sp-def-loc-rm_form_bl" columns="2">
+                <action id="save">
+                    <title translatable="true">Save</title>
+                </action>
+                <action id="delete">
+                    <title translatable="true">Delete</title>
+                </action>
+                <field table="bl" name="site_id"/>
+                <field table="bl" name="bl_id"/>
+                <field table="bl" name="name"/>
+				<field table="bl" name="build_no"/>
+                <field table="bl" name="address1"/>
+				<field table="bl" name="bldg_photo"/>
+                <field table="bl" name="address2"/>
+                <field table="bl" name="ctry_id"/>
+                <field table="bl" name="state_id"/>
+                <field table="bl" name="zip"/>
+                <field table="bl" name="regn_id"/>
+                <field table="bl" name="city_id"/>
+                <field table="bl" name="pr_id"/>
+                <field table="bl" name="ac_id"/>
+                <field table="bl" name="contact_name"/>
+                <field table="bl" name="contact_phone"/>
+                <field table="bl" name="use1"/>
+                <field table="bl" name="date_bl"/>
+                <field table="bl" name="construction_type"/>
+                <field table="bl" name="date_rehab"/>
+                <field table="bl" name="count_occup"/>
+                <field table="bl" name="count_fl"/>	
+				
+                <!-- IFM - Added fields for Building Depreciation (Apr 2019) -->
+                <field table="bl" name="ownership"/>
+                <field table="bl" name="depreciate"/>
+
+                <field table="bl" name="area_gross_ext" readOnly="true"/>
+                <field table="bl" name="area_gross_int" readOnly="true"/>
+
+                <field table="bl" name="area_ocup"  readOnly="true" />
+                <field table="bl" name="area_nocup" readOnly="true" />
+                <field table="bl" name="area_rm" readOnly="true" />
+ 				<field/>
+
+				<field name="geocodeField">
+					<tooltip>Calculate coordinates from address.</tooltip>
+					<html>
+						<input id="geocode" class="selectValue_AbActionButtonFormStdWidth" width="80%" value="" type="button" onclick="defineLocRMController.doGeocode()"/>
+					</html>
+				</field>
+				<field table="bl" name="lat"/>
+				<field name="locateField">
+					<html>
+						<input id="locate" class="selectValue_AbActionButtonFormStdWidth" value="" type="button" onclick="defineLocRMController.doLocate()"/>
+					</html>
+				</field>
+				<field table="bl" name="lon"/>
+                <field table="bl" name="comments" colspan="2"/>
+            </panel>
+        </tab>
+        <tab name="flTab" selected="false">
+            <title translatable="true">Floor</title>
+            <panel type="form" id="fl_detail" showOnLoad="false" dataSource="ds_ab-sp-def-loc-rm_form_fl" columns="2">
+                <action id="save">
+                    <title translatable="true">Save</title>
+                </action>
+                <action id="delete">
+                    <title translatable="true">Delete</title>
+                </action>
+                <field table="fl" name="bl_id" readOnly="true"/>
+                <field table="fl" name="fl_id"/>
+                <field table="fl" name="name"/>
+				<field table="fl" name="fl_order"/>
+				<field table="fl" name="fl_label"/>        
+                
+                <field table="fl" name="area_gross_ext"/>
+                <field table="fl" name="area_gross_int"/>
+                
+				<field table="fl" name="area_ocup"/>
+				<field table="fl" name="area_nocup"/>
+				<field table="fl" name="area_rm"/>
+				<field table="fl" name="area_gross_int"/>
+				<field table="fl" name="area_gross_ext"/>
+		
+                <field/>
+            </panel>
+        </tab>
+        <tab name="rmTab" selected="false">
+            <title translatable="true">Room</title>
+            <panel type="form" id="rm_detail" showOnLoad="false" dataSource="ds_ab-sp-def-loc-rm_form_rm" columns="2">
+                <action id="save">
+                    <title translatable="true">Save</title>
+                </action>
+                <action id="delete">
+                    <title translatable="true">Delete</title>
+                </action>
+                <field table="rm" name="bl_id" readOnly="true"/>
+                <field table="rm" name="fl_id" readOnly="true"/>
+                <field table="rm" name="rm_id"/>
+                <field table="rm" name="name"/>								
+                <field table="rm" name="rm_cat"/>
+                <field table="rm" name="rm_type"/>
+                <field table="rm" name="rm_std"/>
+                <field table="rm" name="cap_em"/>				
+                <field table="rm" name="dv_id"/>
+				<field table="rm" name="capacity_exam"/>
+                <field table="rm" name="dp_id"/>
+                <field table="rm" name="area_manual"/>
+				<field table="rm" name="cc_id" required="false">
+				<action id="costCentreSelVal">
+					<title>...</title>
+				</action>
+				</field>
+				<field table="ifm_costcentre" name="name" required="false">
+					<title>Cost Centre Name</title>
+				</field>
+				<field table="rm" name="area"/>
+                <field table="rm" name="prorate" hidden="${view.taskInfo.activityId == 'AbCapitalPlanningCA' || view.taskInfo.activityId == 'AbRiskES'}"/>
+                <field table="rm" name="survey_redline_rm"/>
+                <field table="rm" name="date_last_surveyed"/>
+                <field table="rm" name="survey_photo"/> 
+				<field table="rm" name="fl_cover"/>
+        		<field table="rm" name="fl_type"/>				
+				<field table="rm" name="syllabus_host_key"/>												
+				<field table="rm" name="rm_use"/>
+				<field table="rm" name="loc_code" ><title>Location Code</title></field>
+				<field table="rm" name="rm_comments"/>
+            </panel>
+        </tab>
+    </tabs>
+    
+    <dataSource id="checkFutureRmpctDS">
+        <table name="rmpct" role="main"/>
+        <field table="rmpct" name="bl_id"/>
+        <field table="rmpct" name="fl_id"/>
+        <field table="rmpct" name="rm_id"/>
+        <field table="rmpct" name="primary_rm"/>
+        <restriction type="sql" sql="rmpct.primary_rm =1 and rmpct.date_start &gt; ${sql.currentDate}"/>
+    </dataSource>
+    
+    <js file="ab-sp-def-loc-rm.js"/>
+    <js url="js.arcgis.com/3.9/"/>
+    <js file="ab-arcgis-geocoder.js"/>
+</view>

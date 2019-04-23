@@ -1,0 +1,416 @@
+<view version="2.0">
+	<message name="noSlaFound" translatable="true">No SLA found for request type</message>
+	<message name="noRequestor" translatable="true">Please select a Requestor</message>
+	<message name="noSite" translatable="true">Please select a Site Code</message>
+	<message name="noBuilding" translatable="true">Please select a Building Code</message>
+	<message name="noEquipment" translatable="true">Please select an Equipment Code</message>
+	<message name="noPriority" translatable="true">Please select a Priority</message>
+	<message name="noDescription" translatable="true">Please enter a Description</message>
+	<message name="noProblemType" translatable="true">Please select a Problem Type</message>
+	<message name="deleteRequest" translatable="true">Are you sure to delete this request?</message>
+	<message name="selectPriority" translatable="true">Please select a priority</message>
+	<message name="impossibleDate" translatable="true">Date required is invalid</message>
+	<message name="forPriority" translatable="true">for priority</message>
+	<message name="slainfo" translatable="true">SLA Information</message>
+	<message name="responseRequired" translatable="true">Response required within</message>
+	<message name="completionRequired" translatable="true">Completion required within</message>
+
+	<message name="minutes" translatable="true">Minutes</message>
+	<message name="hours" translatable="true">Hours</message>
+	<message name="days" translatable="true">Days</message>
+	<message name="weeks" translatable="true">Weeks</message>
+	<message name="months" translatable="true">Months</message>
+
+	<message name="assigned" translatable="true">Request will be assigned to</message>
+	<message name="supervised" translatable="true">Request will be supervised by</message>
+	<message name="dispatched" translatable="true">Request will be dispatched by</message>
+	<message name="dispatchedTo" translatable="true">Request will be dispatched to</message>
+	<message name="selectTitle" translatable="true">-select-</message>
+	<message name="equipment" translatable="true">Equipment</message>
+    <message name="previous" translatable="true">&lt;&lt; Previous</message>
+    <message name="differentEqLocaiton" translatable="true">The problem location is different from the equipment location. Do you wish to continue?</message>
+    <message name="dateIsRequired" translatable="true">'Date Required' cannot be empty if 'Specific date and time required' is checked.</message>
+    
+    <js file="ab-helpdesk-request-basic.js" />
+    <js file="ab-helpdesk-common-v2.js" />
+    <js file="ab-helpdesk-request-common-sla-v2.js" />
+    <js file="ab-helpdesk-request-shared-para.js" />
+	
+	<!-- IFM Added -->
+	<dataSource id="ifmWRDs">
+        <table name="wr" role="main" />
+        <field name="wr_id"/>
+        <field name="activity_log_id"/>        
+        <field name="cc_id"/>
+    </dataSource>
+	
+	<dataSource id="basicDs">
+		<table name="activity_log" role="main" />
+
+		<!-- <table name="activitytype" role="standard" /> -->
+		<!-- <field name="activity_type" table="activitytype" /> -->
+
+		<field name="activity_log_id" table="activity_log" />
+		<field name="activity_type" table="activity_log" />
+		<field name="description" table="activity_log"/>	
+		<field name="requestor" table="activity_log" />
+		<field name="phone_requestor" table="activity_log" />
+		<field name="site_id" table="activity_log" required="true" />
+		<field name="bl_id" table="activity_log" required="true" />
+		<field name="fl_id" table="activity_log" required="false" />
+		<field name="rm_id" table="activity_log" required="false" />
+		<field name="eq_id" table="activity_log" required="false" />
+		<field name="priority" table="activity_log" />
+		<field name="prob_type" table="activity_log" />
+		<field name="date_required" table="activity_log" />
+		<field name="time_required" table="activity_log" />
+		<field name="dp_id" table="activity_log" />
+		<field name="dv_id" table="activity_log" />
+		<field name="assessment_id" table="activity_log" />
+		<field name="date_scheduled" table="activity_log" />
+		<field name="location" table="activity_log" />
+        <field name="project_id" table="activity_log" />
+        <field name="copied_from" table="activity_log" />
+        <field name="incident_id" table="activity_log" />
+		<!-- IFM Added -->
+        <field name="cc_id" table="activity_log" />
+		<field name="ac_id" table="activity_log" />
+		<field name="notify_ohs" table="activity_log" />
+	</dataSource>
+	
+ 	<panel type="form" columns="2" id="requestPanel"
+        dataSource="basicDs"  showOnLoad="true" newRecord="true" >
+		<title translatable="true">Requestor</title>
+		
+		<action id="cancel">
+			<title translatable="true">Previous</title>
+		</action>
+		<action id="next">
+			<title translatable="true">Add Documents &gt; &gt;</title>
+		</action>
+		<action id="confirm">
+			<title translatable="true">Submit</title>
+		</action>
+		
+		<field name="activity_log_id" table="activity_log"
+			hidden="false"
+			readOnly="true">
+			<title translatable="true">
+				Service Request ID
+			</title>
+		</field>
+		
+		<field hidden="false" />
+		
+		<field table="activity_log" name="requestor"
+			required="true" value="${user.employee.id}"
+            readOnly="${record['activity_log.activity_type'] == 'SERVICE DESK - DEPARTMENT SPACE'}"
+			onchange="onChangeRequestor()" >
+			<action>
+				<title>...</title>
+				<command type="selectValue"
+				 	fieldNames="activity_log.requestor"
+				 	selectFieldNames="em.em_id"
+				  	visibleFieldNames="em.em_id,em.em_std"
+				   	actionListener="onChangeRequestor">
+				   	<title>Requested By</title>
+				</command>
+			</action>
+		</field>
+		
+		<field table="activity_log" name="phone_requestor"
+			showSelectValueAction="false" value="${user.employee.phone}" />
+		
+		<field name="dv_id" table="activity_log"
+			value="${user.employee.organization.divisionId}" hidden="true" />
+		<field name="dp_id" table="activity_log"
+			value="${user.employee.organization.departmentId}" hidden="true" />
+
+		<field name="assessment_id" table="activity_log" hidden="true" />
+		<field name="date_scheduled" table="activity_log" hidden="true" />
+		<field name="location" table="activity_log" hidden="true" />
+        <field name="project_id" table="activity_log" hidden="true" />
+        <field name="copied_from" table="activity_log" hidden="true" />
+	</panel>
+
+	<panel type="form" columns="2" id="locationPanel"
+		dataSource="basicDs" showOnLoad="false">
+		<title translatable="true">Work Location</title>
+		<action id="setLocation">
+			<title translatable="true">Select Location</title>
+		</action>
+		<action onclick="ABHDC_listLocationRequests('locationPanel','activity_log')">
+			<title translatable="true">
+				List Requests for Location
+			</title>
+		</action>
+		
+        <field colspan="2">
+			<html>
+				<input type="checkbox" name="same" id="same" value=""
+					onclick="if (this.checked) {onCheckSameAsRequestor()}"
+					tabindex="1020" translatable="true">Same as requestor</input>
+			</html>
+		</field>
+		
+		<field table="activity_log" name="site_id" 
+			required="true" onchange="SLA_onChangeSite2('locationPanel','descriptionPanel')">
+			<action>
+				<title>...</title>
+				<command type="selectValue"
+				fieldNames="activity_log.site_id" 
+				selectFieldNames="site.site_id"
+				visibleFieldNames="site.site_id,site.name" showIndex="false"
+				actionListener="SLA_onChangeSite">
+                    <title>Site Code</title>
+				</command>
+			</action>
+		</field>
+		<field table="activity_log" name="bl_id" 
+			required="false" onchange="SLA_onChangeLocation2('locationPanel','descriptionPanel')">
+			<action>
+				<title>...</title>
+				<command  type="selectValue"
+				fieldNames="activity_log.site_id,activity_log.bl_id"
+				selectFieldNames="bl.site_id,bl.bl_id"
+				visibleFieldNames="bl.site_id,bl.bl_id,bl.name" showIndex="false"
+				actionListener="SLA_onChangeLocation">
+                    <title>Building Code</title>
+				</command>
+			</action>
+		</field>
+		<field table="activity_log" name="fl_id" 
+			onchange="SLA_onChangeLocation2('locationPanel','descriptionPanel')">
+			<action>
+				<title>...</title>
+				<command  type="selectValue"
+				fieldNames="activity_log.bl_id,activity_log.fl_id"
+				selectFieldNames="fl.bl_id,fl.fl_id"
+				visibleFieldNames="fl.bl_id,fl.fl_id,fl.name" showIndex="false"
+				actionListener="SLA_onChangeLocation">
+                    <title>Floor Code</title>
+				</command>
+			</action>
+		</field>
+		<field table="activity_log" name="rm_id" 
+			onchange="SLA_onChangeLocation2('locationPanel','descriptionPanel')">
+			<action>
+				<title>...</title>
+				<command  type="selectValue"
+				fieldNames="activity_log.bl_id,activity_log.fl_id,activity_log.rm_id"
+				selectFieldNames="rm.bl_id,rm.fl_id,rm.rm_id"
+				visibleFieldNames="rm.bl_id,rm.fl_id,rm.rm_id,rm.name,rm.rm_type"
+				showIndex="false"
+				actionListener="SLA_onChangeLocation">
+                    <title>Room Code</title>
+				</command>
+			</action>
+		</field>
+	</panel>
+	
+	<!-- IFM - Stopped the Equiipment panel from being displayed, Changed showOnLoad to FALSE and changed hidden to TRUE  -->
+	<panel type="form" id="equipmentPanel" columns="2"  dataSource="basicDs" showOnLoad="false" hidden="true" style="background:#FFF">
+		<title translatable="true">Equipment</title>
+		<!-- IFM - Remove "Warranty Details" button -->
+		<!-- <action>
+			<title translatable="true">Review Warranty Details</title>
+			<command type="callFunction"  functionName="onReviewWarrantyDetails"/>
+		</action>
+		<action onclick="ABHDC_listEquipmentRequests('equipmentPanel','activity_log')">
+			<title translatable="true">
+				List Requests for Equipment
+			</title>
+		</action>
+		-->
+		<field name="eq_id" table="activity_log" required="false" hidden="true" onchange="onEqIdChange()">
+			<action > 
+				<title>...</title>
+				<command type="callFunction"  functionName="selectEquipment()"/>
+			</action>
+		</field>
+		<field id="warVendor" dataType="text" readOnly="true" hidden="true">
+			<title translatable="true">Warranty Vendor</title>
+        </field>
+        <field></field>
+		<field id="warExpDate" dataType="date" readOnly="true" hidden="true">
+            <title translatable="true">Warranty Expiration Date</title>
+        </field>
+	</panel>
+	
+	<dataSource id="ds_eq_warranty_grid">
+		<table name="eq" role="main" />
+		<table name="warranty" role="standard" />
+		<field name="eq_id" table="eq" />
+		<field name="warranty_id" table="warranty"  />
+		<field name="contact_info" table="warranty" />
+		<field name="war_vendor" table="warranty"/>
+		<field name="date_expiration" table="warranty" />
+		<field name="description" table="warranty" />
+		<field name="isexpiration" dataType="text" >
+            <sql dialect="generic">(CASE WHEN warranty.date_expiration IS NULL THEN '' ELSE CASE WHEN warranty.date_expiration &lt; ${sql.currentDate} THEN 'true' ELSE 'false' END END)</sql>
+        </field>
+	</dataSource>
+    
+    <dataSource id="siteQueryDS">
+        <table name="bl" role="main" />
+        <field name="bl_id"/>
+        <field name="site_id"/>
+    </dataSource>
+	
+	<panel type="form" id="eq_warranty_grid" 
+		columns="2" formLabelWidth="25"  dataSource="ds_eq_warranty_grid" showOnLoad="false" hidden="true">
+		<title translatable="true">Warranty Details</title>
+		<field name="eq_id" table="eq" hidden="true" required="false"/>
+		<field name="warranty_id" table="warranty"  required="false"/>
+		<field name="contact_info" table="warranty"  required="false"/>
+		<field name="war_vendor" table="warranty"  required="false"/>
+		<field name="date_expiration" table="warranty"  required="false"/>
+		<field name="description" table="warranty" colspan="2"  required="false"/>
+		<field name="isexpiration" dataType="text" hidden="true" />
+	</panel>
+
+	<!-- IFM - Make Description 2 columns -->
+	<panel type="form" columns="2" id="descriptionPanel"
+		dataSource="basicDs" showOnLoad="false">
+		<title translatable="true">Description</title>
+		<!-- IFM Added -->
+		<field colspan="1">
+			<html>
+				<input type="checkbox" name="deptreq" id="deptreq" value="true"
+					onchange="onCheckDeptReq(this)"
+					tabindex="1020" translatable="true">Departmental request</input>
+			</html>
+			<tooltip>Departmental requests are chargeable to the Department, therefore a Cost Centre is required.
+Requests outside Facilities scope such as Moves, additional Cleaning services, Electrical Equipment 
+repairs, Ad-hoc Security, additional power points and various others are chargeable.
+Requests will be reviewed to ensure that the appropriate Cost Centre is charged. Where a request 
+is centrally chargeable this will be covered by Facilities. You will not need to amend your request.
+			</tooltip>
+		</field>
+		
+		<field>
+			<title>Notify OHS</title>
+			<html>
+				<input type="checkbox" id="notifyohs" 
+					onchange="onChangeNotifyOHS()">
+				</input>	
+			</html>
+		</field>
+		
+		<!-- IFM - Modify the Cost Centre Select Value panel and description -->
+		<field name="cc_id" table="activity_log" colspan="1">
+		<action>
+            <title>...</title>
+			<tooltip>Select Value - Cost Centre</tooltip>
+		    <command type= "selectValue" 
+		     fieldNames= "activity_log.cc_id" 
+		     selectFieldNames= "ifm_costcentre.cc_id, ifm_costcentre.name" 
+			 visibleFieldNames= "ifm_costcentre.cc_id, ifm_costcentre.name" >
+			<title>Cost Centre</title>
+			</command>
+			</action>
+		</field>
+		<field name="notify_ohs_instruction">
+			<html>
+				<div>
+					By selecting this option VU’s OHS team will also be notified of the request		
+				</div>
+			</html>
+		</field>
+		
+		<field>
+			<title translatable="true">Request Type</title>
+			<html>
+				<span id="activity_type"></span>
+				<input type="hidden" id="afm_sla_config.ordering_seq" name="afm_sla_config.ordering_seq" value="0" style="display:none"/>
+			</html>
+		</field>
+		<field/>
+		<!-- IFM - Add restriction on "Quick Close" values to a members of 'VU Quick Close' Security Group -->
+		<field name="prob_type" table="activity_log" required="true">
+		    <action>
+                <title>...</title>
+                <tooltip>Select Value - Problem Type</tooltip>
+                <command
+                    type="selectValue"
+                    selectValueType="hierTree"
+                    fieldNames="activity_log.prob_type" 
+                    selectFieldNames="probtype.prob_type" 
+                    visibleFieldNames="probtype.prob_type,probtype.description"
+                    restriction="(probtype.prob_type NOT LIKE '%quick%' OR '${user.isMemberOfGroup('VU QUICK CLOSE')}' = 'true')"/>
+            </action>
+        </field>
+		<field/>
+		
+		<!-- IFM Added -->
+        <field name="ac_id" table="activity_log" hidden="true"/>
+		
+		<field name="incident_id" table="activity_log" readOnly="true" hidden="true"/>
+        <field table="activity_log" name="description"
+			required="true" style="width: 100%; height: 80px;" colspan="2"
+			showSelectValueAction="false">
+            <action>
+                <title>Select Description</title>
+                <command type="selectValue" fieldNames="activity_log.description" selectFieldNames="pd.pd_description" actionListener="afterSelectPd" visibleFieldNames="pd.pd_id,pd.pd_description" applyFilter="false"/>
+            </action>
+		</field>	
+		<field name="priority" table="activity_log" hidden="true" />
+		<field/>
+        <field name="activity_type" table="activity_log" hidden="true" />
+	</panel>
+
+	<panel type="html" columns="1" id="priorityPanel" showOnLoad="false">
+		<html>
+		  <table id="panel_priority_body" width="100%" style="" class="panel">
+			<tr class="space">
+			  <td colspan="5" class="formTopSpace"/>
+			</tr>
+			<tr style="height: 80px;">
+			  <td width="25%" nowrap="1" class="label">
+				<span translatable="true" class="label">Priority</span>
+				<span style="color: red;">*</span>:
+			  </td>
+			  <td width="35%" nowrap="1" colspan="2">
+				<div id="priority">
+				  <input type="radio" name="priorities" value="1" onclick="SLA_onChangePriority(this,'descriptionPanel')" tabindex="5000">
+					<span id="priority_value1" translatable="true">Emergency</span>
+				  </input>
+				  <input type="radio" name="priorities" value="2" onclick="SLA_onChangePriority(this,'descriptionPanel')">
+					<span id="priority_value2" translatable="true">High</span>
+				  </input>
+				  <input type="radio" name="priorities" value="3" onclick="SLA_onChangePriority(this,'descriptionPanel')">
+					<span id="priority_value3" translatable="true">Urgent</span>
+				  </input>
+				  <input type="radio" name="priorities" value="4" onclick="SLA_onChangePriority(this,'descriptionPanel')">
+					<span id="priority_value4" translatable="true">Medium</span>
+				  </input>
+				  <input type="radio" name="priorities" value="5" onclick="SLA_onChangePriority(this,'descriptionPanel')">
+					<span id="priority_value5" translatable="true">Low</span>
+				  </input>
+				  <input type="radio" name="priorities" value="default">
+					<span id="default" translatable="true"/>
+				  </input>
+				</div>
+			  </td>
+			  <td colspan="2" width="40%" class="label">
+				<div id="SLAinfo" style="text-align:left"> </div>
+			  </td>
+			</tr>
+			<tr>
+			  <td width="25%" class="label"/>
+			  <td nowrap="1" colspan="4" >
+				<input id="specificTime" type="checkbox" onclick="onCheckSpecificTime('datePanel','priorities')" value="" name="specificTime" tabindex="6000"/>
+				<span id="specificDateTime" translatable="true" class="label">Specific date and time required</span>
+			  </td>
+			</tr>
+		  </table>
+		</html>
+	</panel>
+
+	<panel type="form" columns="2" id="datePanel"  dataSource="basicDs" showOnLoad="false">
+		<field table="activity_log" name="date_required"
+			onchange="afm_form_values_changed=true;onChangeDateRequired()" />
+		<field table="activity_log" name="time_required"
+			onchange="afm_form_values_changed=true;onChangeTimeRequired()" />
+	</panel>
+</view>

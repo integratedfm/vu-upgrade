@@ -1,0 +1,135 @@
+<!-- Operation Console Work Request List -->
+<view version="2.0">
+
+    <message name="estimateTitle">Estimate Work Request</message>
+    <message name="scheduleTitle">Schedule Work Request</message>
+    <message name="assignTitle">Assign Work Request</message>
+    <message name="issueTitle">Issue Work Request</message>
+    <message name="cancelTitle">Cancel Work Request</message>
+    <message name="holdTitle">Hold Work Request</message>
+    <message name="stopTitle">Stop Work Request</message>
+    <message name="completeTitle">Complete Work Request</message>
+    <message name="closeTitle">Close Work Request</message>
+    <message name="rejectTitle">Reject Work Request</message>
+    <message name="updateTitle">Update Work Request</message>
+    <message name="bulkUpdateTitle">Update Work Requests</message>
+    <message name="approveTitle">Approve Work Request</message>
+    <message name="dispatchTitle">Dispatch Work Request</message>
+    <message name="verifyTitle">Verify Work Request</message>
+    <message name="surveyTitle">Survey Work Request</message>
+    <message name="review">Approve</message>
+    <message name="approval">Approve</message>
+    <message name="estimation">Estimate</message>
+    <message name="scheduling">Schedule</message>
+    <message name="issue">Issue</message>
+    <message name="cancel">Cancel</message>
+    <message name="assign">Assign</message>
+    <message name="hold">Hold</message>
+    <message name="stop">Stop</message>
+    <message name="update">Update</message>
+    <message name="complete">Complete</message>
+    <message name="close">Close</message>
+    <message name="dispatch">Dispatch</message>
+    <message name="verification">Verify</message>
+    <message name="survey">Survey</message>
+    <message name="closeStopped">Close</message>
+    <message name="exportTitle">Work Requests</message>
+    <message name="workRequestDetailsTitle">Work Request</message>
+    <message name="pendingRequestWhenAssign">Please complete all pending workflow steps before assigning the work request to a work order.</message>
+    <message name="pendingRequestWhenAssignToMe">Please complete all pending workflow steps before you assign it.</message>
+    <message name="pendingRequestWhenIssue">Please complete all pending workflow steps before issuing the work request.</message>
+    <message name="pendingRequestWhenComplete">Please complete all pending workflow steps before completing the work request.</message>
+    <message name="pendingRequestWhenClose">Please complete all pending workflow steps before closing the work request.</message>
+    <message name="assignToMe">Self-Assign</message>
+    <message name="refreshForSelfAssign">This work request has already been assigned to another craftsperson. Please refresh the view by running the Filter again.</message>
+    <message name="emptyLaborHours">One or more craftsperson entries are missing labor hours. Do you want to Complete the Work Request?</message>
+    <message name="assignDifferentWO" translatable="true">This work request is already assigned to work order.  Do you want to assign to a different work order?</message>
+	
+	<!-- IFM Mehran Added for CAI 03-06-2017-->
+	<message name="completedAwaitingInvoiceTitle">Complete Awaiting Invoice</message>
+	
+	<!-- IFM Mehran Added for quote request 23-06-2017-->
+	<message name="ifmSendQuoteRequest">Send A Quote Request Email</message>
+        
+    <js file="ab-bldgops-console-wr-list.js"/>
+    <js file="ab-bldgops-console-wr-list-action.js"/>
+    
+    
+    <style type="text/css">
+        .requiredAction {width:auto;padding-right:15px!important;background-image: url("/archibus/schema/ab-products/bldgops/common/console/requiredAction.png")!important;background-repeat: no-repeat!important; background-position:right!important;} 
+        .completedAction {width:auto;padding-right:15px!important;background-image: url("/archibus/schema/ab-products/bldgops/common/console/completedAction.png")!important;background-repeat: no-repeat!important; background-position:right!important;}
+        .pendingAction {width:auto;padding-right:15px!important;background-image: url("/archibus/schema/ab-products/bldgops/common/console/pendingAction.png")!important;background-repeat: no-repeat!important; background-position:right!important;}
+    </style>
+
+    <!-- Work Request DataSource -->
+    <panel type="view" id="wrListDataSource" file="ab-bldgops-console-wr-list-ds.axvw"/>
+
+    <panel type="form" id="reviewPanel" dataSource="wrDetailsDS" showOnLoad="false" hidden="true" buttonsPosition="footer">
+        <fieldset layout="fluid">
+            <field name="wr_id" hidden="true"/>
+            <field name="description" width="450px" height="200px" focus="true" showLabel="false"/>
+        </fieldset>
+        <action id="reviewSave" mainAction="true">
+            <title>Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="wrList" clearRestriction="true"/>
+            <command type="closeDialog"/>
+        </action>
+        <action id="reviewDetails">
+            <title>More Details</title>
+        </action>
+        <action id="reviewCancel">
+            <title>Cancel</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+
+    <dataSource id="wrcfDS">
+        <table name="wrcf" role="main"/>
+        <field name="wr_id" hidden="true"/>
+        <field name="cf_id"/>
+        <field name="date_assigned"/>
+        <field name="time_assigned"/>
+    </dataSource>
+
+    <panel type="grid" id="assignToList" dataSource="wrcfDS" showOnLoad="false" hidden="true" buttonsPosition="footer">
+        <action>
+            <title>Close</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+
+    <dataSource id="cfAssignDS">
+        <table name="cf" role="main" />
+        <field table="cf" name="cf_id" />
+        <field table="cf" name="email" />
+        <restriction type="sql"  sql="cf.email  = ${sql.literal(user.email)}" /> 
+    </dataSource>
+    
+    <dataSource id="cfAssignFormDS">
+        <table name="wrcf" role="main" />
+        <field table="wrcf" name="cf_id" />
+        <field table="wrcf" name="wr_id" />
+        <field table="wrcf" name="date_assigned" />
+        <field table="wrcf" name="time_assigned" />
+    </dataSource>
+    
+    <dataSource id="woIssueDS">
+        <table name="wo" role="main" />
+        <field table="wo" name="wo_id" />
+        <restriction type="sql" sql="not exists(select 1 from wr where wr.wo_id = wo.wo_id and wr.status = 'AA')" /> 
+    </dataSource>
+    
+    <dataSource id="emptyLaborHoursCheckDS">
+        <table name="wrcf" role="main" />
+        <field table="wrcf" name="cf_id" />
+        <field table="wrcf" name="wr_id" />
+        <field table="wrcf" name="date_assigned" />
+        <field table="wrcf" name="time_assigned" />
+        <restriction type="sql" sql="wrcf.hours_straight = 0 and wrcf.hours_over = 0 and wrcf.hours_double = 0"/>
+    </dataSource>
+    
+    <panel type="form" id="cfAssignForm" dataSource="cfAssignFormDS" newRecord="true" hidden="true" showOnLoad="false">
+    </panel>
+
+</view>

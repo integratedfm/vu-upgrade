@@ -1,0 +1,335 @@
+<view version="2.0">
+
+    <js file="ab-bldgops-sla-od-wf.js"/>
+    <js file="ab-bldgops-sla-od-wf-steps.js"/>
+
+    <message name="R_StepFormTitle">Requested</message>
+    <message name="A_StepFormTitle">Approved</message>
+    <message name="AA_StepFormTitle">Assigned to Work Order</message>
+    <message name="I_StepFormTitle">Issued</message>
+    <message name="Com_StepFormTitle">Completed</message>
+    <message name="Clo_StepFormTitle">Closed</message>
+    <message name="Rej_StepFormTitle">Rejected</message>
+    <message name="S_StepFormTitle">Stopped</message>
+    <message name="Can_StepFormTitle">Cancelled</message>
+    <message name="HA_StepFormTitle">On Hold for Access</message>
+    <message name="HL_StepFormTitle">On Hold for Labor</message>
+    <message name="HP_StepFormTitle">On Hold for Parts</message>
+    <message name="Cai_StepFormTitle">Completed Awaiting Invoice</message>
+    <message name="addText_notification">Add Notification</message>
+    <message name="addText_review">Add Approval</message>
+    <message name="addText_approval">Add Confirmation</message>
+    <message name="addText_estimation">Add Estimation</message>
+    <message name="addText_scheduling">Add Scheduling</message>
+    <message name="addText_verification">Add Verification</message>
+    <message name="addText_survey">Add Survey</message>
+    <message name="prefillWorkflow">Pre-fill the On Demand Workflow from an existing SLA</message>
+    <message name="prefillPmWorkflow">Pre-fill the Preventive Mant Workflow from an existing SLA</message>
+    <message name="upError">You can not move up the first step.</message>
+    <message name="downError">You can not move down the last step.</message>
+    <message name="removeStepsAA">All steps for status Approved and Assigned to Work Order will be removed. Do you wish to continue?</message>
+    <message name="removeStepsA">All steps for status Approved will be removed. Do you wish to continue?</message>
+    <message name="noDispatcher" translatable="true">Select a Supervisor or a Work Team or add a Dispatch step (choose 1 option)</message>
+
+    <panel type="html" id="workflowInstructions">
+        <instructions>Add the steps for executing this workflow.</instructions>
+    </panel>
+    
+    <panel type="html" id="topActionBar">
+        <action id="returnToConsole">
+            <title>Return to SLA Console</title>
+        </action>
+        <action id="goPreviousTab">
+            <title>Previous</title>
+        </action>
+        <action id="goNextTab" mainAction="true">
+            <title>Next</title>
+        </action>
+    </panel>
+
+    <panel type="form" id="R_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+
+        <field id="requestedOptions" controlType="checkBox">
+            <option value="approvalRequired" translatable="true">Approval required</option>
+            <option value="notifyRequestor" translatable="true">Notify requestor of all status changes</option>
+            <option value="enforceNewWorkflowCheckBox" translatable="true">Enforce Workflow</option>
+            <tooltip>Return the work request status back to Requested and follow this workflow from the beginning if a craftsperson or supervisor edits a work request that follows this Service Level Agreement.  If unchecked, the workflow will continue from its current status.</tooltip>
+        </field>
+
+        <field id="R_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+
+    <panel type="form" id="A_StepForm" dataSource="slaResponseDS" labelsPosition="top" columns="3" bodyCssClass="exCalloutFormPanel">
+    
+       <field>
+            <html>
+                <div>
+                    <input type="radio" id="dispatchToWorkTeam" name="dispatchRadio"/>
+                    <span translatable="true">Dispatch request to a work team</span>
+                </div>
+                <div class="inputContainer" id="workTeamCode">
+                </div>
+                <div>
+                    <input type="radio" id="dispatchToSupervisor" name="dispatchRadio"/>
+                    <span translatable="true">Dispatch request to a supervisor</span>
+                </div>
+                <div class="inputContainer" id="supervisorCode">
+                </div>
+                <div>
+                    <input type="radio" id="dispatchToDispatcher" name="dispatchRadio"/>
+                    <span translatable="true">Assign request to a dispatcher</span>
+                </div>
+                <div class="inputContainer">
+                    <a id="addDispatchStep" class="mediumAction button fieldLink" translatable="true">Add dispatch step</a>
+                </div>
+            </html>
+        </field>
+
+        <field id="approvedOptions" controlType="checkBox">
+            <option value="autoCreateWo" translatable="true">Auto Create Work Order</option>
+            <option value="autoIssue" translatable="true">Auto issue</option>
+            <option value="notifySupervisor" translatable="true">Notify supervisor(s)</option>
+        </field>
+        
+        <field>
+            <html>
+                <div id="craftspersonCode">
+                    <span translatable="true">Craftsperson Code</span>
+                </div>
+                <div id="defaultDuration">
+                    <span translatable="true">Default Duration(hours)</span>
+                </div>
+                 <div id="scheduleimmediately_div">
+                    <input type="checkbox" tabindex="21" value="scheduleimmediately" name="scheduleimmediately_radio"/>
+                    <span translatable="true">Schedule Immediately</span>
+                </div>
+            </html>
+        </field>
+
+        <field id="A_OptionalSteps" colspan="2">
+            <title>Optional Steps:</title>
+        </field>
+
+        <field name="work_team_id" cssClass="shortField" showLabel="false"/>
+        <field name="supervisor" cssClass="shortField" showLabel="false"/>
+        <field name="cf_id" cssClass="shortField" showLabel="false"/>
+        <field name="default_duration" cssClass="shortField" showLabel="false"/>
+
+    </panel>
+    
+    <dataSource id="supervisorSelectValueDS">
+        <table name="em"/>
+        <field table="em" name="em_id"/>
+        <field table="em" name="em_std"/>
+    </dataSource>
+    
+    <dataSource id="cfSelectValueDS">
+        <table name="cf"/>
+        <field table="cf" name="cf_id"/>
+    </dataSource>
+    
+    <panel type="form" id="AA_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+        <field id="AA_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+
+    <panel type="form" id="I_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+
+        <field id="issuedOptions" controlType="checkBox">
+            <option value="notifyCraftsperson" translatable="true">Notify Craftsperson(s)</option>
+        </field>
+
+        <field id="I_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock">
+                </div>
+            </html>
+        </field>
+    </panel>
+
+    <panel type="form" id="Com_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+        <field id="Com_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+    
+    <panel type="form" id="Clo_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+        <field id="Clo_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+
+    <panel type="html" id="workflowOptionsForm">
+        <html>
+            <div class="exOptionsBlock">
+                <span translatable="true">Add options for:</span>
+                <span id="showRejectForm" class="optionLink" translatable="true">Rejected</span>
+                <span id="showStoppedForm" class="optionLink" translatable="true">Stopped</span>
+                <span id="showCancelledForm" class="optionLink" translatable="true">Cancelled</span>
+                <span id="showHAForm" class="optionLink" translatable="true">On Hold for Access</span>
+                <span id="showHLForm" class="optionLink" translatable="true">On Hold for Labor</span>
+                <span id="showHPForm" class="optionLink" translatable="true">On Hold for Parts</span>
+                <span id="showCAIForm" class="optionLink" translatable="true">Completed Awaiting Invoice</span>
+            </div>
+        </html>
+    </panel>
+
+    <panel type="form" id="Rej_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+        <field id="Rej_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+    <panel type="form" id="S_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+        <field id="S_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+    <panel type="form" id="Can_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+        <field id="Can_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+    <panel type="form" id="HA_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+        <field id="HA_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+    <panel type="form" id="HL_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+        <field id="HL_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+    <panel type="form" id="HP_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+        <field id="HP_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+	<!-- IFM Added for CAI -->
+	<panel type="form" id="Cai_StepForm" dataSource="none" labelsPosition="top" bodyCssClass="exCalloutFormPanel">
+        <field id="Cai_OptionalSteps">
+            <title>Optional Steps:</title>
+        </field>
+        <field>
+            <html>
+                <div class="slaEmptyBlock"></div>
+                <div class="slaEmptyBlock"></div>
+            </html>
+        </field>
+    </panel>
+
+    <panel type="html" id="workflowPrefillForm">
+        <html>
+            <div style="height:80px;">
+            </div>
+            <div class="exSaveBlock" id="saveWorkflowPrefillBlock">
+                <span class="x-btn">
+                    <a class="button mainAction" id="saveWorkflowTemplate" translatable="true">Save As Template</a>
+                </span>
+            </div>
+
+            <div class="exSaveBlock" id="selectWorkflowPrefillBlock">
+                <span translatable="true">Pre-fill this step by copying parameters from another SLA</span>
+                <span class="x-btn">
+                    <a class="mediumAction button fieldLink" id="findWorkflowPreFill" translatable="true">Select Workflow from Template</a>
+                </span>
+            </div>
+
+            <div class="exSaveBlock" id="workflowTemplateSummaryBlock">
+                <span translatable="true">
+                    This Workflow is available as a Pre-fill for other SLAs:
+                </span>
+                <span id="workflowName"></span>
+                <span class="x-btn">
+                    <a class="button mainAction" id="renameWorkflowTemplate" translatable="true">Rename</a>
+                    <a class="button mainAction" id="removeWorkflowTemplate" translatable="true">Remove</a>
+                </span>
+            </div>
+            <div style="height:80px;">
+            </div>
+        </html>
+    </panel>
+
+    <panel type="html" id="workflowActions">
+        <action id="returnToConsole">
+            <title>Return to SLA Console</title>
+        </action>
+        <action id="goPreviousTab">
+            <title>Previous</title>
+        </action>
+        <action id="goNextTab" mainAction="true">
+            <title>Next</title>
+        </action>
+    </panel>
+
+    <panel type="view" id="stepDialogView" file="ab-bldgops-sla-step-dialog.axvw"/>
+
+    <panel type="html" id="summaryForm2" cssClass="exSummaryPanel">
+    </panel>
+
+</view>

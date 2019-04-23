@@ -1,0 +1,195 @@
+<view version="2.0">
+
+  <message name="pending" translatable="true">Pending</message>
+  <message name="user" translatable="true">Step Responded By</message>
+  <message name="on" translatable="true">On</message>
+  <message name="step" translatable="true">Workflow Step</message>
+  <message name="status" translatable="true">Status</message>
+  <message name="stepstatus" translatable="true">Step Status After</message>
+  <message name="comments" translatable="true">Comments</message>
+  <message name="selectTitle" translatable="true">-select-</message>
+	
+  <js file="ab-helpdesk-request-result.js" />
+  <js file="ab-helpdesk-common-v2.js" />
+  <js file="ab-questionnaire.js" />
+  <js file="ab-helpdesk-request-shared-para.js" />
+	
+  <message name="noDescription" translatable="true">Please enter a Description</message>
+  <message name="exceedsMaxFieldSize">The questionnaire data exceeds the questionnaire results field size.  The data cannot be saved unless the field size is expanded.</message>
+  <message name="auto_generated_response">A new action item has been automatically generated</message>
+    
+  <dataSource id="exPrgQuestionnaire_questionsDs">
+	<table name="questions" role="main"/>
+	<table name="questionnaire" role="standard"/>
+    <field name="questionnaire_id"/>
+    <field name="quest_name"/>
+    <field name="quest_text"/>
+    <field name="sort_order"/>
+    <field name="is_active"/>
+    <field name="format_type"/>
+    <field name="freeform_width"/>
+    <field name="lookup_table"/>
+    <field name="lookup_field"/>
+    <field name="action_response"/>
+    <field name="activity_type"/>
+    <field name="enum_list"/>
+    <field name="table_name" table="questionnaire"/>
+    <field name="field_name" table="questionnaire"/>
+    <sortField name="sort_order" ascending="true"/>
+  </dataSource>
+  	
+  <dataSource id="DS_0">
+    <table name="activity_log" role="main"/>
+    <field name="created_by" table="activity_log"/>
+    <field name="activity_log_id" table="activity_log"/>
+    <field name="activity_type" table="activity_log"/>
+    <field name="description" table="activity_log"/>
+    <field name="requestor" table="activity_log"/>
+    <field name="phone_requestor" table="activity_log"/>
+    <field name="site_id" table="activity_log"/>
+    <field name="bl_id" table="activity_log"/>
+    <field name="fl_id" table="activity_log"/>
+    <field name="rm_id" table="activity_log"/>
+    <field name="eq_id" table="activity_log"/>
+    <field name="priority" table="activity_log"/>
+    <field table="activity_log" name="date_required"/>
+    <field table="activity_log" name="time_required"/>
+    <field name="act_quest" table="activity_log"/>
+    <field name="status" table="activity_log"/>
+    <field name="doc1" table="activity_log"/>
+    <field name="doc2" table="activity_log"/>
+    <field name="doc3" table="activity_log"/>
+    <field name="doc4" table="activity_log"/>
+    <field name="prob_type" table="activity_log"/>
+    <field name="wr_id" table="activity_log"/>
+    <field name="wo_id" table="activity_log"/>
+    <field name="manager" table="activity_log"/>
+    <field name="assigned_to" table="activity_log"/>
+    <field name="vn_id" table="activity_log"/>
+    <field name="supervisor" table="activity_log"/>
+    <field name="work_team_id" table="activity_log"/>
+    <field name="assessment_id" table="activity_log" />
+  </dataSource>
+  
+  <dataSource id="DS_steps_log">
+	<table name="helpdesk_step_log" role="main"/>
+	<table name="afm_wf_steps" role="standard"/>
+	<field name="step_log_id" table="helpdesk_step_log"/>
+	<field name="user_name" table="helpdesk_step_log"/>
+	<field name="em_id" table="helpdesk_step_log"/>
+	<field name="vn_id" table="helpdesk_step_log"/>
+	<field name="date_response" table="helpdesk_step_log"/>
+	<field name="time_response" table="helpdesk_step_log"/>
+	<field name="step" table="afm_wf_steps"/>
+	<field name="status" table="afm_wf_steps"/>
+	<field name="step_status_result" table="helpdesk_step_log"/>
+	<field name="comments" table="helpdesk_step_log"/>
+  </dataSource>
+	
+  <panel type="form" columns="2" id="requestPanel" dataSource="DS_0">
+    <title translatable="true">Service Request Submitted</title>
+    
+    <action id="new">
+      <title translatable="true">Create New Request</title>
+      <command type="callFunction" functionName="createNew" />
+    </action>
+    
+    <field name="activity_log_id" table="activity_log" readOnly="true">
+      <title translatable="true">Service Request ID</title>
+    </field>
+    <field name="created_by" table="activity_log" readOnly="true"/>
+    <field name="requestor" table="activity_log" readOnly="true"/>
+    <field name="phone_requestor" table="activity_log" readOnly="true"/>
+    <field name="wr_id" table="activity_log" readOnly="true" hidden="${record['activity_log.wr_id'] == ''}"/>
+    <field name="wo_id" table="activity_log" readOnly="true" hidden="${record['activity_log.wo_id'] == ''}"/>
+  	<field name="assessment_id" table="activity_log" hidden="true" />
+  </panel>
+  
+  <panel type="form" columns="2" id="locationPanel" showOnLoad="false" dataSource="DS_0">
+    <title translatable="true">Work Location</title>
+    
+    <field name="site_id" table="activity_log" readOnly="true"/>
+    <field name="bl_id" table="activity_log" readOnly="true"/>
+    <field name="fl_id" table="activity_log" readOnly="true"/>
+    <field name="rm_id" table="activity_log" readOnly="true"/>
+  </panel>
+  
+  <!-- IFM - Stopped the Equiipment panel from being displayed, Changed showOnLoad to FALSE and changed hidden to TRUE  -->
+  <panel type="form" columns="2" id="equipmentPanel" showOnLoad="false" hidden="true" dataSource="DS_0">
+    <!-- <title translatable="true">Equipment</title>  -->
+    <field name="eq_id" table="activity_log" readOnly="true"/>
+    <field/>
+  </panel>
+  
+  <panel type="form" columns="2" id="problemPanel" showOnLoad="false" dataSource="DS_0">
+    <title translatable="true">Description</title>
+    
+    <field name="activity_type" table="activity_log" readOnly="true">
+      <title translatable="true">Request Type</title>
+    </field>
+    <field name="prob_type" table="activity_log" readOnly="true" />
+    <!--  hidden="${record['activity_log.prob_type']==''}" -->
+
+    <field name="priority" table="activity_log" readOnly="true" hidden="true"/>
+
+    <field>
+      <title translatable="true">Priority</title>
+      <html>
+        <span id="priority" cssClass="inputField"/>
+      </html>
+    </field>
+    <field name="status" table="activity_log" readOnly="true"/>
+
+    <field table="activity_log" name="date_required" readOnly="true" hidden="${record['activity_log.date_required']==''}"/>
+    <field table="activity_log" name="time_required" readOnly="true" hidden="${record['activity_log.time_required']==''}"/>
+  
+    <field name="description" table="activity_log"  colspan="2" />
+    
+    <field name="manager" table="activity_log" readOnly="true" />
+    <field />
+    
+    <field name="assigned_to" table="activity_log" readOnly="true" hidden="${record['activity_log.assigned_to'] == ''}"/>
+    <field name="vn_id" table="activity_log" readOnly="true" hidden="${record['activity_log.vn_id'] == ''}"/>
+    
+    <field name="supervisor" table="activity_log" readOnly="true" hidden="${record['activity_log.supervisor'] == ''}"/>
+    <field name="work_team_id" table="activity_log" readOnly="true" hidden="${record['activity_log.work_team_id'] == ''}"/>
+    
+    <field name="act_quest" table="activity_log" hidden="true"/>
+    
+  </panel>
+  
+  <panel type="grid" id="historyPanel" controlType="reportGrid" dataSource="DS_steps_log" showOnLoad="false">
+	<title translatable="true">History</title>
+	<field name="step_log_id" table="helpdesk_step_log" hidden="true"/>
+	<field name="user_name" table="helpdesk_step_log" hidden="true"/>
+	<field name="em_id" table="helpdesk_step_log" hidden="true"/>
+	<field name="vn_id" table="helpdesk_step_log">
+		<title translatable="true">Step Responded By</title>
+	</field>
+	<field name="date_response" table="helpdesk_step_log">
+		<title translatable="true">On</title>
+	</field>
+	<field name="time_response" table="helpdesk_step_log" hidden="true"/>
+	<field name="step" table="afm_wf_steps">
+		<title translatable="true">Workflow Step</title>
+	</field>
+	<field name="status" table="afm_wf_steps">
+		<title translatable="true">Status</title>
+	</field>
+	<field name="step_status_result" table="helpdesk_step_log">
+		<title translatable="true">Step Status After</title>
+	</field>
+	<field name="comments" table="helpdesk_step_log">
+		<title translatable="true">Comments</title>
+	</field>
+  </panel>
+  
+  <panel type="form" columns="2" id="documentsPanel" showOnLoad="false" dataSource="DS_0">
+    <title translatable="true">Documents</title>
+	<field name="activity_log_id" table="activity_log" hidden="true"/>
+    <field name="doc1" table="activity_log" readOnly="true"/>
+    <field name="doc2" table="activity_log" readOnly="true"/>
+    <field name="doc3" table="activity_log" readOnly="true"/>
+    <field name="doc4" table="activity_log" readOnly="true"/>
+  </panel>
+</view>

@@ -1,0 +1,194 @@
+<!-- Operation Console main view -->
+<view version="2.0" type="console">
+
+    <title>Building Operations Console</title>
+    <!-- ab-categorygrid-v2.js should be removed when new  ab-categorygrid.js is checked in -->
+    <js file="ab-categorygrid-v2.js"/>
+    <js file="ab-bldgops-console-common.js"/>
+    <js file="ab-bldgops-console.js"/>
+
+    <layout id="main" type="borderLayout">
+        <north split="false" initialSize="100" autoScroll="false"/>
+        <center/>
+        <south split="false" initialSize="40"/>
+    </layout>
+
+    <!-- Easy Filter -->
+    <panel type="view" id="easyFilterView" file="ab-bldgops-console-filter.axvw"/>
+
+    <!-- Filter Option -->
+    <panel type="view" id="bigbadFilterView" file="ab-bldgops-console-filter-options.axvw"/>
+
+    <!-- Group By DataSource -->
+    <panel type="view" id="categoriesDsView" file="ab-bldgops-console-groupby.axvw"/>
+
+    <!-- Work Request Result List -->
+    <panel type="view" id="wrListView" file="ab-bldgops-console-wr-list.axvw"/>
+
+    <!-- Work Request Action Quick Panel -->
+    <panel type="view" id="otherStatusesView" file="ab-bldgops-console-wr-quick-panels.axvw"/>
+    
+    <!-- Work Request Result List -->
+    <panel type="grid" id="wrList" controlType="category" dataSource="wrDS" categoryDataSource="statusDS" showOnLoad="false" multipleSelectionEnabled="true" sortEnabled="true" layout="main" region="center" showIndexAndFilterOnLoad="false" showCounts="true">
+
+        <actionbar>
+            <action id="approval">
+                <title>Approve</title>
+            </action>
+            <action id="dispatch">
+                <title>Dispatch</title>
+            </action>
+            <action id="estimation">
+                <title>Estimate</title>
+            </action>
+            <action id="scheduling">
+                <title>Schedule</title>
+            </action>
+            <action id="issue">
+                <title>Issue</title>
+            </action>
+            <action id="cancel">
+                <title>Cancel</title>
+            </action>
+            <action id="assign">
+                <title>Assign</title>
+            </action>
+            <action id="hold">
+                <title>Hold</title>
+            </action>
+            <action id="stop">
+                <title>Stop</title>
+            </action>
+            <action id="update">
+                <title>Update</title>
+            </action>
+            <action id="complete">
+                <title>Complete</title>
+            </action>
+            <action id="verification">
+                <title>Verify</title>
+            </action>
+            <action id="survey">
+                <title>Survey</title>
+            </action>
+            <action id="close">
+                <title>Close</title>
+            </action>
+            <action id="closeStopped">
+                <title>Close</title>
+            </action>
+            <action id="assignToMe">
+                <title>Self-Assign</title>
+            </action>
+        </actionbar>
+
+        <indexField name="wr_id" table="wr"/>
+
+        <field name="wr_id" controlType="link">
+            <title>WR Code</title>
+        </field>
+       <field name="wo_id" controlType="link">
+            <title>WO Code</title>
+        </field>		
+		<field name="date_requested" controlType="link">
+            <title>Date Requested</title>
+        </field>
+		<field name="priority" controlType="link">
+            <title>Priority</title>
+        </field>
+        <field table="wr" name="prob_type"/>
+		<field name="requestor" controlType="link">
+            <title>Requestor</title>
+        </field>
+		<field name="phone" controlType="link">
+            <title>Phone</title>
+        </field>
+		<field name="invoice_no" controlType="link">
+            <title>Invoice No</title>
+        </field>
+        <field name="location" controlType="link">
+            <title>Location</title>
+        </field>
+        <field name="description" controlType="link">
+            <command type="openDialog" panelId="reviewPanel" width="400" closeButton="false">
+                <title>Work Description</title>
+            </command>
+        </field>
+
+        <field name="status" hidden="true">
+            <title>Status</title>
+        </field>
+        <field controlType="button" id="action1">
+            <title>Action1</title>
+        </field>
+        <field controlType="button" id="action2">
+            <title>Action2</title>
+        </field>
+        <field controlType="button" id="action3">
+            <title>Action3</title>
+        </field>
+        <field controlType="button" id="action4">
+            <title>Action4</title>
+        </field>
+        <field controlType="button" id="action5">
+            <title>Action5</title>
+        </field>
+        <field name="requestor" hidden="true"/>
+        <field name="wo_id" hidden="true">
+            <title>Work Order</title>
+        </field>
+        <field name="pmp_id" hidden="true"/>
+        <field name="pms_id" hidden="true"/>
+        <field name="dv_id" hidden="true">
+            <title>Division</title>
+        </field>
+        <field name="dp_id" hidden="true">
+            <title>Department</title>
+        </field>
+        <field name="site_id" hidden="true">
+            <title>Site</title>
+        </field>
+        <field name="bl_id" hidden="true">
+            <title>Building</title>
+        </field>
+        <field name="bl_name" hidden="true">
+            <title>Building Name</title>
+        </field>
+        <field name="fl_id" hidden="true">
+            <title>Floor</title>
+        </field>
+        <field name="rm_id" hidden="true">
+            <title>Room</title>
+        </field>
+        <field name="eq_id" hidden="true">
+            <title>Equipment</title>
+        </field>
+        <field name="eq_std" hidden="true">
+            <title>Equipment Standard</title>
+        </field>
+        <field name="priority" hidden="true">
+            <title>Priority</title>
+        </field>
+        <field name="worktype" hidden="true">
+            <title>Work Type</title>
+        </field>
+        <field name="assignTo" hidden="true" controlType="link">
+            <title>Assigned To</title>
+        </field>
+        <field name="date_requested" hidden="true"/>
+        <field name="date_escalation_completion">
+            <title>Due Date</title>
+        </field>
+        <field name="date_assigned" hidden="true">
+            
+        </field>
+        <field name="date_completed" hidden="true"/>
+        <field name="escalated_completion" hidden="true"/>
+        <field name="activity_log_id" hidden="true">
+          <title>Service Request Code</title>
+        </field>
+        <field name="manager"/>
+        <field name="work_team_id" hidden="true"/>
+    </panel>
+
+</view>

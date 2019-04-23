@@ -1,0 +1,64 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Define Problem Types</title>
+    
+    <dataSource id="abProbtypeEdit_ds_0">
+        <table name="probtype" role="main"/>
+        <field table="probtype" name="prob_type"/>
+		<field table="probtype" name="description"/>
+		<field table="probtype" name="hierarchy_ids"/>
+        <field table="probtype" name="ac_id"/>
+    </dataSource>
+      
+    <panel type="grid" id="abProbtypeEdit_treePanel" dataSource="abProbtypeEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Problem Types</title>
+        <action id="abProbtypeEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="abProbtypeEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="abProbtypeEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abProbtypeEdit_treePanel"/>
+        </action>    
+        <field name="prob_type" table="probtype" controlType="link">
+            <command type="showPanel" panelId="abProbtypeEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="ac_id" table="probtype" controlType="link">
+            <command type="showPanel" panelId="abProbtypeEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <indexField table="probtype" name="prob_type"/>
+    </panel>
+    
+    <dataSource id="abProbtypeEdit_ds_1">
+        <table name="probtype" role="main"/>
+        <field table="probtype" name="prob_type"/>
+        <field table="probtype" name="description"/>
+        <field table="probtype" name="prob_class"/>
+		<field table="probtype" name="hierarchy_ids"/>
+        <field table="probtype" name="ac_id"/>
+    </dataSource>
+      
+    <panel type="form" id="abProbtypeEdit_detailsPanel" dataSource="abProbtypeEdit_ds_1" showOnLoad="false" labelsPosition="top" columns="2" region="center">
+        <title translatable="true">Problem Types</title>        
+        <action id="abProbtypeEdit_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="abProbtypeEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abProbtypeEdit_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="abProbtypeEdit_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="abProbtypeEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abProbtypeEdit_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="abProbtypeEdit_detailsPanel" show="false"/>
+        </action>    
+        <field name="prob_type" table="probtype" showSelectValueAction=""/>
+        <field name="description" table="probtype" showSelectValueAction=""/>
+        <field name="prob_class" table="probtype" showSelectValueAction=""/>
+        <field name="ac_id" table="probtype" showSelectValueAction=""/>
+    </panel>
+</view>

@@ -1,0 +1,83 @@
+<view version="2.0">
+    <!--
+    @summary
+    System Integrator - Steps - Select<br />
+    This view allows the user to:
+    <ul>
+    <li>View a list of existing steps</li>
+    <li>Filter the steps on steptype and/or application</li>
+    <li>Add, update or delete steps</li>
+    </ul>
+    
+    @console
+    The console filters on:
+    <ul>
+    <li>activity_id: application</li>
+    <li>step_type: step type</li>
+    </ul>
+    
+    -->
+    <message name="confirmDelete" translatable="true">Are you sure you want to delete these items?</message>
+    <message name="selectTitle" translatable="true">-select-</message>
+    
+    <dataSource id="ds_ab-helpdesk-steps-select_console_wf_steps">
+        <table name="afm_wf_steps" role="main"/>
+        <field table="afm_wf_steps" name="activity_id"/>
+        <field table="afm_wf_steps" name="step_type"/>
+    </dataSource>
+    
+    <panel type="console" columns="2" labelsPosition="left" id="steps_console" dataSource="ds_ab-helpdesk-steps-select_console_wf_steps">
+        <title translatable="true">Filter</title>
+        <action id="filter">
+            <title translatable="true">Show</title>
+            <command type="callFunction" functionName="setRestriction"/>
+        </action>
+        
+        <action id="clear">
+            <title translatable="true">Clear</title>
+            <command type="showPanel" panelId="steps_report" applyParentRestriction="false" clearRestriction="true"/>
+            <command type="callFunction" functionName="clearRestriction"/>
+        </action>
+        <field table="afm_wf_steps" name="activity_id" required="false"/>
+        <field table="afm_wf_steps" name="step_type"/>
+    </panel>
+    
+    <dataSource id="ds_ab-helpdesk-steps-select_grid_wf_steps">
+        <table name="afm_wf_steps" role="main"/>
+        <field name="step_type" table="afm_wf_steps"/>
+        <field name="step" table="afm_wf_steps"/>
+        <field name="status" table="afm_wf_steps"/>
+        <field name="step_status_result" table="afm_wf_steps"/>
+        <field name="step_status_rejected" table="afm_wf_steps"/>
+        <field name="form_fields" table="afm_wf_steps"/>
+        <field name="activity_id" table="afm_wf_steps"/>
+        <field name="display_order" table="afm_wf_steps"/>
+    </dataSource>
+	
+    <panel type="grid" controlType="reportGrid" id="steps_report" dataSource="ds_ab-helpdesk-steps-select_grid_wf_steps" multipleSelectionEnabled="true" useParentRestriction="false">
+        <title translatable="true">Steps</title>
+		<sortField name="activity_id" table="afm_wf_steps"  ascending="true"/>
+        <sortField name="display_order" table="afm_wf_steps"  ascending="true"/>
+        <action id="add">
+            <title translatable="true">Add Step</title>
+        </action>
+        <action id="delete">
+            <title translatable="true">Delete Selected</title>
+        </action>
+        <field id="edit" controlType="button">
+            <title translatable="true">Edit</title>
+        </field>
+        <field name="step_type" table="afm_wf_steps"/>
+        <field name="step" table="afm_wf_steps"/>
+        <field name="status" table="afm_wf_steps"/>
+        <field name="step_status_result" table="afm_wf_steps"/>
+        <field name="step_status_rejected" table="afm_wf_steps"/>
+        <field name="form_fields" table="afm_wf_steps"/>
+        <field name="activity_id" table="afm_wf_steps"/>
+		<field name="display_order" table="afm_wf_steps" hidden="true"/>
+    </panel>
+    
+    <js file="ifm-ab-helpdesk-steps-select.js"/>
+    <js file="ab-helpdesk-common-v2.js"/>
+    
+</view>

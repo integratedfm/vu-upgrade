@@ -1,0 +1,214 @@
+
+<!--ViewDefTemplate type="edit" pattern="ab-viewdef-editform-drilldown" -->
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="false"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Define Tradespersons</title>
+    
+    <message name="noEmail" translatable="true">Please enter the Craftperson's Email address. This email address will also apply to the user account, and is required in order to sync work requests.</message>
+	<message name="existsUser" translatable="true">A user account already exists with this email address.</message>
+    <message name="confirmChangeLinkedEmail" translatable="true">Do you also want to update the email address of linked Employee and User accounts?</message>
+    
+    <dataSource id="craftspersonsDS">
+        <table name="cf" role="main"/>
+		<field name="cf_id" table="cf"/>
+	    <field name="name" table="cf"/>
+	    <field name="tr_id" table="cf"/>
+  	    <field name="work_team_id" table="cf"/>
+		<field name="abn" table="cf"/>
+		<field name="supplier_id" table="cf"/>
+	    <field name="is_supervisor" table="cf"/>
+	    <field name="is_planner" table="cf"/>
+	    <field name="is_estimator" table="cf"/>
+  	    <field name="assign_work" table="cf"/>  	            
+	    <field name="position" table="cf"/>
+	    <field name="std_hours_avail" table="cf"/>
+	    <field name="status" table="cf"/>
+	    <field name="in_house" table="cf"/>
+	    <field name="reports_to" table="cf"/>
+	    <field name="skills" table="cf"/>
+	    <field name="rate_hourly" table="cf"/>
+	    <field name="rate_over" table="cf"/>
+	    <field name="rate_double" table="cf"/>
+	    <field name="date_ins_wc_exp" table="cf"/>
+	    <field name="date_contract_exp" table="cf"/>
+	    <field name="date_ins_lia_exp" table="cf"/>
+	    <field name="date_ins_auto_exp" table="cf"/>
+	    <field name="email" table="cf"/>
+        <field name="cf_change_wr" table="cf"/>  
+        <field name="cf_unschedule" table="cf"/> 
+		<!-- IFM - Add custom fields -->
+		<field name="gst_compliant" table="cf"/>
+		<field name="is_approver" table="cf"/>
+		<field name="rate_callout" table="cf"/>
+		<field name="fin_delegation" table="cf"/>
+    </dataSource>
+    
+    <panel type="grid" id="treePanel" showOnLoad="true" selectionEnabled="true" dataSource="craftspersonsDS" region="west">
+        <title translatable="true">Tradespersons</title>
+		 <sortField table="cf" name="cf_id" ascending="true"/>
+        <action id="addNew">
+            <title translatable="true">Add New</title>
+			<command type="showPanel" panelId="detailsPanel" newRecord="true"/>						
+			<command type="showPanel" panelId="user" newRecord="true" show="false"/>
+        </action>
+        <field name="cf_id" table="cf" controlType="link">
+			<command type="showPanel" panelId="detailsPanel"/>
+			<command type="showPanel" panelId="user" show="false"/>
+        </field>
+        <field name="work_team_id" table="cf" controlType="link">
+           <command type="showPanel" panelId="detailsPanel"/>
+			<command type="showPanel" panelId="user" show="false"/>
+        </field>
+		 <field name="tr_id" table="cf" controlType="link">
+           <command type="showPanel" panelId="detailsPanel"/>
+			<command type="showPanel" panelId="user" show="false"/>
+        </field>
+    </panel>
+    
+    <panel type="form" id="detailsPanel" showOnLoad="false" columns="2" dataSource="craftspersonsDS" region="center">
+        <title translatable="true">Tradesperson Details</title>
+        <action id="save">
+            <title translatable="true">Save</title>
+        </action>
+        <action id="delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="detailsPanel" show="false"/>
+            <command type="showPanel" panelId="user" show="false"/>
+            <command type="showPanel" panelId="treePanel"  applyParentRestriction="false"/>
+        </action>
+        <action id="cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="detailsPanel" show="false"/>
+            <command type="showPanel" panelId="user" show="false"/>
+        </action>
+        
+            <field name="cf_id" table="cf"/>
+            <field name="name" table="cf"/>
+            <field name="email" table="cf">
+                <action id="createCfEmailActions" type="menu">
+                    <title>Link</title>
+                    <action id="createCfSelectEmailUser">
+                        <title>To User</title>
+                        <command
+                            type="selectValue"
+                            selectValueType="grid"
+                            autoComplete="true"
+                            fieldNames="cf.email"
+                            selectFieldNames="afm_users.email"
+                            visibleFieldNames="afm_users.user_name,afm_users.email"/>
+                    </action>
+                    <action id="createCfSelectEmailEmployee">
+                        <title>To Employee</title>
+                        <command
+                            type="selectValue"
+                            selectValueType="grid"
+                            autoComplete="true"
+                            fieldNames="cf.email"
+                            selectFieldNames="em.email"
+                            visibleFieldNames="em.em_id,em.email"/>
+                    </action>
+                </action>
+            </field>
+            <field name="work_team_id" table="cf"/>
+            <field name="tr_id" table="cf"/>
+            <field id="workTeams">
+                <title>Work Team Codes</title>
+                <html><textarea id="multiple_teams_field" readOnly="true" style="width:80%;" class="defaultEditForm_textareaABData"></textarea>
+                <button type="button" class="x-btn-text" id="editMultipleTeams" translatable="true">Edit</button>
+                <p id="multi_teams_message" translatable="true">You must save this Tradesperson record before you can assign work teams</p>
+                </html>
+            </field>
+            <field name="abn" table="cf"/>
+            <field name="supplier_id" table="cf"/>
+            <field name="is_supervisor" table="cf"  onchange="craftpersonEditCtrl.onChangeRole()"/>
+            <field/>
+            <field name="is_estimator" table="cf"/>
+            <field/>
+            <field name="is_planner" table="cf"/>
+
+			<!-- IFM - added custom Call Out Rate field -->
+			<field name="fin_delegation" table="cf"/>
+			
+			<!-- IFM - added custom Approver field -->
+			<field name="is_approver" table="cf"/>
+            <field name="std_hours_avail" table="cf"/>
+            <field name="assign_work" table="cf"/>
+            <field name="in_house" table="cf"/>
+            <field name="position" table="cf"/>
+            <field name="skills" table="cf" colspan="2"/>
+            <field name="status" table="cf"/>
+			<!-- IFM - added custom GST field -->
+			<field name="gst_compliant" table="cf"/>
+			<field/>
+            <field name="reports_to" table="cf"/>
+            <field name="date_contract_exp" table="cf"/>
+            <field name="rate_hourly" table="cf"/>
+			<!-- IFM - added custom Call Out Rate field -->
+			<field name="date_ins_auto_exp" table="cf"/>
+			<field name="rate_callout" table="cf"/>
+            <field name="date_ins_wc_exp" table="cf"/>
+            <field name="rate_over" table="cf"/>
+            <field name="date_ins_lia_exp" table="cf"/>
+            <field name="rate_double" table="cf"/>
+            
+            <field name="cf_change_wr" table="cf"/> 
+            <!-- <field name="cf_unschedule" table="cf"/> 
+            <field/>
+             -->
+            <field id="autoCreateUser" controlType="checkBox">
+                <title>Create User</title>
+            </field>
+   </panel>
+
+    <dataSource id="userDs">
+        <table name="afm_users"/>
+        <field name="user_name"/>
+        <field name="user_pwd"/>
+        <field name="email"/>
+        <field name="role_name"/>
+        <field name="mob_device_enabled"/>
+        <field name="mob_device_id"/>
+        
+    </dataSource>
+     <panel type="form" id="user" dataSource="userDs" showOnLoad="false" newRecord="true">
+        <title>New User</title>
+        <field name="user_name"/>
+        <field name="user_pwd" controlType="password">
+            <action id="changePassword">
+                <title>Change Password</title>
+                <tooltip>Change Password</tooltip>
+                <command type="openDialog" viewName="ab-change-password-admin.axvw" width="500" height="300" closeButton="false"/>
+            </action>
+        </field>    
+        <field name="role_name" required="true"/>
+		<field id="autoCreateEm" controlType="checkBox">
+			<title>Auto Create Employee</title>
+		</field>
+        <field name="mob_device_enabled"/>
+        <field name="mob_device_id"/>
+        <field name="email" hidden="true"/>
+    </panel>
+
+    <dataSource id="employeeDs">
+    	<table name="em"/>
+    	<field name="em_id"/>
+    	<field name="email"/>
+    </dataSource>
+    
+    <dataSource id="cfWorkTeamDS">
+        <table name="cf_work_team"/>
+        <field name="cf_id"/>
+        <field name="work_team_id"/>
+    </dataSource>
+    
+    <dataSource id="checkAdministratorRole">
+        <table name="afm_users"/>
+        <field name="user_name"/>
+        <restriction type="sql" sql="afm_users.user_name = '${user.name}' and afm_users.role_name IN (select role_name from afm_roleprocs where activity_id='AbSystemAdministration' and process_id='ARCHIBUS Administrator - UserSec')"/>
+    </dataSource>
+    
+	<js file="ab-cf-edit.js"/>
+</view>
+

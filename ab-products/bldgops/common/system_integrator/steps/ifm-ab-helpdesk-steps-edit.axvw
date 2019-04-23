@@ -1,0 +1,183 @@
+<view version="2.0">
+    <!--
+    @summary
+    System Integrator - Steps - Edit<br />
+    This view allows the user to:
+    <ul>
+    <li>Update step information</li>
+    </ul>
+    @restriction (step_type = ? AND step = ? AND status = ?)
+    Restriction from select tab
+    -->
+   
+    
+    <message name="fieldTitle" translatable="true">Field Title</message>
+    <message name="fieldName" translatable="true">Field Name</message>
+    <message name="spanTestFor" translatable="true">Test for</message>
+    <message name="spanId" translatable="true">Id</message>
+    <message name="btnTest" translatable="true">Test</message>
+    <message name="spanSubject" translatable="true">Subject</message>
+    <message name="spanBody" translatable="true">Body</message>
+    <message name="inputIntErr" translatable="true">Please input integer value for testing</message>
+	<message name="emailNull" translatable="true">Subject and Body are required for a Notification step</message>		
+    	
+    
+    <dataSource id="ifm-ds_ab-helpdesk-steps-edit_form_wf_steps">
+        <table name="afm_wf_steps" role="main"/>
+        <field name="step_type" table="afm_wf_steps"/>
+        <field name="step" table="afm_wf_steps"/>
+        <field name="status" table="afm_wf_steps"/>
+        <field name="status_after" table="afm_wf_steps"/>
+        <field name="step_status_result" table="afm_wf_steps"/>
+        <field name="step_status_rejected" table="afm_wf_steps"/>
+        <field name="form_fields" table="afm_wf_steps"/>
+        <field name="activity_id" table="afm_wf_steps"/>
+        <field name="display_order" table="afm_wf_steps"/>
+        
+        <field name="subject_message_id" table="afm_wf_steps" />
+        <field name="body_message_id" table="afm_wf_steps" />
+        <field name="attachments" table="afm_wf_steps" />
+    </dataSource>
+	
+    <panel type="form" columns="2" id="step_form" showOnLoad="false" newRecord="true" dataSource="ifm-ds_ab-helpdesk-steps-edit_form_wf_steps">
+        <title translatable="true">Step</title>
+        <action id="saveForm">
+            <title translatable="true">Save</title>
+            <command type="callFunction" functionName="saveFields"/>
+            <command type="saveForm"/>
+            <command type="callFunction" functionName="goBack"/>
+        </action>
+        <action id="cancel">
+            <title translatable="true">Cancel</title>
+            <command type="callFunction" functionName="goBack"/>
+        </action>
+        <field name="activity_id" table="afm_wf_steps" onchange="onSelectActivityId()">
+            <action>
+                <title>...</title>
+                <command type="selectValue"
+                 fieldNames="afm_wf_steps.activity_id"
+                 selectFieldNames="afm_activities.activity_id"
+                 visibleFieldNames="afm_activities.activity_id,afm_activities.title"
+                 restriction="afm_activities.workflow_table IS NOT NULL AND afm_activities.workflow_status_field IS NOT NULL"
+                 actionListener="onSelectActivityId">
+                     <title>Application</title>
+                 </command>
+            </action>
+        </field>
+        <field/>
+        <field name="step_type" table="afm_wf_steps" onchange="onChangeStepType()"/>
+        <field name="step" table="afm_wf_steps"/>
+        <field name="status" table="afm_wf_steps">
+            <html>
+                <select name="wfStatus" id="afm_wf_steps.status" class="inputField_box"></select>
+            </html>
+        </field>
+        <field>
+        	<title translatable="true">Basic Status After</title>
+            <html>
+                <select name="wfStatusAfter" id="afm_wf_steps.status_after" class="inputField_box"></select>
+            </html>
+        </field>
+        <field name="step_status_result" table="afm_wf_steps"/>
+        <field name="step_status_rejected" table="afm_wf_steps"/>
+        <field name="form_fields" table="afm_wf_steps" hidden="true"/>
+        <field name="display_order" table="afm_wf_steps"/>
+        <field name="attachments" table="afm_wf_steps" hidden="true"/>
+        <field name="subject_message_id" table="afm_wf_steps" hidden="false"/>
+        <field name="body_message_id" table="afm_wf_steps" hidden="false"/>
+		<field name="status_after" table="afm_wf_steps" hidden="true"/>
+    </panel>
+	
+    <panel id="panel_fields" type="html" showOnLoad="false" dataSource="ifm-ds_ab-helpdesk-steps-edit_form_wf_steps">
+        <title translatable="true">Select the fields the manager should enter when approving the request</title>
+        <html>
+            <div id="fields_grid"></div>
+        </html>
+    </panel>
+	
+    <panel id="panel_documents" type="html" showOnLoad="false" dataSource="ifm-ds_ab-helpdesk-steps-edit_form_wf_steps">
+        <title translatable="true">Select the documents to attach to the notification</title>
+        <html>
+            <div id="docs_grid"></div>
+        </html>
+    </panel>
+	
+    <panel type="form" columns="2" id="panel_message" showOnLoad="false" dataSource="ifm-ds_ab-helpdesk-steps-edit_form_wf_steps" formLabelWidth="20">
+        <title translatable="true">Notification Message</title>
+		<field>
+            <title translatable="true">Is Rich Message Format For Subject?</title>
+            <html>
+            	<select name="is_rich_msg_format_subject" id="is_rich_msg_format_subject" class="inputField_box">
+            		<option value="0" translatable="true">No</option>
+            		<option value="1" translatable="true">Yes</option>
+            	</select>
+            </html>
+        </field>
+		<field>
+            <title translatable="true">Is Rich Message Format For Body?</title>
+            <html>
+            	<select name="is_rich_msg_format_body" id="is_rich_msg_format_body" class="inputField_box">
+            		<option value="0" translatable="true">No</option>
+            		<option value="1" translatable="true">Yes</option>
+            	</select>
+            </html>
+        </field>
+        <field colspan="2" required="true">
+            <title translatable="true">Subject</title>
+            <html>
+                <input id="subject" class="inputField" type="text" onchange="afm_form_values_changed=true;" onfocus="window.temp=this.value;" maxlength="2000" style="width: 100%" value=""/>
+            </html>
+        </field>
+        <field colspan="2" required="true">
+            <title translatable="true">Body</title>
+            <html>
+                <textarea id="body" name="body" onchange="afm_form_values_changed=true;" onkeydown="checkMemoMaxSize(this, '2000');" onkeyup="checkMemoMaxSize(this, '2000');" onfocus="window.temp=this.value;" class="defaultEditForm_textareaABData" style="width: 100%;"></textarea>
+            </html>
+        </field>
+		<field name="subject_message_id" table="afm_wf_steps" hidden="true"/>
+    </panel>
+	
+    <panel id="panel_test" type="html" showOnLoad="false" dataSource="ifm-ds_ab-helpdesk-steps-edit_form_wf_steps">
+        <title translatable="true">Test Template</title>
+        <html>
+            <div id="panel_test_body">
+                <table class="panel">
+                    <tr>
+                        <td class="label" width="10%">
+                            <span id="spanTestFor">Test for</span>
+                            <span id="wfTable"></span>
+                        </td>
+                        <td>
+                            <span id="spanId">Id</span>
+                            <span>:</span>
+                            <input type="text" id="recordId" value="" class="inputField"/>
+                            <input id="btnTest" type="button" value="" onclick="testTemplate()"/>
+                        </td>
+                    </tr>
+                </table>
+                <table class="panel">
+                    <tr>
+                        <td class="label" nowrap="1" width="10%" style="" colspan="">
+                        	<span id="spanSubject">Subject</span>:
+                        </td>
+                        <td>
+                            <span id="resultSubject"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label" nowrap="1" width="10%" style="" colspan="">
+                        	<span id="spanBody">Body</span>:
+                        </td>
+                        <td>
+                            <span id="resultBody"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </html>
+    </panel>
+    
+    <js file="ifm-ab-helpdesk-steps-edit.js"/>
+    <js file="ab-helpdesk-panels.js"/>
+    
+</view>

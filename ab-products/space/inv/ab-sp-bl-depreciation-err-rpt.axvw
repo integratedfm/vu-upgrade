@@ -1,0 +1,82 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="false"/>
+    <title translatable="true">Building Depreciation Error Report</title>
+    
+    <dataSource id="abSpVwBlDepreciation_ds_0">
+		<table name="rm" role="main"/>	
+		<table name="bl" role="standard"/>
+		<table name="dv" role="standard"/>
+		<table name="dp" role="standard"/>
+
+		<!-- Virtual Field for Site Name because the lookup is from the Building table -->
+		<field table="rm" name="site_name" dataType="text">
+			<sql dialect="generic">(SELECT name FROM site WHERE site.site_id = bl.site_id)</sql>
+        </field>
+		
+        <field table="rm" name="bl_id"/>
+        <field table="rm" name="fl_id"/>
+        <field table="rm" name="rm_id"/>
+		<field table="rm" name="name"/>
+		<field table="dv" name="bu_id"/>
+        <field table="rm" name="dv_id"/> 
+		<field table="rm" name="dp_id"/>
+		<field table="bl" name="site_id"/>
+		<field table="bl" name="name"/>
+		<field table="bl" name="depreciate"/>
+        <field table="rm" name="cc_id"/>
+		
+		<!-- Virtual Field for Business Unit Name because the lookup is from the Division table -->
+		<field table="rm" name="bu_name" dataType="text">
+			<sql dialect="generic">(SELECT name FROM bu WHERE bu.bu_id = dv.bu_id)</sql>
+        </field>
+		
+		<field table="dv" name="name"/>
+		<field table="dp" name="name"/>
+
+        <field table="rm" name="err_desc" dataType="text">
+			<sql dialect="generic">IIF(rm.cc_id IS NULL, 'Cost Centre Code is missing from the Room record', 'Cost Centre Code value on the Room record is not valid')</sql>
+        </field>
+		
+        <restriction type="sql" sql="bl.depreciate = 1 AND (rm.cc_id IS NULL OR rm.cc_id NOT IN (SELECT cc_id FROM ifm_costcentre WHERE rm.dp_id = ifm_costcentre.dp_id AND rm.dv_id = ifm_costcentre.dv_id))"/>
+    </dataSource>
+
+    <panel type="grid" id="abSpVwBlDepreciation_detailsPanel" dataSource="abSpVwBlDepreciation_ds_0" showOnLoad="true" multipleSelectionEnabled="false" recordLimit="20000">
+        <title translatable="true">Rooms</title>
+        
+        <action id="clear">
+            <title translatable="true">Clear</title>
+            <command type="clearPanel" panelId="abSpVwBlDepreciation_detailsPanel"/>
+        </action>
+		<action id="abSpVwBlDepreciation_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abSpVwBlDepreciation_detailsPanel"/>
+        </action>     
+        <action id="abSpVwBlDepreciation_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abSpVwBlDepreciation_detailsPanel"/>
+        </action>
+		<action id="abSpVwBlDepreciation_export:PDF">
+			<title>PDF</title>
+			<command type="exportPanel" outputType="pdf" panelId="abSpVwBlDepreciation_detailsPanel"/>
+		</action>
+			
+        <field name="site_name" table="rm">
+		    <title translatable="true">Site Name</title>
+        </field>
+        <field name="name" table="bl"/>
+        <field name="fl_id" table="rm"/>
+        <field name="rm_id" table="rm"/>
+		<field table="dv" name="bu_id"/>
+		<field name="bu_name" table="rm">
+		    <title translatable="true">Division Name</title>
+        </field>
+		<field table="rm" name="dv_id"/> 
+        <field name="name" table="dv"/>
+        <field table="rm" name="dp_id"/>
+		<field name="name" table="dp"/>
+		<field name="cc_id" table="rm"/>
+        <field name="err_desc" table="rm" width="350px">
+            <title translatable="true">Error Description</title>
+        </field>
+    </panel>
+</view>

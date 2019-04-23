@@ -1,0 +1,187 @@
+<!-- Ops Console DataSource -->
+<view version="2.0">
+    
+    <dataSource id="wrDS">
+        <table name="wr" role="main"/>
+        <field name="wr_id"/>
+        <field name="wo_id"/>
+        <field name="requestor"/>
+		<!--IFM Added -->
+		<field table="wr" name="manager"/>
+        
+        <field name="prob_type" table="wr"/>
+        <field name="status"/>
+        <field name="date_requested"/>
+        <field name="time_requested"/>
+        <field name="date_completed"/>
+        <field name="cause_type"/>
+        <field name="repair_type"/>
+        <field name="cf_notes"/>
+        <field name="doc1"/>
+        <field name="doc2"/>
+        <field name="doc3"/>
+        <field name="doc4"/>
+        <field name="date_est_completion"/>
+        <field name="date_assigned"/>
+        <field name="time_assigned"/>
+        <field name="priority"/>
+        <field name="site_id"/>
+        <field name="bl_id"/>
+        <field name="fl_id"/>
+        <field name="rm_id"/>
+        <field name="location"/>
+        <field name="cause_type"/>
+        <field name="repair_type"/>
+        <field name="curr_meter_val"/>
+        <field name="dv_id"/>
+        <field name="dp_id"/>
+        <field name="ac_id"/>
+        <field name="phone"/>
+        <field name="down_time"/>
+        <field name="pms_id"/>
+        <field name="pmp_id"/>
+        <field name="description"/>
+        <field name="tr_id"/>
+        <field name="cost_est_other"/>
+        <field name="cost_est_labor"/>
+        <field name="cost_est_parts"/>
+        <field name="cost_est_total"/>
+        <field name="cost_est_tools"/>
+        <field name="cost_other"/>
+        <field name="cost_labor"/>
+        <field name="cost_parts"/>
+        <field name="cost_total"/>
+        <field name="cost_tools"/>
+		<field name="invoice_date"/>
+		<field name="invoice_no"/>
+		<field name="invoice_file_name"/>
+        <field name="desc_other_costs"/>      
+        <field name="date_escalation_completion" table="wr"/> 
+    	<field name="activity_log_id"/>
+    	<field name="wo_id" table="wr"/>
+        <field name="eq_id" table="wr"/>   
+        <field name="eq_std" dataType="text"/>
+        <field name="bl_name" dataType="text"/>   
+        <field name="assignTo" table="wr" dataType="text"/>        
+        <field name="escalated_response"/>
+        <field name="escalated_completion"/>
+		<!--IFM Added cc_id -->
+		<field name="cc_id"/>
+        <field table="wr" name="worktype" dataType="text">
+			<sql dialect="generic">
+				CASE                 
+					WHEN prob_type = 'PREVENTIVE MAINT' THEN 'PREVENTIVE MAINTENANCE'                
+					WHEN prob_type != 'PREVENTIVE MAINT' OR prob_type IS NULL THEN 'ON DEMAND'                          
+				END
+			</sql>
+        </field>
+        <field table="wr" name="stepWaiting" dataType="text"/>
+        <field table="wr" name="stepWaitingType" dataType="text"/>
+        <field table="wr" name="rejectedStep" dataType="text"/>
+        <field table="wr" name="stepWaitingCode" dataType="integer"/>
+		<field name="supervisor"/>
+		
+        <field name="work_team_id"/>
+        <field table="wr" name="isEstimate" dataType="text"/>
+        <field table="wr" name="isSchedule" dataType="text"/>
+        <field table="wr" name="isRequestSupervisor" dataType="text"/>
+        <field table="wr" name="isRequestCraftsperson" dataType="text"/>
+        <field table="wr" name="isWorkTeamSelfAssign" dataType="text"/>
+        <field table="wr" name="step_status" dataType="text"/>
+        
+        <parameter name="top10" dataType="verbatim" value=""/>
+        <parameter name="oracleTop10" dataType="verbatim" value=""/>
+        <parameter name="where" dataType="verbatim" value="1=1"/>  
+        <parameter name="sortBy" dataType="verbatim" value=""/>
+        <parameter name="groupBy" dataType="verbatim" value=""/>                                                          	
+        <parameter name="permanentRestriction" dataType="verbatim" value="1=1"/>
+        <parameter name="urlRestriction" dataType="verbatim" value="1=1"/>
+        <parameter name="assignToSql" dataType="verbatim" value="''"/>
+        <parameter name="assignToSqlOracle" dataType="verbatim" value="''"/>
+        <parameter name="mainTable" dataType="verbatim" value="wr"/>
+        <parameter name="isRequestSupervisorSql" dataType="verbatim" value="1=0"/>
+        <parameter name="isRequestCraftspersonSql" dataType="verbatim" value="1=0"/>
+        <parameter name="isWorkTeamSelfAssignSql" dataType="verbatim" value="1=0"/>
+        <parameter name="emWorkflowSubstitutes" dataType="verbatim" value="''"/>
+        <parameter name="cfWorkflowSubstitutes" dataType="verbatim" value="''"/>
+        <parameter name="rejectedStatusField" dataType="verbatim" value="''"/>
+        
+        <parameter name="stepWaiting" dataType="verbatim" value="wr_step_waiting.step"/>
+        <parameter name="stepWaitingType" dataType="verbatim" value="wr_step_waiting.step_type"/>
+        <parameter name="stepWaitingCode" dataType="verbatim" value="wr_step_waiting.step_log_id"/>
+        <parameter name="leftJoinPendingSteps" dataType="verbatim" value=""/>
+            
+        <sql dialect="generic">
+				SELECT ${parameters['top10']} wr.wr_id,wr.wo_id,wr.manager,wr.requestor,wr.prob_type,wr.status,wr.date_requested,wr.time_requested,wr.date_completed,wr.cause_type,wr.repair_type,wr.cf_notes,wr.doc1,wr.doc2,wr.doc3,wr.doc4,wr.date_est_completion,wr.date_assigned,wr.time_assigned,wr.priority,wr.site_id,wr.bl_id,wr.fl_id,wr.rm_id,wr.curr_meter_val,wr.dv_id,wr.dp_id,wr.ac_id,wr.phone,wr.down_time,wr.pms_id,wr.pmp_id,wr.description,wr.tr_id,wr.cost_est_other,wr.cost_est_labor,wr.cost_est_parts,wr.cost_est_total,wr.cost_est_tools,wr.cost_other,wr.cost_labor,wr.cost_parts,wr.cost_total,wr.cost_tools,wr.invoice_no,wr.invoice_date,wr.desc_other_costs,wr.activity_log_id,wr.eq_id,wr.vn_id,wr.work_team_id,wr.supervisor,eq.eq_std,activity_log.escalated_response,activity_log.escalated_completion, wr.date_escalation_completion,
+				CASE WHEN (wr.bl_id IS NOT NULL AND wr.fl_id IS NOT NULL AND wr.rm_id IS NOT NULL) THEN RTRIM(wr.bl_id)${sql.concat}'-'${sql.concat}RTRIM(wr.fl_id)${sql.concat}'-'${sql.concat}RTRIM(wr.rm_id)
+                WHEN (wr.bl_id IS NOT NULL AND wr.fl_id IS NOT NULL AND wr.rm_id IS NULL) THEN RTRIM(wr.bl_id)${sql.concat}'-'${sql.concat}RTRIM(wr.fl_id)
+                WHEN (wr.bl_id IS NOT NULL AND wr.fl_id IS NULL AND wr.rm_id IS NULL) THEN wr.bl_id
+                WHEN (wr.bl_id IS NULL AND wr.fl_id IS NULL AND wr.rm_id IS NULL) THEN '' END
+                ${sql.as} location,
+                ${parameters['assignToSql']}  as assignTo,
+                CASE                 
+					WHEN wr.prob_type = 'PREVENTIVE MAINT' THEN 'PREVENTIVE MAINTENANCE'                
+					WHEN wr.prob_type != 'PREVENTIVE MAINT' OR wr.prob_type IS NULL THEN 'ON DEMAND'                          
+				END AS worktype,
+                ${parameters['stepWaiting']} as stepWaiting,
+                ${parameters['stepWaitingType']} as stepWaitingType,
+                ${parameters['rejectedStatusField']} as rejectedStep,
+                ${parameters['stepWaitingCode']} as stepWaitingCode,
+                case when (exists(select 1 from wrtr where wrtr.wr_id = wr.wr_id) or exists(select 1 from wrpt where wrpt.wr_id = wr.wr_id)) then 'true' else 'false' end as isEstimate,
+                case when (exists(select 1 from wrcf where wrcf.wr_id = wr.wr_id)) then 'true' else 'false' end as isSchedule,
+                case when (${parameters['isRequestSupervisorSql']}) then 'true' else 'false' end as isRequestSupervisor,
+                case when (${parameters['isRequestCraftspersonSql']}) then 'true' else 'false' end as isRequestCraftsperson,
+                case when (${parameters['isWorkTeamSelfAssignSql']}) then 'true' else 'false' end as isWorkTeamSelfAssign,
+                bl.name as bl_name,
+                wr.step_status as step_status  
+				FROM ${parameters['mainTable']}
+                ${parameters['leftJoinPendingSteps']} 
+                LEFT OUTER JOIN bl ON wr.bl_id=bl.bl_id
+				LEFT OUTER JOIN eq ON wr.eq_id=eq.eq_id 
+				LEFT OUTER JOIN activity_log ON wr.activity_log_id=activity_log.activity_log_id
+				WHERE (wr.prob_type IS NULL OR wr.prob_type NOT IN ('RES. CLEANUP','RES. SETUP')) AND ${parameters['permanentRestriction']} and ${parameters['urlRestriction']} and (${parameters['where']}) 
+				${parameters['sortBy']}
+				${parameters['groupBy']}
+        </sql>
+        <sql dialect="oracle">
+        SELECT * FROM (
+                SELECT wr.wr_id,wr.wo_id,wr.manager,wr.requestor,wr.prob_type,wr.status,wr.date_requested,wr.time_requested,wr.date_completed,wr.cause_type,wr.repair_type,wr.cf_notes,wr.doc1,wr.doc2,wr.doc3,wr.doc4,wr.date_est_completion,wr.date_assigned,wr.time_assigned,wr.priority,wr.site_id,wr.bl_id,wr.fl_id,wr.rm_id,wr.curr_meter_val,wr.dv_id,wr.dp_id,wr.ac_id,wr.phone,wr.down_time,wr.pms_id,wr.pmp_id,wr.description,wr.tr_id,wr.cost_est_other,wr.cost_est_labor,wr.cost_est_parts,wr.cost_est_total,wr.cost_est_tools,wr.cost_other,wr.cost_labor,wr.cost_parts,wr.cost_total,wr.cost_tools,wr.invoice_no,wr.invoice_date,wr.desc_other_costs,wr.activity_log_id,wr.eq_id,wr.vn_id,wr.work_team_id,wr.supervisor,eq.eq_std,activity_log.escalated_response,activity_log.escalated_completion, wr.date_escalation_completion,
+                CASE WHEN (wr.bl_id IS NOT NULL AND wr.fl_id IS NOT NULL AND wr.rm_id IS NOT NULL) THEN RTRIM(wr.bl_id)${sql.concat}'-'${sql.concat}RTRIM(wr.fl_id)${sql.concat}'-'${sql.concat}RTRIM(wr.rm_id)
+                WHEN (wr.bl_id IS NOT NULL AND wr.fl_id IS NOT NULL AND wr.rm_id IS NULL) THEN RTRIM(wr.bl_id)${sql.concat}'-'${sql.concat}RTRIM(wr.fl_id)
+                WHEN (wr.bl_id IS NOT NULL AND wr.fl_id IS NULL AND wr.rm_id IS NULL) THEN wr.bl_id
+                WHEN (wr.bl_id IS NULL AND wr.fl_id IS NULL AND wr.rm_id IS NULL) THEN '' END
+                ${sql.as} location,
+                ${parameters['assignToSqlOracle']}  as assignTo,
+                CASE                 
+                    WHEN wr.prob_type = 'PREVENTIVE MAINT' THEN 'PREVENTIVE MAINTENANCE'                
+                    WHEN wr.prob_type != 'PREVENTIVE MAINT' OR wr.prob_type IS NULL THEN 'ON DEMAND'                          
+                END AS worktype,
+                ${parameters['stepWaiting']} as stepWaiting,
+                ${parameters['stepWaitingType']} as stepWaitingType,
+                ${parameters['rejectedStatusField']} as rejectedStep,
+                ${parameters['stepWaitingCode']} as stepWaitingCode,
+                case when (exists(select 1 from wrtr where wrtr.wr_id = wr.wr_id) or exists(select 1 from wrpt where wrpt.wr_id = wr.wr_id)) then 'true' else 'false' end as isEstimate,
+                case when (exists(select 1 from wrcf where wrcf.wr_id = wr.wr_id)) then 'true' else 'false' end as isSchedule,
+                case when (${parameters['isRequestSupervisorSql']}) then 'true' else 'false' end as isRequestSupervisor,
+                case when (${parameters['isRequestCraftspersonSql']}) then 'true' else 'false' end as isRequestCraftsperson,
+                case when (${parameters['isWorkTeamSelfAssignSql']}) then 'true' else 'false' end as isWorkTeamSelfAssign,
+                bl.name as bl_name,
+                wr.step_status as step_status  
+                FROM ${parameters['mainTable']}
+                 ${parameters['leftJoinPendingSteps']} 
+                LEFT OUTER JOIN bl ON wr.bl_id=bl.bl_id
+                LEFT OUTER JOIN eq ON wr.eq_id=eq.eq_id 
+                LEFT OUTER JOIN activity_log ON wr.activity_log_id=activity_log.activity_log_id
+                WHERE (wr.prob_type IS NULL OR wr.prob_type NOT IN ('RES. CLEANUP','RES. SETUP')) AND ${parameters['permanentRestriction']} and ${parameters['urlRestriction']} and (${parameters['where']})
+                ${parameters['sortBy']}
+                ${parameters['groupBy']} 
+                ) wr ${parameters['oracleTop10']}
+        </sql>        
+    </dataSource>
+    
+    <dataSource id="wrStatusQueryDS">
+        <table name="wr" role="main"/>
+        <field name="wr_id"/>
+        <field name="status"/>
+    </dataSource>
+</view>

@@ -1,0 +1,153 @@
+<view version="2.0">
+    <js file="ab-common-def-em.js"/>
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="false"/>
+    <layout type="borderLayout" id="mainLayout">
+        <north id="filterPosition" initialSize="80" split="true"/>
+        <west id="top" initialSize="30%" split="true"/>
+        <center autoScroll="true"/>
+    </layout>
+    <title translatable="true">Define Employees</title>
+    <message name="existFuture" translatable="true">There is a pending request for this employee to move out of the location you just changed.  If you continue, please edit that pending request.  Do you wish to continue?</message>
+    
+    <dataSource id="userRoomsDS">
+        <table name="rm"/>
+        <field name="bl_id"  table="rm"/>
+        <field name="fl_id"  table="rm"/>
+        <field name="rm_id"  table="rm"/>
+        <restriction type="sql" sql="
+          rm.bl_id = ${parameters['bl_id']} and rm.fl_id = ${parameters['fl_id']} and rm.rm_id = ${parameters['rm_id']} 
+          AND ${sql.vpaRestriction}"/>
+        <parameter name="bl_id" dataType="text" value=""/>
+        <parameter name="fl_id" dataType="text" value=""/>
+        <parameter name="rm_id" dataType="text" value=""/>
+        <parameter name="em_id" dataType="text" value=""/>
+    </dataSource>
+    
+    <dataSource id="ab-common-def-em_grid_em">
+        <table name="em" role="main"/>
+        <field table="em" name="bl_id"/>
+        <field table="em" name="fl_id"/>
+        <field table="em" name="rm_id"/>
+        <field table="em" name="dv_id"/>
+        <field table="em" name="dp_id"/>
+        <field table="em" name="loc_code"/>
+        <field table="em" name="honorific"/>
+        <field table="em" name="em_id"/>
+        <field table="em" name="em_std"/>
+        <field table="em" name="name_first"/>
+        <field table="em" name="name_last"/>
+        <field table="em" name="em_number"/>
+        <field table="em" name="email"/>
+        <field table="em" name="phone"/>
+        <field table="em" name="cellular_number"/>
+        <field table="em" name="net_user_name"/>
+        <field table="em" name="em_title"/>
+        <field table="em" name="em_positn"/>
+        <field table="em" name="position_desc"/>
+        <field table="em" name="em_type"/>
+        <field table="em" name="date_hired"/>
+	<field table="em" name="date_end"/>
+        <field table="em" name="company"/>
+        <field table="em" name="manager"/>
+        <field table="em" name="eft"/>
+    </dataSource>
+    
+    <panel type="console" id="emfilterConsole" dataSource="ab-common-def-em_grid_em" layoutRegion="filterPosition">
+        <title translatable="true">Filter</title>
+        <action id="show">
+            <title translatable="true">Show</title>
+            <command type="showPanel" panelId="treePanel"/>
+        </action>
+        <action id="clear">
+            <title translatable="true">Clear</title>
+            <command type="clearPanel" panelId="emfilterConsole"/>
+        </action>
+        <field table="em" name="em_id" required="false">
+            <action>
+                <title translatable="false">...</title>
+                <command type="selectValue"
+                    fieldNames="em.em_id"
+                    selectFieldNames="em.em_id"
+                    visibleFieldNames="em.em_id,em.em_std,em.email,em.dv_id,em.dp_id"/>
+            </action>
+        </field>
+    </panel>
+    
+    <panel type="grid" id="treePanel" dataSource="ab-common-def-em_grid_em" layout="mainLayout" region="west" recordLimit="0">
+        <sortField name="em_id" table="em" ascending="true"/>
+        <title translatable="true">Select Employee</title>
+        <action id="addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="detailsPanel" newRecord="true"/>
+        </action>
+        <field name="em_id" table="em" controlType="link">
+            <command type="showPanel" panelId="detailsPanel"/>
+        </field>
+       <!-- VU- AmiMehta 20/03/2019 -- Adding Employee number in search instead of Employee Standard
+		<field name="em_std" table="em" controlType="link">
+            <command type="showPanel" panelId="detailsPanel"/>
+        </field> -->
+		<field name="em_number" table="em" controlType="link">
+            <command type="showPanel" panelId="detailsPanel"/>
+        </field>
+    </panel>
+    
+    <panel type="form" id="detailsPanel" showOnLoad="false" columns="2" dataSource="ab-common-def-em_grid_em" layout="mainLayout" region="center">
+        <title translatable="true">Employee</title>
+        <action id="save">
+            <title translatable="true">Save</title>
+            <command type="callFunction" functionName="detectIfExistsFutureInDefineEm"/>
+			<!-- IFM - Refresh the details panel upon SAVE -->
+			<command type="showPanel" panelId="detailsPanel"/>
+        </action>
+        <action id="delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="detailsPanel" show="false"/>
+            <command type="showPanel" panelId="treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="detailsPanel" show="false"/>
+        </action>
+        
+        <field table="em" name="honorific"/>
+        <field/>
+        
+        <field table="em" name="em_id"/>
+        <field table="em" name="bl_id"/>
+        
+        <field table="em" name="name_first"/>
+        <field table="em" name="fl_id"/>
+        
+        <field table="em" name="name_last"/>        
+        <field table="em" name="rm_id"/>
+        
+        <field table="em" name="company"/>
+        <field table="em" name="loc_code"/>        
+
+        <field table="em" name="em_title"/>
+        <field table="em" name="em_number"/>        
+
+        <field table="em" name="em_type"/>
+        <field table="em" name="em_positn"/>
+
+        <field table="em" name="email"/>
+        <field table="em" name="position_desc"/>
+        
+        <field table="em" name="phone"/>
+        <field table="em" name="dv_id"/>        
+
+        <field table="em" name="cellular_number"/>                        
+        <field table="em" name="dp_id"/>        
+        
+        <field table="em" name="net_user_name"/>
+        <field table="em" name="em_std"/>
+
+        <field table="em" name="eft"/>
+        <field table="em" name="date_hired"/>
+
+        <field table="em" name="manager"/>
+	<field table="em" name="date_end"/>
+    </panel>
+</view>

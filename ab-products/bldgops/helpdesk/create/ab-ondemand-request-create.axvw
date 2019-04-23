@@ -1,0 +1,17 @@
+<view version="2.0">
+  <title translatable="true">Create Request</title>
+  <tabs workflow="enforced" id="helpDeskRequestTabs">
+    <tab name="basic" selected="true" file="ab-helpdesk-request-basic.axvw">
+      <title translatable="true">Basic Information</title>
+    </tab>
+    <tab name="docs" file="ab-helpdesk-request-docs.axvw">
+      <title translatable="true">Documents</title>
+    </tab>
+    <!--  IFM Commented -->
+    <tab name="result" file="ab-helpdesk-request-result.axvw">
+      <title translatable="true">Overview</title>
+    </tab>
+  </tabs>
+  <js file="ab-ondemand-request-create.js" />
+  <js file="ab-helpdesk-request-shared-para.js" />
+</view>

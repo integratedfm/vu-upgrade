@@ -1,0 +1,478 @@
+
+
+<view version="2.0">
+  <title translatable="true">
+  Frequently Asked Questions (for Supervisors) 
+  </title> 
+
+<style type="text/css">
+
+	.FAQlink
+	{ 
+    text-decoration:underline; 
+	color:blue!important;
+	}
+	
+	#wrapper 
+	{
+		display: table;
+		table-layout: fixed;
+		width:100%;	
+		border-collapse:collapse;
+	}
+	#wrapper div 
+	{
+		display: table-cell;
+	    
+	}
+	
+	/* Style the buttons that are used to open and close the accordion panel */
+	.accordion {
+	  background-color: #f3f7fa;
+	  color: #444;
+	  cursor: pointer;
+	  padding: 5px;
+	  width: 100%;
+	  text-align: left;
+	  border: none;
+	  outline: none;
+	  transition: 0.4s;
+	
+	}
+
+	/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+	.active, .accordion:hover {
+	  background-color: #ccc;
+	}
+
+	/* Style the accordion panel. Note: hidden by default */
+	.panel {
+		padding: 0px 5px;
+		background-color: white;
+		display: none;
+		overflow: hidden;
+	  }
+	  
+	  .accordion:after {
+	  content: '\02795'; /* Unicode character for "plus" sign (+) */
+	  font-size: 10px;
+	  color: #777;
+	  float: right;
+	  margin-left: 5px;
+	}
+
+	.active:after {
+	  content: "\2796"; /* Unicode character for "minus" sign (-) */
+	}
+	
+	.redfont
+	{
+		color:red;
+	}
+	
+
+</style>
+
+
+  <panel type="html" id="instructionsPanel1">
+    <html>
+	
+<div id="wrapper">
+<div style="padding-right:10px;">
+	<button class="accordion"><b>1. How to add an old invoice to an open WR?</b></button>
+	<div class="panel" style="display:none;">	  
+	  <p>- Log into VUFMS then <b>Update Work Order and Work Requests</b></p>
+	  <p>- Select the Work Order required</p>
+	  <p>- Add the invoice and required details by selecting Invoice File Name</p>
+	  <p>This is the same process as a new WR. The date of the invoice is irrelevant if the WR is open.</p>
+	</div>
+
+	<button class="accordion"><b>2. How to add documents to a job?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>- You can add documents such as quotes, photos and any notes if required</p>
+	  <p >
+	    <img style="border:1px solid;" align="center" alt="ARCHIBUS" src="/archibus/schema/ab-core/files/Images/FAQ2.png"/>
+	  </p>
+	</div>
+
+	<button class="accordion"><b>3. How to view documents?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	You can view documents such as quotes, photos and any notes if required in the <b>More Information</b> field</p>
+	  <p>-  Click on the show document icon highlighted below</p>
+	   <p>
+	  	    <img style="border:1px solid;" align="center" alt="ARCHIBUS" src="/archibus/schema/ab-core/files/Images/FAQ3.png"/>
+	   </p>
+	</div>
+	
+	<button class="accordion"><b>4. When will Contractors be paid?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	Victoria University will pay all invoices within: </p>
+	  <p>1. The time prescribed by any contract entered into by the parties; or </p>
+	  <p>2. The time set out on the Work Order; or </p>
+	  <p>3. 45 days of receipt of the invoice Please refer to <a class="FAQlink" href="https://www.vu.edu.au/goods-and-services-terms-and-conditions">Goods and Services Terms and Conditions</a>.</p>
+	  <p>4. Victoria University payment runs are scheduled on 5th and 20th of each month and are processed.</p>
+	</div>
+	
+	<button class="accordion"><b>5. How to close/complete a job with no invoice?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	Select <b>Work Order/Work Request </b></p>
+	  <p>-	Add<b>Tradesperson Notes</b>  </p>
+	  <p>-	 Select <b>Complete</b> </p>
+	</div>
+	
+	<button class="accordion"><b>6. Some of my invoice details are missing how do I add them?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	To add missing invoice details, this can vary depending if the job is open or closed. </p>
+		<h5>If the job is open</h5>
+	  <p>-	Log into VUFMS Go to Update Work Order and Work Requests</p>
+	  <p>-	Select the Work Order required</p>
+	  <p>-	Add the invoice by selecting Invoice File Name and ensure Invoice Number, Invoice Date and Total Cost have been entered.</p>
+		<h5>If the job is closed </h5>	 
+	  <p>- Please refer to FAQ 17. </p>	
+	</div>
+	
+	<button class="accordion"><b>7. How do I add an invoice and relevant details to a closed job?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>- Please refer to FAQ 17. </p>	
+	</div>
+	
+	<button class="accordion"><b>8. I’ve put the wrong invoice details on my WR, how do I remove this?</b></button>
+	<div class="panel" style="display:none;">	
+		<h5>If the job is open</h5>
+	  <p>-	There is an <b>x</b> beside the invoice file name, select this and the invoice will delete, you can then add the correct invoice</p>
+	  <p>-	You can change the date in the drop down <b>Date </b>field</p>
+	  <p>-	There is an <b>x</b> beside the total costs field, you will need to select this to remove the costs then re add the correct amount. </p>
+	  <p>-	Then you will need to<b> Update</b> and <b>Save</b></p>
+		<h5>If the job is closed </h5>
+	   <p>- Please refer to FAQ 17. </p>	
+	</div>	
+	
+	<button class="accordion"><b>9. How do I use Finance 1?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	Please contact Finance to arrange training. </p>
+	</div>
+	
+	<button class="accordion"><b>10. I have duplicate orders, why does this keep happening and how do I remove them?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	Multiple orders are a result of multiple people logging the same job and not communicating what they have done </p>
+	  <p>-  You can either cancel this job with an internal note quoting the duplicate WR, or</p>
+	  <p>- 	You can complete this then close the job with an internal note saying no invoice required as this is a duplicate</p>
+	</div>
+	
+	<button class="accordion"><b>11. How do I update a Cost Centre or Natural Account Code (Account Code)?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	Go to <b>Open Work Requests</b> </p>
+	  <p>-  Select the WR</p>
+	  <p >
+	    <img style="border:1px solid;" align="center" alt="ARCHIBUS" src="/archibus/schema/ab-core/files/Images/FAQ11.png"/>
+	  </p>
+	  <p>-	Ensure you <b>Save</b> this once the amendment has been made</p>
+	</div>
+	
+	<button class="accordion"><b>12. I have multiple Work Requests allocated to 1 Work Order, what do I do?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	This should not be occurring until further notice. Please contact FSD to correct if required.</b> </p>	  
+	</div>
+	
+	<button class="accordion"><b>13. Who should be the first point of contact for all support queries?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	Facilities Service Desk.</b> </p>	  
+	</div>
+	
+	<button class="accordion"><b>14. I have received my remittance but 10 of my invoices haven’t been paid?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>Please investigate the cause of non-payment in VUFMS and Finance 1 by searching the Invoice. </p>
+	  <p>If still not sure of the cause please email your enquiry to <a href="mailto:apinvoices@vu.edu.au" class="FAQlink">apinvoices@vu.edu.au </a>.</p>
+	</div>
+	
+	<button class="accordion"><b>15. I’m trying to add the costs but the screen won’t open?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	This may be the browser you are using. Ensure you’re using Google Chrome, if it’s still not working this may be an issue in VUFMS. Please log this with <a href="mailto:facilties.systems@vu.edu.au" class="FAQlink">facilities.systems@vu.edu.au</a> </p>	 
+	</div>
+	
+	<button class="accordion"><b>16. Is there an app for this system?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	No. Currently there is no working app for the system, however in future we will consider modifiying the website to be mobile friendly.</p>	 
+	</div>
+	
+	<button class="accordion"><b>17. How do I add/amend an invoice and details to a Closed/Stopped Work Request?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>Work Requests should not be edited once moved to the historic tables but there are reasons this may be required. If so, the following must be followed.</p>	 
+	  <p>Copy the table below and complete your section then email it to <a href="mailto:facilities.systems@vu.edu.au" class="FAQlink">Facilities.Systems@vu.edu.au</a>.  <span class="redfont"> Red text is example only</span></p>
+	  <table border="1px" style="border-collapse: collapse;margin-bottom:10px;" cellpadding="2">
+		<tr>
+			<td rowspan="4">Facility Officer</td>
+			<td>Reason to modify WR details</td>
+			<td class="redfont">Stopped accidentally / due to duplicate in WR 99999</td>
+		</tr>
+		<tr>	
+			<td>Provide WR and WO</td>
+			<td class="redfont">WR-33333  WO-22222</td>
+		</tr>
+		<tr>
+			
+			<td>Verify and attach invoice</td>
+			<td class="redfont">Yes</td>
+		</tr>
+		<tr>
+			
+			<td>Add internal comments</td>
+			<td class="redfont">Stopped due to duplicate in WR 99999, Still requires processing</td>
+		</tr>
+		
+		<tr>
+			<td rowspan="3">Facilities Service Desk</td>
+			<td>Upload invoice</td>
+			<td class="redfont">Yes</td>
+		</tr>
+		<tr>	
+			<td>Ensure Invoice Number and Date entered</td>
+			<td class="redfont">Yes</td>
+		</tr>
+		<tr>	
+			<td>Ensure TotalCost is entered</td>
+			<td class="redfont">Yes</td>
+		</tr>
+		
+		<tr>
+			<td rowspan="3">Facilities Systems</td>
+			<td>Update HWO total to match HWR total</td>
+			<td class="redfont">Yes</td>
+		</tr>
+		<tr>	
+			<td>Amend comments</td>
+			<td class="redfont">Yes</td>
+		</tr>
+		<tr>	
+			<td>If Stopped, change status to Closed and add date as today</td>
+			<td class="redfont">Yes</td>
+		</tr>
+	  </table>
+	</div>
+	
+	  <button class="accordion"><b>18. How do I get a new contractor into Archibus?</b></button>
+	<div class="panel" style="display:none;">
+	  <p>-	Complete <span class="redfont">ALL</span> fields in the table below</p>	 
+	  <p>-	Send to Shannon O’Connor for approval</p>
+	  <p>-  With approval, send to <a href="mailto:facilities.systems@vu.edu.au" class="FAQlink">Facilities.Systems@vu.edu.au</a></p>
+	  
+	  <table border="1px" style="border-collapse: collapse;margin-bottom:10px;width:100%" cellpadding="2">
+		<tr>
+			<td width="50%">Business name</td>
+			<td width="50%">&nbsp;</td>
+		</tr>
+		<tr>	
+			<td>Business ABN</td>
+			<td></td>
+		</tr>
+		<tr>
+			
+			<td>Supplier ID from Finance 1</td>
+			<td></td>
+		</tr>
+		<tr>
+			
+			<td>Email address for Work Orders to be sent to</td>
+			<td></td>
+		</tr>
+		
+		<tr>		
+			<td>Trade type</td>
+			<td></td>
+		</tr>
+		<tr>	
+			<td>Call Out Rate</td>
+			<td></td>
+		</tr>
+		<tr>	
+			<td>Hourly Rate</td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td>Overtime Rate</td>
+			<td></td>
+		</tr>
+		<tr>	
+			<td>Contact email (not work orders)</td>
+			<td></td>
+		</tr>
+		<tr>	
+			<td>Contact phone</td>
+			<td></td>
+		</tr>
+		<tr>	
+			<td>Reports to (FM/FO)</td>
+			<td></td>
+		</tr>
+	  </table>
+	  
+	  <p>Trade type examples; Building, Carpentry, Electrical, Fire, Leasing, HVAC, Multi Trade, Professional, Surveyor</p>
+	</div>
+	  
+		<div> 
+		<span style="height:10px;">&nbsp;</span>
+		<h3><b>Errors and handling</b></h3>
+		<button class="accordion"><b>Work Order '' was not processed because one or more associated Work Requests are missing an Invoice Date.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>Ensure invoice details have all been added correctly.</p>	 
+		  <p>If any changes to the costs, notify <a href="mailto:facilities.systems@vu.edu.au" class="FAQlink">Facilities.Systems@vu.edu.au </a></p>
+		</div>
+		
+		<button class="accordion"><b>Work Order '' was not processed because a Supplier/Craftsperson had not been assigned for this Work Order.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>Assign correct Contractor and notify <a href="mailto:facilities.systems@vu.edu.au" class="FAQlink">Facilities.Systems@vu.edu.au </a></p>
+		</div>
+		
+		<button class="accordion"><b>Work Order '' was not processed because one or more associated Work Requests are missing a Supplier Code.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>Verify correct Contractor has been added</p>
+		  <p>Notify <a href="mailto:facilities.systems@vu.edu.au" class="FAQlink">Facilities.Systems@vu.edu.au </a> to check Supplier ID for Contractor</p>
+		</div>
+		
+		<button class="accordion"><b>Work Order '' was not processed because there are multiple suppliers assigned to the Work Requests associated with this Work Order.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>Ensure only the one Contractor has been assigned</p>
+		  <p>Ensure the correct Contractor has uploaded the invoice</p>
+		  <p>Notify <a href="mailto:facilities.systems@vu.edu.au" class="FAQlink">Facilities.Systems@vu.edu.au </a> to remove incorrect Contractors listed</p>
+		</div>
+		
+		<button class="accordion"><b>Work Order '' was not processed because it is associated with more than one invoice number.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>Using <b>Search Historic WR, WO or Invoice</b> to search WO number. Check all WRs and ensure only one invoice has been added. You have 2 options;</p>
+		  <p>1. Contact Contractor to recreate invoice containing all WRs in the one invoice. </p>
+		  <p>2.	If the above cannot be done, create a new WR with a description of <b>“DO NOT ACTION – INVOICE PURPOSES ONLY”</b> then add the rest of the WR description. Attach the invoice and relevant details in <b>Closed Work Requests</b> </p>
+		</div>
+		
+		<button class="accordion"><b>Work Order '' was not processed because the invoice <b>'invoice_no'</b> is associated with more than one Work Order.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>This means they are grouped. Currently this practice is not in use, however if this happens the invoice should only be added to 1 Work Order. The associated Work Orders can have the invoice number and date but should be closed without the invoice attached. </p>	  
+		</div>
+		
+		<button class="accordion"><b>Work Order '' was not processed because the GST Inclusive flag is not consistent on all the associated Work Requests.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>1.	You would need to use the <b>Closed Work Requests </b>view </p>
+		  <p>2.	Change the flag to the appropriate option of <b>Yes </b>or <b>No</b></p>	  
+		  <p>
+				<img style="border:1px solid;" align="center" alt="ARCHIBUS" src="/archibus/schema/ab-core/files/Images/FAQErr7.jpg"/>
+		   </p>
+		</div>
+		
+		<button class="accordion"><b>Work Order '' was not processed because the Work Order costs are not equal to the Work Request costs.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>Using <b>Closed Work Requests</b>, enter the Work Request then add the <b>TotalCost</b> and <b>save</b>.</p>
+		  <p>You will then need to notify <a href="mailto:facilities.systems@vu.edu.au" class="FAQlink">Facilities.Systems@vu.edu.au</a>of the changes made </p>	  
+		</div>
+		
+		<button class="accordion"><b>Work Order '' was not processed because one or more associated Work Requests are missing a Cost Centre Code.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>This function is not currently in use. When it is, this will be rolled out with documentation and possibly training video to go with for staff and Contractors. </p>
+		</div>
+		
+		<button class="accordion"><b>Work Order '' was not processed because one or more associated Work Requests are missing a Natural Account Code.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>Using <b>Closed Work Requests</b>, enter the Work Request and select it, enter the correct <b>Account Code</b> and <b>Save</b>.</p>
+		</div>
+		
+		<button class="accordion"><b>Work Order '' was not processed because the Actual Cost has not been entered on an associated Work Request.</b></button>
+		<div class="panel" style="display:none;">
+		  <p>Using <b>Closed Work Requests</b>, enter the Work Request and select it, enter the <b>Total Cost</b> and <b>Save</b>. Ensure the following details are captured and sent to <a href="mailto:facilities.systems@vu.edu.au" class="FAQlink">Facilities.Systems@vu.edu.au</a>:</p>
+		  <p>1.	Work request number</p>
+		  <p>2.	Screenshot of the Historical Work Request details as below</p>
+		  <p>
+				<img style="border:1px solid;" align="center" alt="ARCHIBUS" src="/archibus/schema/ab-core/files/Images/FAQErr11.png"/>
+		   </p>
+		   <p>3.	Include reason why Work Request was <b>Closed</b> with Costs added as this is used in the internal notes for future reference.</p>
+		   <p>4.	Facilities Systems will then manually update the fields required from the backend.</p>
+		</div>
+	</div>
+
+</div>
+
+     <div>
+		<p style="margin-left: 30px">
+          <br/>
+          <b><a href="/archibus/schema/ab-core/files/VUFMS Training Presentation.pps" title="VUFMS Training Presentation" target="_blank" class="FAQlink">Training presentation slideshow</a></b><br/>
+		  <b><a href="/archibus/schema/ab-core/files/Training Video.mp4" title="VUFMS Training Video" target="_blank" class="FAQlink">Training presentation video</a></b>
+        </p>		
+        <br/>
+	    <p style="margin-left: 30px">
+          <br/>
+          <b>Background:</b>
+        </p>
+        <ul style="list-style-type:disc; list-style-position: inside; margin-left: 50px">
+          <li><a href="/archibus/schema/ab-core/files/Difference between WR vs WO.pdf" title="Difference between WR vs WO" target="_blank" class="FAQlink">Difference between Work Request and Work Order</a></li>
+        </ul>
+
+        <p style="margin-left: 30px">
+          <br/>
+          <b>Contractor How tos</b>
+		</p>
+        <ul style="list-style-type:disc; list-style-position: inside; margin-left: 50px">
+          <li><a href="/archibus/schema/ab-core/files/Completeing WR and WO.pdf" title="Completeing WR and WO" target="_blank" class="FAQlink">Completing Work Requests and Work Orders</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Attach an invoice and required details.pdf" title="Attach an invoice and required details" target="_blank" class="FAQlink">Attach an invoice and required details</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Placing WR on hold.pdf" title="Placing Work Requests on hold" target="_blank" class="FAQlink">Placing Work Requests on hold</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Completing non-chargeable WR.pdf" title="Completing non-chargeable WR" target="_blank" class="FAQlink">Completing non-chargeable Work Requests</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Check WOs for status and payments.pdf" title="Check WOs for status and payments" target="_blank" class="FAQlink">Check Work Orders for status and payments</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Adding costs, parts and other resources to WRs.pdf" title="Adding costs, parts and other resources to WRs" target="_blank" class="FAQlink">Adding costs, parts and other resources to Work Requests</a></li>
+        </ul>
+
+	    <p style="margin-left: 30px">
+          <br/>
+          <b>Other information for Contractors</b>
+        </p>		
+        <ul style="list-style-type:disc; list-style-position: inside; margin-left: 50px">			
+          <li><a href="/archibus/schema/ab-core/files/When will I be paid.pdf" title="When will I be paid" target="_blank" class="FAQlink">When will I be paid</a></li>
+          <li><a href="/archibus/schema/ab-core/files/What should my invoice look like.pdf" title="What should my invoice look like" target="_blank" class="FAQlink">What should my invoice look like</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Priorities levels and SLAs.pdf" title="Priorities levels and SLAs" target="_blank" class="FAQlink">Priorities levels and Service Level Agreements</a></li>
+          <li>Workflow diagram from Assigned to Closed - (to be added)</li>
+    	 </ul>
+       
+		</div>
+		
+</div>
+
+		
+		<table width="100%" cellpadding="2" cellspacing="2" border="0">
+        <tr>
+          <!-- IFM - "</img>" tag has been added to the following line based on advice from ARCHIBUS Tech Support -->
+          <!--       This resolves the issue of view error whenever ARCHIBUS is restarted -->
+          <td><img src="/archibus/schema/ab-core/graphics/blueline.gif" border="0" width="100%" height="6" alt="Blue Line"></img></td>
+        </tr>
+		<tr>
+          <td>
+            <p>
+            <b><a href="https://policy.vu.edu.au" title="Policies" target="_blank">Policies</a></b> | 
+            <b><a href="http://www.vu.edu.au/legal" title="Legal" target="_blank">Legal</a></b> | 
+            <b><a href="http://www.vu.edu.au/copyright-notice" title="Copyright Notice" target="_blank">Copyright Notice</a></b> | 
+            <b><a href="http://www.vu.edu.au/privacy" title="Privacy" target="_blank">Privacy</a></b> | 
+            <b><a href="http://www.vu.edu.au/contact-us" title="Contact Us" target="_blank">Contact Us</a></b> | 
+            <b><a href="?PrintFriendly=YesPlease" title="Print Friendly" target="_blank">Print Friendly</a></b> | 
+            <b><a href="http://www.vu.edu.au/feedback" title="Feedback" target="_blank">Feedback</a></b>
+            </p>
+            <p>Copyright © 2018. Victoria University CRICOS Provider No. 00124K (Melbourne) and CRICOS Provider No. 02475D (Sydney). RTO Code: 3113. ABN: 83 776 954 731</p>
+          </td>
+        </tr>
+      </table>
+      <!-- </div>  -->
+    </html>
+  </panel>
+  <script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+</script>
+
+</view>
+

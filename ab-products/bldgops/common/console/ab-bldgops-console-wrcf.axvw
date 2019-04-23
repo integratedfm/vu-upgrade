@@ -1,0 +1,133 @@
+<!-- This view defines work request craftsperson related panels. -->
+<view version="2.0">
+
+    <js file="ab-bldgops-console-wrcf.js"/>
+    <js file="ab-bldgops-console-common.js"/>
+
+    <dataSource id="wrcfDS">
+        <table name="wrcf" role="main"/>
+        <table name="cf" role="standard"/>
+        <table name="wr" role="standard"/>
+        <field table="wr" name="status"/>
+        <field table="wrcf" name="wr_id"/>
+        <field table="wrcf" name="cf_id"/>
+        <field table="wrcf" name="date_assigned"/>
+        <field table="wrcf" name="time_assigned"/>
+        <field table="wrcf" name="hours_est"/>
+        <field table="wrcf" name="cost_estimated"/>
+        <field table="wrcf" name="comments"/>
+        <field table="wrcf" name="hours_straight"/>
+        <field table="wrcf" name="hours_double"/>
+        <field table="wrcf" name="hours_over"/>
+        <field table="wrcf" name="date_start"/>
+        <field table="wrcf" name="time_start"/>
+        <field table="wrcf" name="date_end"/>
+        <field table="wrcf" name="time_end"/>
+        <field table="wrcf" name="work_type"/>
+        <field table="cf" name="email"/>
+		<!-- IFM - Add rate_callout -->
+        <field table="cf" name="rate_callout"/>
+
+        <sortField table="wrcf" name="cf_id"/>
+        <sortField table="wrcf" name="date_assigned"/>
+        <sortField table="wrcf" name="time_assigned"/>
+
+        <parameter name="permanentRestriction" dataType="verbatim" value="1=1"/>
+        <restriction type="sql" sql="${parameters['permanentRestriction']}"/>
+    </dataSource>
+	<!-- IFM Added data source for cf call out rate -->
+    <dataSource id="cf_callout_ds">
+    	<table name="cf" role="main"/>
+    	<field table="cf" name="cf_id"/>
+    	<field table="cf" name="rate_callout"/>    	
+    </dataSource>
+
+    <!-- Craftspersons -->
+    <panel type="grid" controlType="reportGrid" id="wrcfGrid" dataSource="wrcfDS" sortEnabled="false" collapsed="false">
+        <title>Craftspersons</title>
+        <action id="addCf">
+            <title>Add</title>
+            <command type="openDialog" panelId="wrcfForm" newRecord="true" width="400" closeButton="false" applyParentRestriction="false">
+                <title>Add Tradesperson</title>
+            </command>
+        </action>
+        <event type="onClickItem">
+            <command type="openDialog" panelId="wrcfForm" newRecord="false" width="400" closeButton="false">
+                <title>Edit Tradesperson</title>
+            </command>
+        </event>
+        <field table="wrcf" name="wr_id"/>
+        <field table="wrcf" name="cf_id">
+            <title>Craftsperson</title>
+        </field>
+        <field table="wrcf" name="date_assigned">
+            
+        </field>
+        <field table="wrcf" name="time_assigned">
+            
+        </field>
+        <field table="wrcf" name="hours_est">
+            <title>Scheduled Hours</title>
+        </field>
+		<!-- IFM - Add rate_callout -->
+		<field table="cf" name="rate_callout"/>
+        <field table="wrcf" name="hours_straight"/>
+        <field table="wrcf" name="hours_double"/>
+        <field table="wrcf" name="hours_over"/>
+        <field table="wrcf" name="date_start"/>
+        <field table="wrcf" name="time_start"/>
+        <field table="wrcf" name="date_end"/>
+        <field table="wrcf" name="time_end"/>
+        <field table="cf" name="email" hidden="true"/>
+        <field id="deleteWrcf" controlType="image" imageName="delete.gif">
+            <tooltip translatable="true">Remove</tooltip>
+        </field>
+        <field table="wr" name="status" hidden="true"/>
+    </panel>
+
+    <panel type="form" id="wrcfForm" dataSource="wrcfDS" showOnLoad="false" hidden="true" buttonsPosition="footer">
+        <field table="wrcf" name="wr_id" hidden="true"/>
+        <field table="wrcf" name="cf_id" required="true" focus="true" onchange="onChangeCFID()">
+            <action id="selectVCf">
+                <title translatable="false">...</title>
+                <command type="selectValue" showIndex="false"
+				    fieldNames="wrcf.cf_id"
+					selectFieldNames="cf.cf_id, cf.rate_callout"
+				    visibleFieldNames="cf.cf_id, cf.name, cf.tr_id"
+					recordLimit="5000"
+					addNewDialog="ab-bldgops-console-add-new-cf.axvw"
+					showAddNewButton="${user.isMemberOfGroup('ADD-NEW-OPS-DATA')}"
+					actionListener="onChangeCFID">
+                    <title>Tradesperson</title>
+                </command>
+            </action>
+        </field>
+        <field table="wrcf" name="date_assigned" required="true">
+            
+        </field>
+        <field table="wrcf" name="time_assigned" required="true">
+            
+        </field>
+        <field table="wrcf" name="hours_est" value="2.00" >
+            <title>Scheduled Hours</title>
+        </field>
+		<!-- IFM - Add rate_callout -->
+		<field table="cf" name="rate_callout"/>
+        <field table="wrcf" name="hours_straight"/>
+        <field table="wrcf" name="hours_double"/>
+        <field table="wrcf" name="hours_over"/>
+        <field table="wrcf" name="date_start"/>
+        <field table="wrcf" name="time_start"/>
+        <field table="wrcf" name="date_end"/>
+        <field table="wrcf" name="time_end"/>
+        <field table="wrcf" name="work_type"/>
+
+        <action id="saveWrcf" mainAction="true">
+            <title>Save</title>
+        </action>
+        <action id="cancelWrcf">
+            <title>Cancel</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+</view>

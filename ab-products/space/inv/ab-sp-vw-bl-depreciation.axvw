@@ -1,0 +1,135 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="false"/>
+    <title translatable="true">Building Depreciation Report</title>
+    
+	<layout type="borderLayout" id="mainLayout">
+        <north autoScroll="true" split="true" initialSize="90"/>
+        <center autoScroll="true"/>
+    </layout>
+    <layout type="borderLayout" id="centerLayout" containingLayout="mainLayout" region="center">
+        <center autoScroll="true"/>
+    </layout>
+	
+	<dataSource id="ds_FilterPanel">
+        <table name="rm" role="main"/>
+        <field table="rm" name="total_depreciation_value" dataType="number"/> 
+    </dataSource>
+	
+	<panel type="console" columns="1" id="FilterPanel" dataSource="ds_FilterPanel" labelsPosition="left" layout="mainLayout" region="north">
+        <title translatable="true">Total Depreciation Value</title>
+        <action id="GenerateReport">
+            <title translatable="true">Generate Report</title>
+			<command type="callFunction" functionName="setDepreciationPanelTitle()"/>
+			<command type="showPanel" panelId="abSpVwBlDepreciation_detailsPanel" show="true" applyParentRestriction="false"/>
+        </action>
+        <action id="clear">
+            <title translatable="true">Clear</title>
+            <command type="clearPanel" panelId="FilterPanel"/>
+			<command type="showPanel" panelId="abSpVwBlDepreciation_detailsPanel" show="false" applyParentRestriction="false"/>
+			<command type="callFunction" functionName="depreciationValueChanged()"/>
+        </action>
+        
+        <field name="total_depreciation_value" table="rm" dataType="number" decimals="2" focus="true" onchange="depreciationValueChanged()" onkeypress="depreciationValueChanged()">
+		    <title translatable="true">Total Depreciation Value</title>
+		</field>
+    </panel>
+
+    <dataSource id="abSpVwBlDepreciation_ds_0">
+		<parameter name="depreciation" dataType="text" value=""/>
+	
+		<table name="rm" role="main"/>	
+		<table name="bl" role="standard"/>
+		<table name="dv" role="standard"/>
+		<table name="dp" role="standard"/>
+		<table name="ifm_costcentre" role="standard"/>
+		
+		<!-- Virtual Field for Site Name because the lookup is from the Building table -->
+		<field table="rm" name="site_name" dataType="text">
+			<sql dialect="generic">(SELECT name FROM site WHERE site.site_id = bl.site_id)</sql>
+        </field>
+		
+        <field table="rm" name="bl_id"/>
+        <field table="rm" name="fl_id"/>
+        <field table="rm" name="rm_id"/>
+		<field table="rm" name="name"/>
+        <field table="rm" name="dv_id"/> 
+		<field table="rm" name="dp_id"/>
+		<field table="bl" name="site_id"/>
+		<field table="bl" name="name"/>
+		<field table="bl" name="depreciate"/>
+		<field table="bl" name="area_rm"/>
+        <field table="rm" name="area"/>
+        <field table="rm" name="cc_id"/>
+		<field table="ifm_costcentre" name="name"/>
+		
+		<!-- Virtual Field for Business Unit Name because the lookup is from the Division table -->
+		<field table="rm" name="bu_name" dataType="text">
+			<sql dialect="generic">(SELECT name FROM bu WHERE bu.bu_id = dv.bu_id)</sql>
+        </field>
+		
+		<field table="dv" name="name"/>
+		<field table="dp" name="name"/>
+
+        <field table="rm" name="cc_name" dataType="text">
+			<sql dialect="generic">(RTRIM(rm.cc_id) ${sql.concat} ' – ' ${sql.concat} RTRIM(ifm_costcentre.name))</sql>
+        </field>
+
+		<field table="rm" name="depreciation_value" dataType="number">
+			<sql dialect="generic">IIF(bl.area_rm = 0 OR rm.area = 0, NULL, (${parameters["depreciation"]} / bl.area_rm) * rm.area)</sql>
+        </field>
+
+		<field table="rm" name="depreciation_area" dataType="number">
+			<sql dialect="generic">IIF(bl.area_rm = 0, NULL, ${parameters["depreciation"]} / bl.area_rm)</sql>
+        </field>
+
+        <restriction type="sql" sql="bl.depreciate = 1"/>
+    </dataSource>
+
+    <panel type="grid" id="abSpVwBlDepreciation_detailsPanel" dataSource="abSpVwBlDepreciation_ds_0" showOnLoad="false" multipleSelectionEnabled="false" layout="centerLayout" recordLimit="20000">
+        <!-- <title translatable="true">Rooms</title>  -->
+        
+        <action id="abSpVwBlDepreciation_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abSpVwBlDepreciation_detailsPanel"/>
+        </action>     
+        <action id="abSpVwBlDepreciation_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abSpVwBlDepreciation_detailsPanel"/>
+        </action>
+		<action id="abSpVwBlDepreciation_export:PDF">
+			<title>PDF</title>
+			<command type="exportPanel" outputType="pdf" panelId="abSpVwBlDepreciation_detailsPanel"/>
+		</action>
+			
+        <field name="site_name" table="rm">
+		    <title translatable="true">Site Name</title>
+        </field>
+        <field name="bl_id" table="rm"/>
+        <field name="name" table="bl"/>
+        <field name="fl_id" table="rm"/>
+        <field name="rm_id" table="rm"/>
+		<field name="name" table="rm"/>
+        <field name="area" table="rm"/>
+        <field name="cc_id" table="rm"/>
+		
+        <field name="cc_name" table="rm">
+            <title translatable="true">Cost Centre Description</title>
+        </field>
+
+        <field name="bu_name" table="rm">
+		    <title translatable="true">Division Name</title>
+        </field>
+        <field name="name" table="dv"/>
+        <field name="name" table="dp"/>
+		
+        <field name="depreciation_area" table="rm" dataType="number">
+            <title translatable="true">Amount Per SQM</title>
+        </field>
+		
+        <field name="depreciation_value" table="rm" dataType="number">
+            <title translatable="true">Amount ex GST</title>
+        </field>
+    </panel>
+	
+	 <js file="ab-sp-vw-bl-depreciation.js"/>
+</view>

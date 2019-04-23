@@ -1,0 +1,16 @@
+<view version="2.0">
+    
+    <title translatable="true">Steps</title>
+    
+    <layout file="ab-tabs.axvw"/>
+    
+    <tabs id="stepsTabs" workflow="free" tabRefreshPolicy="never">
+        <tab name="select" file="ifm-ab-helpdesk-steps-select.axvw" selected="true">
+            <title translatable="true">Select</title>
+        </tab>
+        <tab name="edit" file="ifm-ab-helpdesk-steps-edit.axvw">
+            <title translatable="true">Edit</title>
+        </tab>
+    </tabs>
+	<js file="ifm-ab-helpdesk-steps.js"/>
+</view>
