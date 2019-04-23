@@ -1,17 +1,21 @@
 <view version="2.0">
   <title translatable="true">Frequently Asked Questions (for Tradespersons)</title>
+  
 
   <panel type="html" id="instructionsPanel1">
     <html>
 	<style type="text/css">
 
-.FAQlink
-{ 
+	.FAQlink
+	{ 
     text-decoration:underline; 
 	color:blue!important;
-}
+	}
+	
 </style>
+
       <!-- <div id="instructions" class="instructions" style="height:20em;">  -->
+
       <div>
 	    <p style="margin-left: 30px">
           <br/>

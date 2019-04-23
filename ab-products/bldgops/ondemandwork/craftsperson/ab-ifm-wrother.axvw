@@ -38,7 +38,7 @@
             <title>Save</title>
 			<command type="saveForm" />
         </action>
-        <action id="cancelWrOtherCosts">
+        <action id="cancelWrOtherCosts" hidden="true">
             <title>Cancel</title>
             <command type="closeDialog"/>
         </action>

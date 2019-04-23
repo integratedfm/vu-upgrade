@@ -119,7 +119,6 @@ var ifmWRDetailsFONE=View.createController('wrDetails', {
 		//only allow Edit Request Parameter feature when application parameter EditRequestParameters = 1 and have schema field enforce_new_workflow
 		if(Workflow.callMethod('AbBldgOpsOnDemandWork-WorkRequestService-checkSchemaExisting','helpdesk_sla_response', 'enforce_new_workflow').value && this.checCfChangeWorkRequest() && canAcessDirectly){
 			this.enableEditRequestParametersFeature();
-			
 		}
 		
 		//show 'Submit' button only when schema having field helpdesk_step_log.rejected_step and current request having pending rejected step
@@ -167,7 +166,31 @@ var ifmWRDetailsFONE=View.createController('wrDetails', {
 		//IFM Mehran added for making po_no invoice no mutual exclusive
 		this.ifmInitFONEFieldListener();
 		
-	},
+		//IFM Added
+		this.wrDetails.fields.get("wr.prob_type").actions.get(0).command.commands[0].actionListener = afterChangeProblemType;
+
+		var wdp = this.wrDetailsMore;
+			
+		wdp.getFieldElement("wr.cai_date").readOnly = true;
+		wdp.getFieldElement("wr.cai_user").readOnly = true;
+		wdp.getFieldElement("wr.cai_contractor").readOnly = true;
+		wdp.getFieldElement("wr.cai_date").disabled = true;
+		wdp.getFieldElement("wr.cai_approved_by").readOnly = true;
+		wdp.getFieldElement("wr.cai_approved_by").disabled = true;
+		wdp.fields.get("wr.cai_approved_by").actions.get(0).show(false);
+		
+		var v = parseInt(wdp.getFieldValue("wr.notify_ohs"));
+			
+		if (v==1){
+			jQuery('#notifyohs')[0].checked=true;
+		}else{
+			jQuery('#notifyohs')[0].checked=false;
+		}
+			
+		jQuery('#notifyohs')[0].disabled = true;
+		wdp.getFieldElement("wr.invoice_checked").readOnly=true;
+		
+},
 	
 	canAcessDirectly: function() {
 		var wrId = this.wrDetails.getFieldValue('wr.wr_id');
@@ -319,6 +342,9 @@ var ifmWRDetailsFONE=View.createController('wrDetails', {
 			this.wrDetailsMore.fields.get('wr.status').removeOptions({'Rev':'','S':'','Can':'','Clo':'','Rej':''});
 		}
 		if(currentStatus == 'HL'){
+			this.wrDetailsMore.fields.get('wr.status').removeOptions({'Rev':'','S':'','Can':'','Clo':'','Rej':''});
+		}
+		if(currentStatus == 'Cai'){
 			this.wrDetailsMore.fields.get('wr.status').removeOptions({'Rev':'','S':'','Can':'','Clo':'','Rej':''});
 		}
 		if(currentStatus == 'Com'){
@@ -531,9 +557,9 @@ var ifmWRDetailsFONE=View.createController('wrDetails', {
 			this.wrDetails.actions.get('updateRequest').show(true);
     	}
 		//Added IFM 
-		if (status == 'S'){
-			this.wrDetails.enableField('wr.location', true);
-		}
+			if (status == 'S'){
+				this.wrDetails.enableField('wr.location', true);
+			}
     },
 	
     /**
@@ -720,6 +746,12 @@ var ifmWRDetailsFONE=View.createController('wrDetails', {
 		//IFM - Mehran added following to update WR record with values from the wrDetailsMore panel
 		//Cost Centre name and Account Code description fields are excluded from update as these are look-up fields from othe tables
 		var wrDetailsFieldVal=this.wrDetailsMore.getFieldValues();
+		
+		var prob_type = this.wrDetails.getFieldValue('wr.prob_type');
+		
+		var wrDetailsFieldVal=this.wrDetailsMore.getFieldValues();
+		wrDetailsFieldVal['wr.prob_type'] = prob_type;//added to make ac_id and prob_type consistent 
+		
 		delete wrDetailsFieldVal["wr.status"];
 		delete wrDetailsFieldVal["wr.step_status"];
 		delete wrDetailsFieldVal["ifm_costcentre.name"];
@@ -745,6 +777,54 @@ var ifmWRDetailsFONE=View.createController('wrDetails', {
 			if (status =='Cai'){
 				wrRecord['wr.location'] = this.wrDetails.getFieldValue('wr.location');
 			}
+			
+			if (this.currentStatus !=status && status == 'Cai'){
+				// IFM added - add required fields based on cai quick panel
+				var wrcp = this.wrCosts;
+				var wrdp = this.wrDetailsMore; 
+				var nDate = new Date();
+				
+				var curDate = nDate.toISOString();
+				
+				var cfId = wrdp.getFieldValue("wr.cai_contractor").trim();
+				var cfapprover = wrdp.getFieldValue("wr.cai_approved_by").trim();
+				var estTotalCost = parseFloat(wrcp.getFieldValue('wr.cost_est_total'));
+
+				if (cfId.length < 1) {
+					var cause = {"details":"Please enter a person's name into the 'CAI Contractor' field."};
+					var e = {"cause": cause, "message":"Please enter a person's name into the 'CAI Contractor' field.", "description":""};
+					View.showException(e);
+					return;
+				}
+
+				if (cfapprover.length < 1 && estTotalCost > 500) {
+					var cause = {"details":"Please select a Tradesperson in the 'CAI Approved By' field."};
+					var e = {"cause": cause, "message":"Please select a Tradesperson in the 'CAI Approved By' field.", "description":""};
+					View.showException(e);
+					return;
+				}
+				
+				var cfRest = new Ab.view.Restriction();
+				var dscf = new Ab.data.createDataSourceForFields({id: 'cf_ds', tableNames: ['cf'], fieldNames: ['cf.cf_id', 'cf.is_approver']});
+				cfRest.addClause("cf.cf_id", cfapprover,"=" );
+				cfRest.addClause("cf.is_approver", "1" ,"=" );
+				var cfRec = dscf.getRecord(cfRest);
+				if (jQuery.isEmptyObject(cfRec.values) && estTotalCost > 500) {
+					var cause = {"details":"The Tradesperson entered into the 'CAI Approved By' field does NOT have authority to approve payments. Please select a Tradesperson from the 'Select Values' list."};
+					var e = {"cause": cause, "message":"Please Select a Tradesperson from the Select Values list.", "description":""};
+					View.showException(e);
+					return;
+				}
+				
+				if (estTotalCost >= 500){
+					wrRecord['wr.cai_approved_by'] = this.wrDetailsMore.getFieldValue('wr.cai_approved_by');				
+				}else {
+					delete wrRecord['wr.cai_approved_by'];
+				}
+				
+				wrRecord['wr.cai_date'] = curDate;
+				wrRecord['wr.cai_user'] = View.user.name;
+			}
 
 			//call wfr to update work request values and invoke steps if status changed
 			try {
@@ -758,8 +838,6 @@ var ifmWRDetailsFONE=View.createController('wrDetails', {
 				Workflow.handleError(e);			
 			}		
 		}
-		
-		
     },
     
     /**
@@ -1033,3 +1111,95 @@ var ifmWRDetailsFONE=View.createController('wrDetails', {
 	}
 	
 });
+
+
+/**
+ * IFM Added to hide unhide cai fields when Cai is selected as next status
+ */
+
+function ifmStatusChanged(){
+	var wdp = View.panels.get('wrDetailsMore');
+	var wcp = View.panels.get('wrCosts');
+	
+	if (wdp.getFieldValue('wr.status')=='Cai'){
+		
+		var nDate = new Date();		
+		var curDate = nDate.toISOString();
+		
+		//only contractor and approved by are input by user
+		//cai_user and cai_date are set automatically
+		wdp.getFieldElement("wr.cai_contractor").readOnly = false;	
+		wdp.setFieldValue("wr.cai_user", View.user.name);
+		wdp.setFieldValue("wr.cai_date", curDate);				
+		
+		var tCosts = parseFloat(wcp.getFieldValue('wr.cost_est_total'));
+		if (tCosts >=500){
+			wdp.getFieldElement("wr.cai_approved_by").disabled = false;
+			wdp.getFieldElement("wr.cai_approved_by").readOnly = false;
+			
+		}else{
+			wdp.getFieldElement("wr.cai_approved_by").disabled = true;
+			wdp.getFieldElement("wr.cai_approved_by").readOnly = true;			
+		}
+	}else{
+		
+		wdp.getFieldElement("wr.cai_contractor").readOnly = true;
+		wdp.getFieldElement("wr.cai_approved_by").disabled = true;
+		wdp.getFieldElement("wr.cai_approved_by").readOnly=true;
+		
+		
+	}	
+	
+}
+
+/**
+ * IFM Added to update ac_id based on problem type
+ * fieldName, newValue, oldValue
+ * @param fieldName
+ * @param newValue
+ * @param oldValue
+ */
+function afterChangeProblemType(fieldName, newValue, oldValue){
+	var pp=View.panels.get("wrDetails");
+	
+	if (oldValue==newValue){
+		return;
+	}
+	
+	//IFM Added
+	var form = View.panels.get("wrDetailsMore");
+	if(valueExistsNotEmpty(newValue)){
+		var ptRec = getProblemTypeRecord(newValue);
+		if (valueExists(ptRec)){
+			var acId = ptRec.getValue('probtype.ac_id');
+			form.setFieldValue('wr.ac_id', acId);
+			
+		}
+		
+	}
+}
+
+
+/**
+ * IFM Added to get ac_id for problem type
+ * Get probtype record.
+ * @param prob_type code
+ * @returns record object
+ */
+function getProblemTypeRecord(pt){
+	var params = {
+			tableName: 'probtype',
+			fieldNames: toJSON(['probtype.prob_type', 'probtype.ac_id']),
+			restriction: toJSON({
+				'probtype.prob_type': pt
+			})
+	};
+	try {
+		var result = Workflow.call('AbCommonResources-getDataRecord', params);
+		if (result.code == 'executed') {
+			return result.dataSet;
+		} 
+	} catch (e) {
+		Workflow.handleError(e);
+	}
+}

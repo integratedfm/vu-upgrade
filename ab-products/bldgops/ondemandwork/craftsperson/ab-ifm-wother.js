@@ -52,7 +52,7 @@ var ifmWROtherCost = View.createController('ifmWROtherCost', {
 			var cc=document.getElementById("closeButton");
 			var ctrl=window.parent.window.controller;//gives the controller as defined here at the top
 			ctrl.requestdetailsPanel.refresh();
-			form.closeWindow();
+			//form.closeWindow();
 			
 			//ctrl.requestdetailsPanel.updateOldFieldValues();
 			//ctrl.requestdetailsPanel_afterRefresh();

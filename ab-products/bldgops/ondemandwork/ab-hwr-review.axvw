@@ -1,6 +1,17 @@
 <view version="2.0">
     <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
-    <layout file="pkey-tree.axvw"/>
+	<!-- IFM - Replace pkey-tree.axvw layout with a customised version of the pkey-tree.axvw layout, in order to show Histor in a separate panel (20/03/2019) -->
+	<!--  <layout file="pkey-tree.axvw"/>  -->
+	<!--  <layout file="pkey-tree-details.axvw" />  -->
+    <layout type="borderLayout" id="mainLayout">
+        <west initialSize="280" split="true"/>
+		<center autoScroll="true"/>
+	</layout>
+	<layout type="borderLayout" id="nestedLayout_1" containingLayout="mainLayout" region="center">
+		<north initialSize="80%" split="true"/>
+		<center autoScroll="true"/>
+	</layout>
+	
 	<js file="ab-hwr-review.js"/>
     <title translatable="true">Historical Work Requests</title>
     
@@ -13,21 +24,20 @@
         <sortField name="wr_id" table="hwr" ascending="false"/>
     </dataSource>
       
-    <panel type="grid" id="abHwrEdit_treePanel" dataSource="abHwrEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+    <panel type="grid" id="abHwrEdit_treePanel" dataSource="abHwrEdit_ds_0" showOnLoad="true" selectionEnabled="true" layout="mainLayout" region="west">
         <title translatable="true">Select Work Requests</title>
-        <action id="abHwrEdit_addNew">
-            <title translatable="true">Add New</title>
-            <command type="showPanel" panelId="abHwrEdit_detailsPanel" newRecord="true"/>
-        </action>
+        
         <action id="abHwrEdit_refresh">
             <title translatable="true">Refresh</title>
             <command type="showPanel" panelId="abHwrEdit_treePanel"/>
         </action>    
         <field name="wr_id" table="hwr" controlType="link">
             <command type="showPanel" panelId="abHwrEdit_detailsPanel" showSelectValueAction=""/>
+            <command type="showPanel" panelId="historyPanel" showSelectValueAction=""/>
         </field>
 		<field name="wo_id" table="hwr" controlType="link">
             <command type="showPanel" panelId="abHwrEdit_detailsPanel" showSelectValueAction=""/>
+            <command type="showPanel" panelId="historyPanel" showSelectValueAction=""/>
         </field>
         <field name="invoice_no" table="hwr" controlType="link">
             <command type="showPanel" panelId="abHwrEdit_detailsPanel" showSelectValueAction=""/>
@@ -95,7 +105,7 @@
         </field>
     </dataSource>
       
-    <panel type="form" id="abHwrEdit_detailsPanel" dataSource="abHwrEdit_ds_1" showOnLoad="false" labelsPosition="left" columns="2" region="center">
+    <panel type="form" id="abHwrEdit_detailsPanel" dataSource="abHwrEdit_ds_1" showOnLoad="false" labelsPosition="left" columns="2" layout="nestedLayout_1" region="north">
         <title translatable="true">Historical Work Requests</title>     
 		<!-- IFM - Removed the save and delete actions
         <action id="abHwrEdit_save">
@@ -239,5 +249,54 @@
 		<field />
 		<field />
 		<field name="cf_notes" table="hwr" readOnly="true" colspan="2" rowspan="3"/>
+		
+		<!-- IFM - Draw a Horizontal Line -->
+		<field colspan="2" readOnly="true">
+		    <html>
+                <hr></hr>
+		    </html>
+		</field>
+    
+    </panel>
+    
+    <dataSource id="DS_steps_log">
+        <table name="hhelpdesk_step_log" role="main"/>
+        <table name="afm_wf_steps" role="standard"/>
+        <field name="step_log_id" table="hhelpdesk_step_log"/>
+        <field name="user_name" table="hhelpdesk_step_log"/>
+        <field name="em_id" table="hhelpdesk_step_log"/>
+        <field name="vn_id" table="hhelpdesk_step_log"/>
+        <field name="date_response" table="hhelpdesk_step_log"/>
+        <field name="time_response" table="hhelpdesk_step_log"/>
+        <field name="step" table="afm_wf_steps"/>
+        <field name="status" table="afm_wf_steps"/>
+        <field name="step_status_result" table="hhelpdesk_step_log"/>
+        <field name="comments" table="hhelpdesk_step_log"/>
+    </dataSource>
+
+    <panel type="grid" id="ifmHistoryPanel" controlType="reportGrid" dataSource="DS_steps_log" showOnLoad="false" sortEnabled="false" collapsed="false" layout="nestedLayout_1" region="center">
+	    <title translatable="true">Work Request Step History</title>
+        <field name="step_log_id" table="hhelpdesk_step_log" hidden="true"/>
+        <field name="user_name" table="hhelpdesk_step_log" hidden="false"/>
+        <field name="em_id" table="hhelpdesk_step_log" hidden="true"/>
+        <field name="vn_id" table="hhelpdesk_step_log" hidden="true">
+            <title translatable="true">Step Responded By</title>
+        </field>
+        <field name="date_response" table="hhelpdesk_step_log">
+            <title translatable="true">On</title>
+        </field>
+        <field name="time_response" table="hhelpdesk_step_log" hidden="true"/>
+        <field name="step" table="afm_wf_steps">
+            <title translatable="true">Workflow Step</title>
+        </field>
+        <field name="status" table="afm_wf_steps">
+            <title translatable="true">Status</title>
+        </field>
+        <field name="step_status_result" table="hhelpdesk_step_log">
+            <title translatable="true">Step Status After</title>
+        </field>
+        <field name="comments" table="hhelpdesk_step_log">
+            <title translatable="true">Comments</title>
+        </field>
     </panel>
 </view>

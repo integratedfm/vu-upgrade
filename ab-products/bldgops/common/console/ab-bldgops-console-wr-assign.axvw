@@ -36,6 +36,10 @@
 		<field table="wo" name="bl_id"/>
 		<field table="wo" name="dv_id"/>
 		<field table="wo" name="dp_id"/>
+		<!-- IFM added -->
+		<field table="wo" name="cc_id"/>
+		<field table="wo" name="ac_id"/>
+		
 		<restriction type="parsed">
 			<clause table="wo" name="date_issued" op="IS NULL"/>
 		</restriction>
@@ -46,14 +50,15 @@
 		<table name="wr"/>
 		<field table="wr" name="wr_id"/>
 		<field table="wr" name="cc_id"/>
+		<field table="wr" name="ac_id"/>
 	</dataSource>
 	
 	<tabs id="assignTabs" tabRefreshPolicy="refreshOnLoad">
 	
-		<!-- Assign to Existing Work Order  -->
-		<tab name="assignTab" selected="true">
+		<!-- Assign to Existing Work Order  IFM - Changed to hide the assignTab (April 2019) -->
+		<tab name="assignTab" selected="false" hidden="true">
 			<title>Assign to Existing Work Order</title>
-			<panel type="grid" id="assignWoGrid" dataSource="assignWoDS" showOnLoad="true">
+			<panel type="grid" id="assignWoGrid" dataSource="assignWoDS" showOnLoad="false" >
 				<action id="selectFields">
 					<title>Select Work Order Fields</title>
 					<command type="selectFields" panelId="assignWoGrid"/>
@@ -80,74 +85,10 @@
 				</field>
 			</panel>
 		</tab>
-		
-		<!-- Assign to New Work Order  -->
-		<tab name="createTab">
-			<title>Assign to New Work Order</title>
-			<panel type="form" id="createWoForm" dataSource="woDS" showOnLoad="true" buttonsPosition="footer" newRecord="true">
-				<field table="wo" name="wo_id" hidden="true"/>
-				<field table="wo" name="tr_id" readOnly="false" required="false"/>
-				
-				<!-- IFM - Add the Cost Centre Select Value panel and description -->
-				<field name="cc_id" table="wo" readOnly="false" required="false" >
-				<action>
-					<title>...</title>
-					<tooltip>Select Value - Cost Centre</tooltip>
-					<command type= "selectValue" 
-					fieldNames= "wo.cc_id, ifm_costcentre.name" 
-					selectFieldNames= "ifm_costcentre.cc_id, ifm_costcentre.name" 
-					visibleFieldNames= "ifm_costcentre.cc_id, ifm_costcentre.name" >
-					<title>Cost Centre</title>
-					</command>
-					</action>
-				</field>
-				<field name="name" table="ifm_costcentre" readOnly="true"/>
 
-				<!-- IFM - Modify the Account Code Select Value panel and description -->
-				<field name="ac_id" table="wo" readOnly="false" required="false" >
-				<action>
-					<title>...</title>
-					<tooltip>Select Value - Account Code</tooltip>
-					<command type= "selectValue" 
-					fieldNames= "wo.ac_id, ac.description" 
-					selectFieldNames= "ac.ac_id, ac.description" 
-					visibleFieldNames= "ac.ac_id, ac.description" >
-					<title>Account Code</title>
-					</command>
-					</action>
-				</field>
-				<field name="description" table="ac" readOnly="true"/>
-				
-				<field table="wo" name="description" readOnly="false" required="true">
-					<title>Description</title>
-				</field>
-				<field table="wo" name="bl_id" readOnly="false" required="false">
-					<title>Building</title>
-				</field>
-				<field table="wo" name="dv_id" readOnly="false" required="false">
-					<title>Division</title>
-				</field>
-				<field table="wo" name="dp_id" readOnly="false" required="false">
-					<title>Department</title>
-				</field>
-				<action id="create" mainAction="true">
-					<title>Assign</title>
-				</action>
-				
-				<action id="cancelAssignWRs">
-					<title>Cancel</title>
-					<command type="closeDialog"/>
-				</action>
-			</panel>
-			
-			<panel type="form" id="ifmSaveWRCCForm" dataSource="wrDS" showOnLoad="false"  hidden="true">
-				<field table="wr" name="wr_id"/>
-				<field table="wr" name="cc_id"/>
-			</panel>
-		</tab>
-		
-		<!-- Assign and Issue Work Order  -->
-		<tab name="assignAndIssueTab">
+		<!-- Assign and Issue Work Order -->
+		<!-- IFM - Modified to move this TAB forward, before the 'Assign and Issue' table (April 2019) --> 
+		<tab name="assignAndIssueTab" selected="true">
 			<title>Assign and Issue Work Order</title>
 			<panel type="form" id="issueWoForm" dataSource="woDS" showOnLoad="true" buttonsPosition="footer" newRecord="true">
 				<field table="wo" name="wo_id" hidden="true"/>
@@ -203,6 +144,72 @@
 					<title>Cancel</title>
 					<command type="closeDialog"/>
 				</action>
+			</panel>
+		</tab>
+		
+		<!-- Assign to New Work Order -->
+		<tab name="createTab">
+			<title>Assign to New Work Order</title>
+			<panel type="form" id="createWoForm" dataSource="woDS" showOnLoad="true" buttonsPosition="footer" newRecord="true">
+				<field table="wo" name="wo_id" hidden="true"/>
+				<field table="wo" name="tr_id" readOnly="false" required="false"/>
+				
+				<!-- IFM - Add the Cost Centre Select Value panel and description -->
+				<field name="cc_id" table="wo" readOnly="false" required="true" >
+				<action>
+					<title>...</title>
+					<tooltip>Select Value - Cost Centre</tooltip>
+					<command type= "selectValue" 
+					fieldNames= "wo.cc_id, ifm_costcentre.name" 
+					selectFieldNames= "ifm_costcentre.cc_id, ifm_costcentre.name" 
+					visibleFieldNames= "ifm_costcentre.cc_id, ifm_costcentre.name" >
+					<title>Cost Centre</title>
+					</command>
+					</action>
+				</field>
+				<field name="name" table="ifm_costcentre" readOnly="true"/>
+
+				<!-- IFM - Modify the Account Code Select Value panel and description -->
+				<field name="ac_id" table="wo" readOnly="false" required="true" >
+				<action>
+					<title>...</title>
+					<tooltip>Select Value - Account Code</tooltip>
+					<command type= "selectValue" 
+					fieldNames= "wo.ac_id, ac.description" 
+					selectFieldNames= "ac.ac_id, ac.description" 
+					visibleFieldNames= "ac.ac_id, ac.description" >
+					<title>Account Code</title>
+					</command>
+					</action>
+				</field>
+				<field name="description" table="ac" readOnly="true"/>
+				
+				<field table="wo" name="description" readOnly="false" required="true">
+					<title>Description</title>
+				</field>
+				<field table="wo" name="bl_id" readOnly="false" required="false">
+					<title>Building</title>
+				</field>
+				<field table="wo" name="dv_id" readOnly="false" required="false">
+					<title>Division</title>
+				</field>
+				<field table="wo" name="dp_id" readOnly="false" required="false">
+					<title>Department</title>
+				</field>
+				<action id="create" mainAction="true">
+					<title>Assign</title>
+				</action>
+				
+				<action id="cancelAssignWRs">
+					<title>Cancel</title>
+					<command type="closeDialog"/>
+				</action>
+			</panel>
+			
+			<panel type="form" id="ifmSaveWRCCForm" dataSource="wrDS" showOnLoad="false"  hidden="true">
+				<field table="wr" name="wr_id"/>
+				<field table="wr" name="cc_id"/>				
+				<field table="wr" name="ac_id"/>
 			</panel>
 		</tab>
 	</tabs>

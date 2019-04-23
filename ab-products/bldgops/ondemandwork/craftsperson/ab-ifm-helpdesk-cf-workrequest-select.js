@@ -102,8 +102,6 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 		holdPanel_afterRefresh();
 		var wr_gp=document.getElementById("wr_report");
 		wr_gp.style.minHeight="250px";
-		
-		
 	},
 	
 	
@@ -112,6 +110,7 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 		var cc=document.getElementById("closeButton");
 		if (cc !=null){
 			cc.click();
+			View.closeDialog();
 		}
 		this.disableActionButtons();
 		//
@@ -272,7 +271,6 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 		delete record["activity_log.time_required"];
 		delete record["bl.name"];
 		
-		
 		var result = {};
 	    try {		
 			 result = Workflow.callMethod('AbBldgOpsOnDemandWork-WorkRequestService-updateWorkRequestStatus', 'wr','wr_id',wr_id,record,status);
@@ -288,8 +286,6 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 			//ABHDC_getTabsSharedParameters()["refresh_from_ab_helpdesk_cf_workrequest_select"] = true; 
 			this.showQuickPanel('popup', this.popupPanel, 500, 150, "Successfuly Updated Work Request "+wr_id);
 			setTimeout(popUpTimeOut, 2000); //1000 ms = 1 second
-			
-			
 		} else {
 		 	Workflow.handleError(result);
 		}
@@ -306,7 +302,6 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 				//controller.requestdetailsPanel_afterRefresh();
 				updateInvoicePoFields();
 			});
-			
 		}
 		
 		if (invoice_no_input !==null){
@@ -314,14 +309,11 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 				//controller.requestdetailsPanel_afterRefresh();
 				updateInvoicePoFields();
 			});
-			
 		}
 		//IFM added for hold button
 		this.wo_report.addEventListener('input', function(evt){
 				controller.showActionBarActions();
 			});
-				
-
 	},
 	/**
 	 * Show common actions.
@@ -347,7 +339,6 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 			var action = this.wr_report.actionbar.getAction(actionName);
 			action.show(true);
 			action.forceDisable(false);
-			
 		}
 	},
 	/**IFM Added 
@@ -365,7 +356,7 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 	 */
 	showQuickPanel : function(action, panel, width, height, title) {
 		//panel config
-		if (this.wr_report.getSelectedRecords().length <1  &&(title==null || !title.includes("Success")) ){
+		if (this.wr_report.getSelectedRecords().length <1  &&(title==null || title.indexOf('Success')<0) ){
 			View.showMessage("Please select at least one work request");
 			return;
 		}
@@ -418,7 +409,6 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 				'wr.cai_approved_by': cai_approved_by,
 				'wr.cai_contractor': cai_contractor
 			});
-			
 		}
 		return records;
 	},
@@ -427,8 +417,8 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 		View.WRrecords = this.getSelectedWrIdObjects();
 		
 		this.showQuickPanel('hold', this.holdPanel, 500, 250, "Hold Work Request" + ' ' + (action.button ? action.row.getFieldValue('wr.wr_id') : ''));
-		
 	},
+
 	wr_report_onCai : function(action){
 		View.WRrecords = this.getSelectedWrIdObjects();
 		
@@ -442,7 +432,7 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 		hRest.addClause("wr.wr_id", wrId, "=");
 		vals = this.WRCai_DS.getRecord(hRest);
 		var  estTotalCost = rec['wr.cost_est_total'].trim();
-		estTotalCost = estTotalCost.lenght <1 ? "0":estTotalCost;
+		estTotalCost = estTotalCost.length < 1 ? "0":estTotalCost;
 		estTotalCost = parseFloat(estTotalCost);
 		
 		var contractor = rec['wr.cai_contractor'].trim();
@@ -450,11 +440,11 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 		this.caiPanel.setFieldValue("wr.cai_contractor", contractor);
 		this.caiPanel.setFieldValue("wr.cai_approved_by", approver);
 		
-		if (estTotalCost <500){
-			this.caiPanel.getFieldCell("wr.cai_approved_by").hidden=true;
-			this.caiPanel.getFieldLabelElement("wr.cai_approved_by").hidden=true;
+		if (estTotalCost > 500) {
+			cp.showField('wr.cai_approved_by', true);
+		} else {
+			cp.showField('wr.cai_approved_by', false);
 		}
-		
 	},
 	//IFM Added
 	holdPanel_onHoldYes: function(action){
@@ -478,7 +468,6 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 			var e= {"cause": cause, "message":"Please fill up hold end date and resubmit", "description":""};
 			//View.showException(e);
 			View.showMessage("Please fill up hold end date and resubmit","Please fill up hold end date and resubmit","Hold End Date is empty");
-			
 			return;
 		}
 		
@@ -493,7 +482,6 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 			var e= {"cause": cause, "message":"The request cannot be On Hold for more than 30 days.", "description":"Please contact the Facilities Department if the request cannot be completed within 30 days."};
 			//View.showException(e, "Please contact the Facilities Department if the request cannot be completed within 30 days.");
 			View.showMessage('The request cannot be On Hold for more than 30 days.', "The request cannot be On Hold for more than 30 days.", "Please contact the Facilities Department if the request cannot be completed within 30 days.");
-			
 			return;
 		}else if(diff < 0){
 			View.showMessage('Please enter a valid hold end date.', "Please enter a valid hold end date.", "End date of the hold period can not be in the past.");
@@ -531,7 +519,6 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 			
 			record["values"]={};//ifmSendEmail expects a values json object even if empty 
 			
-			
 			try{
 				//*
 				Workflow.callMethod('AbBldgOpsOnDemandWork-WorkRequestService-ifmSendEmail', 
@@ -545,10 +532,8 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 		this.updateWorkRequestStatusForRecords(status);
 		this.holdPanel.closeWindow();
 		//View.refreshPanels(null, this.abOnDemandCfWrUpdateController);
-		
-		
-		
 	},
+
 	/**
 	 * IFM Mehran added for CAI status 
 	 */
@@ -556,27 +541,44 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 		var nDate = new Date();
 		var curDate = nDate.toISOString();
 		var records = View.WRrecords // get selected records
+		var record = records[0];
 		var cp = this.caiPanel;
 		var tpRest = new Ab.view.Restriction();
 		var tpRec, email, cfid, cfapprover;
 		var wrcfRecs, wrcfRest, vals;
 		cfid = cp.getFieldValue("wr.cai_contractor").trim();
 		cfapprover = cp.getFieldValue("wr.cai_approved_by").trim();
-		
-		if (cfid.length <1){
-			var cause = {"details":"Cai Contractor Name is empty"};
-			var e= {"cause": cause, "message":"Please fill up Cai Contractor and resubmit", "description":""};
+
+		if (cfid.length < 1){
+			var cause = {"details":"Please enter a person's name into the CAI Contractor field."};
+			var e= {"cause": cause, "message":"Please enter a person's name into the CAI Contractor field.", "description":""};
 			View.showException(e);
-			this.caiPanel.closeWindow();
+			//this.caiPanel.closeWindow();
+			return;
+		}
+
+		if (cfapprover.length < 1 && this.wr_report.getSelectedRecords()[0].getValue('wr.cost_est_total') > 500) {
+			var cause = {"details":"Please select a Tradesperson in the CAI Approved By field."};
+			var e= {"cause": cause, "message":"Please select a Tradesperson in the CAI Approved By field.", "description":""};
+			View.showException(e);
 			return;
 		}
 		
-		tpRest.addClause("cf.cf_id", cfid,"=" );
+		tpRest.addClause("cf.cf_id", cfapprover,"=" );
+		tpRest.addClause("cf.is_approver", "1" ,"=" );
 		tpRec = this.tpEmailDS.getRecord(tpRest);
+		//IFM FIX 05-03-2019 Added check for invalid cf_id on cai_approved_by field
+		if (jQuery.isEmptyObject(tpRec.values) && this.wr_report.getSelectedRecords()[0].getValue('wr.cost_est_total') > 500) {
+			var cause = {"details":"The Tradesperson entered into the CAI Approved By field does NOT have authority to approve payments. Please select a Tradesperson from 'Select Values' list."};
+			var e= {"cause": cause, "message":"Please Select a Tradesperson from Select Values list.", "description":""};
+			View.showException(e);
+			//this.caiPanel.closeWindow();
+			return;
+		}
+		
 		email = tpRec.getValue("cf.email");
 		tpRec.setValue("approverName",tpRec.getValue("cf.name"));
 		tpRec.setValue("userName",View.user.name);
-		
 		
 		//Email loop to send email for more than 500
 		for (var i=0; i<records.length;i++){
@@ -594,7 +596,7 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 			hRest.addClause("wr.wr_id", wrId, "=");
 			vals = this.WRCai_DS.getRecord(hRest);
 			var  estTotalCost = record['wr.cost_est_total'].trim();
-			estTotalCost = estTotalCost.lenght <1 ? "0":estTotalCost;
+			estTotalCost = estTotalCost.length <1 ? "0":estTotalCost;
 			estTotalCost = parseFloat(estTotalCost);
 			
 			
@@ -603,11 +605,8 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 			vals.setValue("wr.cai_contractor",cfid);
 			vals.setValue("wr.cai_approved_by",cfapprover);//WRCai_DS 
 			this.WRCai_DS.saveRecord(vals);//save vals
-			
-			
-			
-			
-			if(estTotalCost <500){
+
+			if(estTotalCost <= 500){
 				continue;
 			}
 			var tpNames="";
@@ -629,9 +628,7 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 			
 			tpRec.setValue("contractorNames",tpNames);
 			tpRec.setValue("contractorIds",tpCfIds);
-			
-			
-			
+
 			//final String wrId, final String emailTemplates, final JSONObject record, final String emailAddr, final String cfId 
 			//NOTIFY_APPROVER_CAI_WFR
 			try{
@@ -680,8 +677,8 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 		this.requestdetailsPanel.refresh();
 		this.wr_report.show(true);
 		this.requestdetailsPanel.show(true);
-		
 	},
+	
 	/**
 	 * IFM Mehran added for highlighting Emergency requests 08-11-16
 	 * Highlight the emergency request in orange-color.
@@ -712,10 +709,8 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 			var curd = new Date();
 			
 			if (curd>wrd) {
-				
 				Ext.get(row.dom).setStyle('color', '#FF4500');
 				row.dom.bgColor='#FF5555'
-				
 			}
 		});
 	},
@@ -802,8 +797,6 @@ var controller = View.createController('abOnDemandCfWrUpdateController',{
 		this.updateWorkRequestStatusForRecords('Com');
 		this.completeSelectedPanel.closeWindow();
 	}
-
-	
 });
 
 function selectAllRecords() {
@@ -821,7 +814,6 @@ function caiPanel_afterRefresh() {
 		var name = View.user.name;		
 		controller.caiPanel.setFieldValue("wr.cai_user", name);
 		controller.caiPanel.setFieldValue("wr.cai_date", nDate);
-		
 }
 
 function holdPanel_afterRefresh() 

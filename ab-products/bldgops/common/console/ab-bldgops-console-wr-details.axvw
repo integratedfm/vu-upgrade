@@ -22,11 +22,13 @@
     <panel type="form" columns="2" id="wrDetails" dataSource="wrDetailsDS" buttonsPosition="footer">
         <title>Problem</title>
         <field name="wr_id" hidden="false"/>
-        <field name="prob_type"/>
-        <field table="wr" name="description" colspan="2" readOnly="${!user.isMemberOfGroup('OPS-MOB')}">
+        <field name="prob_type" />
+        <field table="wr" name="description" readOnly="${!user.isMemberOfGroup('OPS-MOB')}" colspan="2">
             <title>Description</title>
         </field>
-        <field name="location" colspan="2" readOnly="${!user.isMemberOfGroup('OPS-MOB')}" />
+		
+        <field name="location" readOnly="${!user.isMemberOfGroup('OPS-MOB')}" colspan="2"/>
+		
 		<!-- IFM Mehran added for checking to allow change of the invoice to po no -->
         <field table="wr" name="invoice_no" hidden="true"/>
         <field table="wr" name="po_no" hidden="true"/>
@@ -111,7 +113,7 @@
 		</field>
 		<field name="description" table="ac" readOnly="true"/>
 				
-        <field name="status" required="false">
+        <field name="status" required="false" onchange="ifmStatusChanged()">
             <title>Status</title>
         </field>
         <field name="date_assigned"  readOnly="true"/>
@@ -122,7 +124,32 @@
         <field name="doc2"/>
         <field name="doc3"/>
         <field name="doc4"/>
+		<field name="notify_ohs" table="wr" hidden="true" />
+        <field name = "notifyohs_cb" readOnly="true" >
+			<title>Notify OHS</title>
+			<html>
+				<input type="checkbox" id="notifyohs" ></input>								
+			</html>
+		</field>
+		<field/>
+        
         <field name="step_status" hidden="true"/>
+		<!-- IFM Added for cai fields-->
+		<field table="wr" name="cai_contractor"/>
+		<field table="wr" name="cai_user"/>
+		<field table="wr" name="cai_approved_by" >
+			<action>
+                <title translatable="false">...</title>
+                <command type="selectValue"
+                    fieldNames="wr.cai_approved_by"
+                    selectFieldNames="cf.cf_id"
+					restriction="cf.is_approver = 1"
+                    visibleFieldNames="cf.cf_id,cf.name,cf.email"/>
+            </action>
+		</field>
+		
+		
+		<field table="wr" name="cai_date"/>
 		
 		<!-- IFM Mehran Added fields for FONE 31-Aug-2017-->
 		<field table="wr" name="invoice_no"/>
@@ -130,7 +157,8 @@
 		<field table="wr" name="invoice_file_name"/>		
 		<field table="wr" name="gst_inclusive"/>       		
 		<field table="wr" name="po_no"/>
-		<field />
+		<field table="wr" name="invoice_checked" readOnly="true"/>				
+		<field />	
 	
 
         <field>

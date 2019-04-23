@@ -180,8 +180,7 @@
 		<field table="wr" name="cost_est_total" hidden="true"/>
 		<field table="wr" name="cai_contractor" hidden="true"/>
 		<field table="wr" name="cai_approved_by" hidden="true"/>
-		
-		
+
 		<field table="wr" name="hold_date" hidden="true"/>
 		<field table="wr" name="hold_end" hidden="true"/>
 		<field table="wr" name="po_no" hidden="true"/>
@@ -437,16 +436,15 @@
             <command type="closeDialog"/>
         </action>
 		<field table="wr" name="cai_contractor" readOnly="false" required="true">
-			<action>
+			<!-- IFM - disable selectValue on Rob Vin request (06/03/2019) -->
+			<!-- <action>
                 <title translatable="false">...</title>
                 <command type="selectValue"
                     fieldNames="wr.cai_contractor"
                     selectFieldNames="cf.cf_id"
-					
                     visibleFieldNames="cf.cf_id,cf.name,cf.email"/>
-            </action>
+            </action>   -->
 		</field>
-		
 		<field table="wr" name="wr_id" hidden="true"/>
 		<field table="wr" name="cai_user" readOnly="true"/>
 		<field table="wr" name="cai_date" readOnly="true"/>
@@ -460,8 +458,6 @@
                     visibleFieldNames="cf.cf_id,cf.name,cf.email"/>
             </action>
 		</field>
-		
-		
     </panel>
 	
 	<!-- Quick panel for IFM Complete action -->
@@ -486,7 +482,6 @@
 		<field  name="cf_id" />
 		<field  name="email" />
 		<field  name="name" />
-	
 	</dataSource>
 	
 	<!--IFM Added -->
