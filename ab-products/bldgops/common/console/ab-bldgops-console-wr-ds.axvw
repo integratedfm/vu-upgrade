@@ -60,12 +60,20 @@
         <field name="desc_other_costs"/>
         <field name="step_status"/>
         <field name="activity_log_id"/>
-		<!--IFM Mehran Added the FinanceOne fields 31-Aug-2017-->				    
+		<!--IFM Mehran Added the FinanceOne fields 31-Aug-2017 , invoice checked added 22-11-18-->				    
 		<field table="wr" name="invoice_no"/>
 		<field table="wr" name="invoice_date"/>
 		<field table="wr" name="invoice_file_name"/>		
 		<field table="wr" name="gst_inclusive"/>       		
 		<field table="wr" name="po_no"/>
+		<!-- IFM Added for cai fields-->
+		<field table="wr" name="cai_contractor"/>
+		<field table="wr" name="cai_user"/>
+		<field table="wr" name="cai_date"/>
+		<field table="wr" name="cai_approved_by"/>
+		<field table="wr" name="notify_ohs"/>
+		<field table="wr" name="invoice_checked"/>
+		
     </dataSource>
     
 </view>
