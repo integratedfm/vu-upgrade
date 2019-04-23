@@ -1,0 +1,58 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Define Cost Centre</title>
+    
+    <dataSource id="ifmCostCentreEdit_ds_0">
+        <table name="ifm_costcentre" role="main"/>
+        <field table="ifm_costcentre" name="cc_id"/>
+        <field table="ifm_costcentre" name="name"/>
+    
+    </dataSource>
+      
+    <panel type="grid" id="ifmCostCentreEdit_treePanel" dataSource="ifmCostCentreEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Cost Centre</title>
+        <action id="ifmCostCentreEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="ifmCostCentreEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="ifmCostCentreEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="ifmCostCentreEdit_treePanel"/>
+        </action>    
+        <field name="cc_id" table="ifm_costcentre" controlType="link">
+            <command type="showPanel" panelId="ifmCostCentreEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="name" table="ifm_costcentre" controlType="link">
+            <command type="showPanel" panelId="ifmCostCentreEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <indexField table="ifm_costcentre" name="cc_id"/>
+    </panel>
+    
+    <dataSource id="ifmCostCentreEdit_ds_1">
+        <table name="ifm_costcentre" role="main"/>
+        <field table="ifm_costcentre" name="cc_id"/>
+        <field table="ifm_costcentre" name="name"/>
+    </dataSource>
+      
+    <panel type="form" id="ifmCostCentreEdit_detailsPanel" dataSource="ifmCostCentreEdit_ds_1" showOnLoad="false" labelsPosition="top" columns="1" region="center">
+        <title translatable="true">Cost Centre</title>        
+        <action id="ifmCostCentreEdit_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="ifmCostCentreEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmCostCentreEdit_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="ifmCostCentreEdit_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="ifmCostCentreEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmCostCentreEdit_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="ifmCostCentreEdit_detailsPanel" show="false"/>
+        </action>    
+        <field name="cc_id" table="ifm_costcentre" showSelectValueAction=""/>
+        <field name="name" table="ifm_costcentre" width="25%" showSelectValueAction=""/>
+    </panel>
+</view>

@@ -1,0 +1,59 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Title for View</title>
+    
+    <dataSource id="abViewdefEditformDrilldown_ds_0">
+        <table name="cf_work_team" role="main"/>
+        <field table="cf_work_team" name="cf_id"/>
+        <field table="cf_work_team" name="work_team_id"/>
+    
+    </dataSource>
+      
+    <panel type="grid" id="abViewdefEditformDrilldown_treePanel" dataSource="abViewdefEditformDrilldown_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Work Team's of Craftsperson</title>
+        <action id="abViewdefEditformDrilldown_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel"/>
+        </action>    
+        <field name="cf_id" table="cf_work_team" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="work_team_id" table="cf_work_team" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <indexField table="cf_work_team" name="cf_id"/>
+    </panel>
+    
+    <dataSource id="abViewdefEditformDrilldown_ds_1">
+        <table name="cf_work_team" role="main"/>
+        <field table="cf_work_team" name="cf_id"/>
+        <field table="cf_work_team" name="work_team_id"/>
+    
+    </dataSource>
+      
+    <panel type="form" id="abViewdefEditformDrilldown_detailsPanel" dataSource="abViewdefEditformDrilldown_ds_1" showOnLoad="false" labelsPosition="top" columns="2" region="center">
+        <title translatable="true">Work Team's of Craftsperson</title>        
+        <action id="abViewdefEditformDrilldown_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" show="false"/>
+        </action>    
+        <field name="cf_id" table="cf_work_team" showSelectValueAction=""/>
+        <field name="work_team_id" table="cf_work_team" showSelectValueAction=""/>
+    </panel>
+</view>

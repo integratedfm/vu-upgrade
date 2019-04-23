@@ -1,0 +1,113 @@
+<view version="2.0">
+
+<js file="ab-wr-open.js" />
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Open Work Request</title>
+    
+    <dataSource id="abViewdefEditformDrilldown_ds_0">
+        <table name="wr" role="main"/>
+        <field table="wr" name="wr_id"/>
+		<field table="wr" name="wo_id"/>
+        <field table="wr" name="ac_id"/>
+        <field table="wr" name="cc_id"/>		
+    
+    </dataSource>
+      
+    <panel type="grid" id="abViewdefEditformDrilldown_treePanel" dataSource="abViewdefEditformDrilldown_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Work Requests</title>
+        <action id="abViewdefEditformDrilldown_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel"/>
+        </action>    
+        <field name="wr_id" table="wr" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" />
+        </field>
+		<field name="wo_id" table="wr" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" />
+        </field>
+        <field name="ac_id" table="wr" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" />
+        </field>
+        <field name="cc_id" table="wr" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" />
+        </field>
+        <indexField table="wr" name="wr_id"/>
+    </panel>
+    
+    <dataSource id="abViewdefEditformDrilldown_ds_1">
+        <table name="wr" role="main"/>
+        <field table="wr" name="wr_id"/>
+        <field table="wr" name="wo_id"/>
+        <field table="wr" name="ac_id"/>
+        <field table="wr" name="cc_id"/>
+        <field table="wr" name="cost_other"/>
+        <field table="wr" name="cost_est_total"/>
+        <field table="wr" name="cost_total"/>
+        <field table="wr" name="cost_est_other"/>
+        <field table="wr" name="invoice_no"/>
+        <field table="wr" name="invoice_date"/>
+        <field table="wr" name="invoice_file_name"/>
+        <field table="wr" name="invoice_file_location"/>
+        <field table="wr" name="status"/>
+        <field table="wr" name="po_no"/>
+		<field table="wr" name="gst_inclusive"/>
+        <field table="wr" name="payment_date"/>
+        <field table="wr" name="payment_batchno"/>
+        <field table="wr" name="accrual_date"/>
+        <field table="wr" name="accrual_batchno"/>
+	</dataSource>
+      
+    <panel type="form" id="abViewdefEditformDrilldown_detailsPanel" dataSource="abViewdefEditformDrilldown_ds_1" showOnLoad="false" labelsPosition="top" columns="2" region="center">
+        <title translatable="true">Work Requests</title>        
+        <action id="abViewdefEditformDrilldown_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" show="false"/>
+        </action>    
+        <field name="wr_id" table="wr" />
+        <field name="wo_id" table="wr" />
+        <field name="ac_id" table="wr" />
+        <field name="cc_id" table="wr" />
+        <field name="cost_other" table="wr" />
+        <field name="cost_total" table="wr" />
+        <field name="cost_est_other" table="wr" />
+        <field name="cost_est_total" table="wr" />
+        <field name="invoice_no" table="wr" />
+        <field name="invoice_date" table="wr" />
+        <field name="invoice_file_name" table="wr" />
+		<field name="po_no" table="wr" />
+		<field name="gst_inclusive" table="wr" />
+		<field name="" />
+        <field name="accrual_batchno" table="wr" readOnly="true"/>
+		<field name="accrual_date" table="wr" readOnly="true"/>
+		<field name="payment_batchno" table="wr" readOnly="true"/>
+		<field name="payment_date" table="wr" readOnly="true"/>
+        <field name="status" table="wr" readOnly="true"/>
+    </panel>
+	
+	<!-- IFM Mehran added for checking to allow change of the invoice to po no -->        
+	<panel type="form" columns="2" id="wrDetails" dataSource="abViewdefEditformDrilldown_ds_1"  hidden="true">
+        
+		<field name="wr_id" table="wr" hidden="true"/>
+        <field table="wr" name="invoice_no" hidden="true"/>
+        <field table="wr" name="po_no" hidden="true"/>
+        
+    </panel>
+
+		
+</view>

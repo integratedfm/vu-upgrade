@@ -1,0 +1,73 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Open Work Orders</title>
+    
+    <dataSource id="abViewdefEditformDrilldown_ds_0">
+        <table name="wo" role="main"/>
+        <field table="wo" name="wo_id"/>
+        <field table="wo" name="description"/>
+    
+    </dataSource>
+      
+    <panel type="grid" id="abViewdefEditformDrilldown_treePanel" dataSource="abViewdefEditformDrilldown_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Work Orders</title>
+        <action id="abViewdefEditformDrilldown_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel"/>
+        </action>    
+        <field name="wo_id" table="wo" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="description" table="wo" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <indexField table="wo" name="wo_id"/>
+    </panel>
+    
+    <dataSource id="abViewdefEditformDrilldown_ds_1">
+        <table name="wo" role="main"/>
+        <field table="wo" name="wo_id"/>
+        <field table="wo" name="ac_id"/>
+        <field table="wo" name="cc_id"/>
+        <field table="wo" name="bl_id"/>
+        <field table="wo" name="cost_estimated"/>
+        <field table="wo" name="cost_other"/>
+        <field table="wo" name="cost_total"/>
+        <field table="wo" name="date_assigned"/>
+        <field table="wo" name="date_issued"/>
+    
+    </dataSource>
+      
+    <panel type="form" id="abViewdefEditformDrilldown_detailsPanel" dataSource="abViewdefEditformDrilldown_ds_1" showOnLoad="false" labelsPosition="top" columns="2" region="center">
+        <title translatable="true">Work Orders</title>        
+        <action id="abViewdefEditformDrilldown_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" show="false"/>
+        </action>    
+        <field name="wo_id" table="wo" showSelectValueAction=""/>
+        <field name="ac_id" table="wo" showSelectValueAction=""/>
+        <field name="cc_id" table="wo" showSelectValueAction=""/>
+        <field name="bl_id" table="wo" showSelectValueAction=""/>
+        <field name="cost_estimated" table="wo" showSelectValueAction=""/>
+        <field name="cost_other" table="wo" showSelectValueAction=""/>
+        <field name="cost_total" table="wo" showSelectValueAction=""/>
+        <field name="date_assigned" table="wo" showSelectValueAction=""/>
+        <field name="date_issued" table="wo" showSelectValueAction=""/>
+    </panel>
+</view>

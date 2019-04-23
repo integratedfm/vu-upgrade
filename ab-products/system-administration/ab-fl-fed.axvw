@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view version="2.0"><title>Floors fed</title><designInfo isAlterable="true" pattern="ab-viewdef-grid" type="grid"/><dataSource id="ds_fl"><table name="fl" role="main"/><field name="bl_id" table="fl"/><field name="fl_id" table="fl"/><field name="name" table="fl"/><sortField name="bl_id" table="fl" ascending="true"/><sortField name="fl_id" table="fl" ascending="true"/></dataSource><panel id="fl_grid" type="grid" dataSource="ds_fl"><title>Floors fed</title></panel></view>

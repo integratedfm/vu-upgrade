@@ -1,0 +1,185 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">Define Division and Department Highlight Patterns</title>
+    
+    <message name="confirmMessage" translatable="true">All hatch pattern fields will be cleared.  Do you wish to continue?</message>
+    <message name="legendCreated" translatable="true">Swatch bitmaps created successfully.</message>
+    <js file="ab-sp-create-dp-hatch.js"/>
+     
+    <layout id="main">
+        <north id="dv" initialSize="50%" split="true"/>
+        <center  id="dp"/>
+    </layout>
+    
+    <dataSource id="createHPatternsDp_ds_0">
+        <table name="dv" role="main"/>
+        <field table="dv" name="dv_id"/>
+        <field table="dv" name="name"/>
+        <field table="dv" name="hpattern_acad"/>
+    </dataSource>
+    <panel type="grid" id="createHPatternsDv_detailsPanel" dataSource="createHPatternsDp_ds_0" multipleSelectionEnabled="false"  layoutRegion="dv">
+        <title translatable="true">Room Division Patterns:</title>
+
+        <action type="menu">
+            <title>Create Patterns Using...</title>
+
+            <action id="createHPatternsCat_createHPatsOnlyHatch">
+                <title translatable="true">Hatches</title>
+                <command type="callFunction" functionName="createHPatternsDvOnlyHatches"/>
+                <command type="showPanel" panelId="createHPatternsDv_detailsPanel"/>
+            </action>
+
+            <action id="createHPatternsCat_createHPatsOnlyColor">
+                <title translatable="true">Colors</title>
+                <command type="callFunction" functionName="createHPatternsDvOnlyColors"/>
+                <command type="showPanel" panelId="createHPatternsDv_detailsPanel"/>
+            </action>
+        </action>
+
+        <action id="createHPatternsCat_createHPatsCatLegendBitmaps">
+            <title translatable="true">Create Swatch Bitmaps</title>
+            <command type="callFunction" functionName="createHPatternsDvLegendBitmaps"/>
+            <command type="showPanel" panelId="createHPatternsDv_detailsPanel"/>
+        </action>
+
+        <action id="createHPatternsCat_clearCatHPats">
+            <title translatable="true">Clear Patterns</title>
+            <command type="callFunction" functionName="clearDvHPatterns"/>
+            <command type="showPanel" panelId="createHPatternsDv_detailsPanel"/>
+        </action>
+
+        <action id="createHPatternsDv_refresh">
+            <title translatable="true">Refresh</title>
+        </action>
+
+        <!-- The menu button displays the drop-down menu. -->
+        <action type="menu" imageName="/schema/ab-core/graphics/icons/view/export.png">
+            <!-- Empty title for image buttons. -->
+            <title></title>
+
+            <action id="createHPatternsDv_exportDOCX">
+                <title>DOCX</title>
+                <command type="exportPanel" outputType="docx" panelId="createHPatternsDv_detailsPanel"/>
+            </action>
+            <action id="createHPatternsDv_export:XLS">
+                <title>XLS</title>
+                <command type="exportPanel" outputType="xls" panelId="createHPatternsDv_detailsPanel"/>
+            </action>
+            <action id="createHPatternsDv_exportTXFR">
+                <title>DATA</title>
+                <command type="exportPanel" outputType="txfr" panelId="createHPatternsDv_detailsPanel"/>
+            </action>
+        </action>
+
+        <field id="edit" controlType="button">
+            <title translatable="true">Edit</title>
+        </field>
+        <field name="dv_id" table="dv" controlType="link">
+            <command type="callFunction" functionName="onSelectDV"/>
+        </field>
+		<field name="name" table="dv"/>
+        <field table="dv" name="hpattern_acad" controlType="color">
+		<title translatable="true">Highlight Pattern - Acad (Swatch)</title>
+	</field>
+        <field name="hpattern_acad" table="dv">
+		<title translatable="true">Highlight Pattern - Acad (Code)</title>
+	</field>
+        <indexField table="dv" name="dv_id"/>
+         <instructions>Edit the pattern values or use the Create actions to assign patterns to records that do not yet have patterns. Use the Create Swatch Bitmaps action to create swatches for hatch patterns. Refresh the view to see the hatch pattern swatches. (You may need to restart older browsers before the swatches display.)</instructions>
+    </panel>
+    
+    <dataSource id="createHPatternsDp_ds_1">
+        <table name="dp" role="main"/>
+        <field table="dp" name="dv_id"/>
+        <field table="dp" name="dp_id"/>
+		<field table="dp" name="name"/>
+        <field table="dp" name="hpattern_acad"/>
+        <field table="dp" name="option1"/>
+    </dataSource>
+    
+    <panel type="grid" id="createHPatternsDp_detailsPanel" dataSource="createHPatternsDp_ds_1" multipleSelectionEnabled="false" layoutRegion="dp">
+        <title translatable="true">Department Patterns:</title>
+
+        <action id="showAll">
+            <title translatable="true">Show All</title>
+        </action>
+
+        <action type="menu">
+            <title>Create Patterns Using...</title>
+
+            <action id="createHPatternsDp_createHPatsDpNoSort">
+                <title translatable="true">Hatches</title>
+                <command type="callFunction" functionName="createHPatternsDpNoSort"/>
+                <command type="showPanel" panelId="createHPatternsDp_detailsPanel"/>
+            </action>
+
+            <action id="createHPatternsDp_createHPatsDp">
+                <title translatable="true">Hatches by Division</title>
+                <command type="callFunction" functionName="createHPatternsDp"/>
+                <command type="showPanel" panelId="createHPatternsDp_detailsPanel"/>
+            </action>
+
+            <action id="createHPatternsDp_createHPatsNoSortOnlyColor">
+                <title translatable="true">Colors</title>
+                <command type="callFunction" functionName="createHPatternsDpNoSortOnlyColors"/>
+                <command type="showPanel" panelId="createHPatternsDp_detailsPanel"/>
+            </action>
+
+            <action id="createHPatternsDp_createHPatsOnlyColor">
+                <title translatable="true">Colors by Division</title>
+                <command type="callFunction" functionName="createHPatternsDpOnlyColors"/>
+                <command type="showPanel" panelId="createHPatternsDp_detailsPanel"/>
+            </action>
+        </action>
+
+        <action id="createHPatternsDp_createHPatsLegendBitmaps">
+        	<title translatable="true">Create Swatch Bitmaps</title>
+        	<command type="callFunction" functionName="createHPatternsLegendBitmaps"/>
+        	<command type="showPanel" panelId="createHPatternsDp_detailsPanel"/>
+        </action>
+
+        <action id="createHPatternsDp_clearHPats">
+        	<title translatable="true">Clear Patterns</title>
+        	<command type="callFunction" functionName="clearHPatterns"/>
+        	<command type="showPanel" panelId="createHPatternsDp_detailsPanel"/>
+        </action>
+
+        <action id="createHPatternsDp_refresh">
+            <title translatable="true">Refresh</title>
+        </action>
+
+        <!-- The menu button displays the drop-down menu. -->
+        <action type="menu" imageName="/schema/ab-core/graphics/icons/view/export.png">
+            <!-- Empty title for image buttons. -->
+            <title></title>
+
+            <action id="createHPatternsDp_exportDOCX">
+                <title>DOCX</title>
+                <command type="exportPanel" outputType="docx" panelId="createHPatternsDp_detailsPanel"/>
+            </action>
+            <action id="createHPatternsDp_export:XLS">
+                <title>XLS</title>
+                <command type="exportPanel" outputType="xls" panelId="createHPatternsDp_detailsPanel"/>
+            </action>
+            <action id="createHPatternsDp_exportTXFR">
+                <title>DATA</title>
+                <command type="exportPanel" outputType="txfr" panelId="createHPatternsDp_detailsPanel"/>
+            </action>
+        </action>
+
+        <field id="edit" controlType="button">
+            <title translatable="true">Edit</title>
+        </field>
+        <field name="dv_id" table="dp"/>
+        <field name="dp_id" table="dp"/>
+		<field name="name" table="dp"/>
+        <field table="dp" name="hpattern_acad" controlType="color">
+		<title translatable="true">Highlight Pattern - Acad (Swatch)</title>
+	</field>
+        <field name="hpattern_acad" table="dp">
+		<title translatable="true">Highlight Pattern - Acad (Code)</title>
+	</field>
+	<field name="option1" table="dp"/>
+        <indexField table="dp" name="dv_id"/>
+    </panel>
+</view>

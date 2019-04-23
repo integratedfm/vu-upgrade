@@ -1,0 +1,257 @@
+<view version="2.0">
+    <js file="ab-bldgops-console-wr-details.js"/>
+    <js file="ab-bldgops-console-common.js"/>
+
+    <message name="workRequestDetailsTitle">Work Request</message>
+    <message name="returenWorkRequestTitle">Return Work Request</message>
+    <message name="reportRelatedRequestTitle">Report Related Problem</message>
+    <message name="partGridTitle" translatable="true">Parts</message>
+    <message name="addPtActionTitle" translatable="true">Add</message>
+    <message name="pendingRequestWhenUpdate">Please complete all pending workflow steps before updating the status of work request.</message>
+    <message name="noLocation" translatable="true">No location available to show floor plan</message>
+    <message name="warnRequestParameterChange" translatable="true">WARNING: this work request will be returned to the beginning of the workflow and may be removed from your queue. If the work is already issued, enter your hours, costs, and notes before continuing. Do you wish to continue?</message>
+
+    <style type="text/css">
+        .relatedRequestLink {color:blue!important;}
+    </style>
+    
+    <!-- Work Request Details DataSource -->
+    <panel type="view" id="wrDetailsDataSource" file="ab-bldgops-console-wr-ds.axvw"/>
+
+    <!-- Work Request -->
+    <panel type="form" columns="2" id="wrDetails" dataSource="wrDetailsDS" buttonsPosition="footer">
+        <title>Problem</title>
+        <field name="wr_id" hidden="false"/>
+        <field name="prob_type"/>
+        <field table="wr" name="description" colspan="2" readOnly="${!user.isMemberOfGroup('OPS-MOB')}">
+            <title>Description</title>
+        </field>
+        <field name="location" colspan="2" readOnly="${!user.isMemberOfGroup('OPS-MOB')}" />
+		<!-- IFM Mehran added for checking to allow change of the invoice to po no -->
+        <field table="wr" name="invoice_no" hidden="true"/>
+        <field table="wr" name="po_no" hidden="true"/>
+        
+        <action id="filterInConsole" mainAction="true">
+            <title>Filter In Console</title>
+        </action>
+        <action id="updateRequest" mainAction="true">
+            <title>Update Request</title>
+        </action>
+        <action id="closeDetailsWindow">
+            <title>Close</title>
+        </action>
+        <action id="submit">
+            <title>Submit</title>
+        </action>
+    </panel>
+
+    <panel type="form" columns="2" id="wrDetailsMore" dataSource="wrDetailsDS" collapsed="true">
+        <title>More Information</title>
+        <action id="linkNew">
+            <title>Link New</title>
+        </action>
+        <field name="wr_id" hidden="true"/>
+        <field name="activity_log_id" required="false" readOnly="true">
+            <title>Service Request Code</title>
+        </field>
+        <field name="wo_id" required="false" readOnly="true">
+            <title>Work Order</title>
+        </field>
+        <field name="requestor" required="true" readOnly="true"/>
+        <field name="date_requested" required="true" readOnly="true">
+            <title>Date Requested</title>
+        </field>
+        <field name="priority">
+            <title>Priority</title>
+        </field>
+        <field id="priorityLabel">
+            <title>Priority Label</title>
+        </field>
+        <field name="time_requested" required="true" readOnly="true">
+            <title>Time Requested</title>
+        </field>
+        <field name="site_id" hidden="true"/>
+        <field name="bl_id"/>
+        <field name="fl_id"/>
+        <field name="rm_id"/>
+        <field id="location">
+            <title>Location</title>
+        </field>
+		<field name="eq_id" required="false"/>
+        <field name="dv_id"/>
+        <field name="dp_id"/>
+		
+		<!-- IFM - Modify the Cost Centre Select Value panel and description -->
+		<field name="cc_id" table="wr" hidden="false" >
+		<action>
+            <title>...</title>
+			<tooltip>Select Value - Cost Centre</tooltip>
+		    <command type= "selectValue" 
+		     fieldNames= "wr.cc_id, ifm_costcentre.name" 
+		     selectFieldNames= "ifm_costcentre.cc_id, ifm_costcentre.name" 
+			 visibleFieldNames= "ifm_costcentre.cc_id, ifm_costcentre.name" >
+			<title>Cost Centre</title>
+			</command>
+			</action>
+		</field>
+		<field name="name" table="ifm_costcentre" readOnly="true"/>
+		
+		<!-- IFM - Modify the Account Code Select Value panel and description -->
+		<field name="ac_id" table="wr" hidden="false" >
+		<action>
+            <title>...</title>
+			<tooltip>Select Value - Account Code</tooltip>
+		    <command type= "selectValue" 
+		     fieldNames= "wr.ac_id, ac.description" 
+		     selectFieldNames= "ac.ac_id, ac.description" 
+			 visibleFieldNames= "ac.ac_id, ac.description" >
+			<title>Account Code</title>
+			</command>
+			</action>
+		</field>
+		<field name="description" table="ac" readOnly="true"/>
+				
+        <field name="status" required="false">
+            <title>Status</title>
+        </field>
+        <field name="date_assigned"  readOnly="true"/>
+		
+        <field name="pmp_id"  readOnly="true" hidden="true"/>
+        <field name="pms_id"  readOnly="true" hidden="true"/>
+        <field name="doc1"/>
+        <field name="doc2"/>
+        <field name="doc3"/>
+        <field name="doc4"/>
+        <field name="step_status" hidden="true"/>
+		
+		<!-- IFM Mehran Added fields for FONE 31-Aug-2017-->
+		<field table="wr" name="invoice_no"/>
+		<field table="wr" name="invoice_date"/>
+		<field table="wr" name="invoice_file_name"/>		
+		<field table="wr" name="gst_inclusive"/>       		
+		<field table="wr" name="po_no"/>
+		<field />
+	
+
+        <field>
+            <html>
+                <button type="button" class="x-btn-text" id="indicateOnDrawing" translatable="true">Indicate on Drawing</button>
+            </html>
+        </field>
+        <field/>
+        <field id="relatedRequestField">
+            <title>Related Requests</title>
+            <html>
+                <table id="relatedRequestsTable" class=" panelReport" style="color:blue!important;cursor:pointer!important;">
+                </table>
+            </html>
+        </field>
+    </panel>
+    
+    <dataSource id="abReferenceDocumentationDs">
+        <table name="docs_assigned" role="main"/>
+        <field name="doc_id"/>
+        <field name="doc"/>
+        <field name="date_doc"/>
+        <field name="name"/>
+        <field name="doc_author"/>
+        <field name="site_id"/>
+        <field name="pr_id"/>
+        <field name="bl_id"/> 
+        <field name="doc_type"/>
+        <field name="description"/>
+        <field name="doc_note"/>
+        <field name="doc_review_grp"/>
+        <field name="doc_cat"/>
+        <field name="doc_folder"/> 
+        <field name="activity_id"/> 
+        <field name="doc_cat"/>
+        <field name="eq_std"/>
+        <field name="project_type"/>
+        <field name="prob_type"/>
+        <field name="pmp_id"/>
+        <field name="url"/>
+        
+        <parameter name="eqId" dataType="text" value=""/>
+        <parameter name="probType" dataType="text" value=""/>
+        <parameter name="pmpId" dataType="text" value=""/>
+        
+        <restriction type="sql" sql=" activity_type = 'SERVICE DESK - MAINTENANCE' AND (
+				    (eq_std = (select eq_std from eq where eq.eq_id = ${parameters['eqId']}) AND prob_type IS NULL AND pmp_id IS NULL)
+				OR (prob_type = ${parameters['probType']} AND eq_std IS NULL AND pmp_id IS NULL)
+				OR (prob_type = ${parameters['probType']} AND prob_type != 'PREVENTIVE MAINT' AND eq_std = (select eq_std from eq where eq.eq_id = ${parameters['eqId']}) AND pmp_id IS NULL)
+                OR (prob_type = 'PREVENTIVE MAINT' AND pmp_id = ${parameters['pmpId']} AND eq_std IS NULL)
+                OR (prob_type = 'PREVENTIVE MAINT' AND pmp_id = ${parameters['pmpId']} AND eq_std = (select eq_std from eq where eq.eq_id = ${parameters['eqId']}) )  ) " />                
+    </dataSource>
+    
+    <panel type="grid" controlType="reportGrid" id="wrReferenceMaterial" dataSource="abReferenceDocumentationDs" collapsed="true" showOnLoad="false" useParentRestriction="false">
+        <title translatable="true">Reference Material</title>     
+        <field name="doc_id"/>
+        <field name="doc" controlType="link"/>
+        <field name="name"/> 
+        <field name="date_doc" hidden="true"/>       
+        <field name="doc_cat" hidden="true"/>
+        <field name="doc_type" hidden="true"/>        
+        <field name="doc_folder" hidden="true"/>  
+        <field name="eq_std"/>
+        <field name="prob_type"/>        
+        <field name="pmp_id"/>
+        <field name="description"/>
+        <field name="project_type" hidden="true"/>
+        <field name="url" controlType="link">
+            <command type="callFunction" functionName="showUrlTab" />
+        </field>              
+    </panel>    
+
+    <!-- Step History -->
+    <panel type="view" id="stepHistoryGrid" file="ab-bldgops-console-step-history.axvw"/>
+
+    <!-- Trades -->
+    <panel type="view" id="tradeGrid" file="ab-bldgops-console-wrtr.axvw"/>
+
+    <!-- Parts -->
+    <panel type="view" id="parts" file="ab-bldgops-console-wrpt.axvw"/>
+
+    <!-- Craftspersons -->
+    <panel type="view" id="cfs" file="ab-bldgops-console-wrcf.axvw"/>
+    
+     <!-- KB3042883 add Tool Types panel-->
+    <panel type="view" id="tts" file="ab-bldgops-console-wrtt.axvw"/>
+
+    <!-- Tools -->
+    <panel type="view" id="tools" file="ab-bldgops-console-wrtl.axvw"/>
+    
+     <!-- Other Resources -->
+    <panel type="view" id="otherResources" file="ab-bldgops-console-wrother.axvw"/>
+
+    <!-- Costs -->
+    <panel type="form" id="wrCosts" dataSource="wrDetailsDS" columns="2" buttonsPosition="footer" collapsed="false">
+        <fieldset>
+            <title>Estimated Costs</title>
+            <field name="cost_est_labor" readOnly="true"/>
+            <field name="cost_est_parts" readOnly="true"/>
+            <field name="cost_est_tools" readOnly="true"/>
+            <field name="cost_est_other" readOnly="true"/>
+            <field name="cost_est_total" readOnly="true"/>
+        </fieldset>
+        <fieldset>
+            <title>Actual Costs</title>
+            <field name="cost_labor" readOnly="true"/>
+            <field name="cost_parts" readOnly="true"/>
+            <field name="cost_tools" readOnly="true"/>
+            <field name="cost_other" readOnly="true"/>
+            <field name="cost_total" readOnly="true"/>
+        </fieldset>
+    </panel>
+
+    <!-- Updates -->
+    <panel type="form" id="wrUpdates" columns="2" dataSource="wrDetailsDS">
+        <title>Update Work Request</title>
+        <field name="wr_id" hidden="true"/>
+        <field name="down_time"/>
+        <field name="cause_type"/>
+        <field name="curr_meter_val"/>
+        <field name="repair_type"/>
+        <field name="cf_notes" colspan="2"/>
+    </panel>
+</view>

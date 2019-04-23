@@ -1,0 +1,71 @@
+<!-- Ops Console Work Request Details DataSource -->
+<view version="2.0">
+
+    <dataSource id="wrDetailsDS">
+        <table name="wr" role="main"/>
+		<!-- IFM - Add tables for Cost Centre and Account Code -->
+		<table name="ifm_costcentre" role="standard"/>
+		<table name="ac" role="standard"/>
+        <field name="wr_id"/>
+        <field name="wo_id"/>
+        <field name="requestor"/>
+        <field name="prob_type"/>
+        <field name="status"/>
+        <field name="date_requested"/>
+        <field name="time_requested"/>
+        <field name="date_completed"/>
+        <field name="cause_type"/>
+        <field name="repair_type"/>
+        <field name="cf_notes"/>
+        <field name="doc1"/>
+        <field name="doc2"/>
+        <field name="doc3"/>
+        <field name="doc4"/>
+        <field name="date_est_completion"/>
+        <field name="date_assigned"/>
+        <field name="time_assigned"/>
+        <field name="priority"/>
+        <field name="site_id"/>
+        <field name="bl_id"/>
+        <field name="fl_id"/>
+        <field name="rm_id"/>
+        <field name="location"/>
+        <field name="cause_type"/>
+        <field name="repair_type"/>
+        <field name="eq_id"/>
+        <field name="curr_meter_val"/>
+        <field table="wr" name="dv_id"/>
+        <field table="wr" name="dp_id"/>
+		<!-- IFM - Add Cost Centre, name and Account Description -->
+		<field table="wr" name="cc_id"/>
+		<field table="ifm_costcentre" name="name"/>
+        <field table="wr" name="ac_id"/>
+		<field table="ac" name="description"/>
+        <field name="phone"/>
+        <field name="down_time"/>
+        <field name="pmp_id"/>
+        <field name="pms_id"/>
+        <field table="wr" name="description"/>
+        <field name="tr_id"/>
+        <field name="cost_est_other"/>
+        <field name="cost_est_labor"/>
+        <field name="cost_est_parts"/>
+        <field name="cost_est_total"/>
+        <field name="cost_est_tools"/>
+        <field name="cost_other"/>
+        <field name="cost_labor"/>
+        <field name="cost_parts"/>
+        <field name="cost_total"/>
+        <field name="cost_tools"/>
+        <field name="desc_other_costs"/>
+        <field name="step_status"/>
+        <field name="activity_log_id"/>
+		<!--IFM Mehran Added the FinanceOne fields 31-Aug-2017-->				    
+		<field table="wr" name="invoice_no"/>
+		<field table="wr" name="invoice_date"/>
+		<field table="wr" name="invoice_file_name"/>		
+		<field table="wr" name="gst_inclusive"/>       		
+		<field table="wr" name="po_no"/>
+    </dataSource>
+    
+</view>

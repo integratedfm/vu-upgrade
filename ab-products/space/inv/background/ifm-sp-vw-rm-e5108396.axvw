@@ -1,0 +1,92 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">View Rooms</title>
+    <js file="ifm-rm-cell-edit.js"/>
+    
+    <dataSource id="abSpVwRm_ds_0">
+        <table name="rm" role="main"/>
+		<table name="dv" role="standard"/>
+        <table name="dp" role="standard"/>
+        <table name="bl" role="standard"/>
+		<table name="rmtype" role="standard"/>
+		<field table="bl" name="site_id"/>
+        <field table="rm" name="bl_id"/>
+		<field table="bl" name="name"/>
+        <field table="rm" name="fl_id"/>
+        <field table="rm" name="rm_id"/>
+		<field table="rm" name="area"/>
+		<field table="rm" name="rm_comments"/>
+		<field table="rm" name="cap_em"/>
+        <field table="rm" name="rm_cat"/>
+        <field table="rm" name="rm_type"/>
+		<!-- <field table="rmtype" name="description"/> -->
+        <!-- <field table="rm" name="rm_std"/> -->
+		<field table="dv" name="bu_id"/>
+        <field table="rm" name="dv_id"/>
+		<field table="dv" name="name"/>
+        <field table="rm" name="dp_id"/>
+        <field table="dp" name="name"/>
+		<field table="rm" name="cc_id"/>
+		<field table="rm" name="rm_func"/>
+		<field table="rm" name="rm_cond"/>
+        <!-- <field table="rm" name="prorate"/> -->
+        <!-- <field table="rm" name="area"/> -->
+		<!-- <field table="rm" name="loc_code" /> -->
+        <!-- <field table="rm" name="dwgname"/> -->
+        <!-- <field table="rm" name="ehandle"/> -->
+    </dataSource>
+
+    <panel type="grid" id="abSpVwRm_detailsPanel" dataSource="abSpVwRm_ds_0" multipleSelectionEnabled="false">
+        <title translatable="true">Rooms</title>
+        
+        <action id="abSpVwRm_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abSpVwRm_detailsPanel"/>
+        </action>
+        <action id="ifmEditRmRecords">
+        <title>Edit Room Records</title>
+        <command type="callFunction" functionName="ifm_enable_rm_edit()" />
+        </action>
+		<action id="abSpVwRm_exportDOCX">
+            <title>DOCX</title>
+            <command type="exportPanel" outputType="docx" panelId="abSpVwRm_detailsPanel"/>
+        </action>
+        <action id="abSpVwRm_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abSpVwRm_detailsPanel"/>
+        </action>
+        <action id="abSpVwRm_exportTXFR">
+            <title>TXFR</title>
+            <command type="exportPanel" outputType="txfr" panelId="abSpVwRm_detailsPanel"/>
+        </action>    
+        <field  id="saveRecord" controlType="button">
+			<title translatable="true">Save Record</title>
+		</field>
+		<field name="site_id" table="bl"/>
+        <field name="bl_id" table="rm"/>
+		<field name="name" table="bl"/>
+        <field name="fl_id" table="rm"/>
+        <field name="rm_id" table="rm"/>
+		<field name="area" table="rm"/>
+		<field name="rm_comments" table="rm"/>
+		<field name="cap_em" table="rm"/>
+        <field name="rm_cat" table="rm"/>
+        <field name="rm_type" table="rm"/>
+		<!-- <field name="description" table="rmtype"/><title>Room Type Description</title></field> -->
+        <!-- <field name="rm_std" table="rm"/> -->
+		<field name="bu_id" table="dv"/>
+        <field name="dv_id" table="rm"/>
+		<field table="dv" name="name"/>
+        <field name="dp_id" table="rm"/>        
+        <field table="dp" name="name"/>
+		<field name="cc_id" table="rm"/>
+		<field name="rm_func" table="rm"/>
+		<field name="rm_cond" table="rm"/>
+        <!-- <field name="prorate" table="rm"/> -->
+        <!-- <field name="area" table="rm"/> -->
+		<!-- <field table="rm" name="loc_code" ><title>Location Code</title></field> -->
+        <!-- <field name="dwgname" table="rm"/> -->
+        <!-- <field table="rm" name="ehandle"/> -->
+        <indexField table="rm" name="bl_id"/>
+    </panel>
+</view>

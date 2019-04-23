@@ -1,0 +1,33 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">View Floor Cover</title>
+    
+    <dataSource id="abSpVwFIC_ds_0">
+       <table name="ifm_flcover" role="main"/>
+        <field table="ifm_flcover" name="fl_cover"/>
+        <field table="ifm_flcover" name="description"/>
+    </dataSource>
+
+    <panel type="grid" id="abSpVwFlC_detailsPanel" dataSource="abSpVwFIC_ds_0" multipleSelectionEnabled="false" recordLimit="10000">
+        <title translatable="true">Floor Cover</title>
+        
+        <action id="abSpVwFlC_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abSpVwFlC_detailsPanel"/>
+        </action>
+        <action id="abSpVwFlC_exportDOCX">
+            <title>DOCX</title>
+            <command type="exportPanel" outputType="docx" panelId="abSpVwFlC_detailsPanel"/>
+        </action>
+        <action id="abSpVwFlC_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abSpVwFlC_detailsPanel"/>
+        </action>
+        <action id="abSpVwFlC_exportTXFR">
+            <title>DATA</title>
+            <command type="exportPanel" outputType="txfr" panelId="abSpVwFlC_detailsPanel"/>
+        </action>    
+		<field table="ifm_flcover" name="fl_cover"/>
+        <field table="ifm_flcover" name="description"/>
+    </panel>
+</view>

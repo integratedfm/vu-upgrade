@@ -1,0 +1,51 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">View Rooms</title>
+    
+    <dataSource id="abSpVwRm_ds_0">
+        <table name="rm" role="main"/>
+        <field table="rm" name="bl_id"/>
+        <field table="rm" name="fl_id"/>
+        <field table="rm" name="rm_id"/>
+        <field table="rm" name="cap_em"/>
+        <field table="rm" name="syllabus_host_key"/>
+        <field table="rm" name="rm_use"/>
+        <field table="rm" name="reservable"/>
+        <field table="rm" name="fl_cover"/>
+        <field table="rm" name="fl_type"/>
+        <field table="rm" name="rm_std"/>
+    
+    </dataSource>
+
+    <panel type="grid" id="abSpVwRm_detailsPanel" dataSource="abSpVwRm_ds_0" multipleSelectionEnabled="false">
+        <title translatable="true">Rooms</title>
+        
+        <action id="abSpVwRm_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abSpVwRm_detailsPanel"/>
+        </action>     
+        <action id="abSpVwRm_exportDOCX">
+            <title>DOCX</title>
+            <command type="exportPanel" outputType="docx" panelId="abSpVwRm_detailsPanel"/>
+        </action>
+        <action id="abSpVwRm_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abSpVwRm_detailsPanel"/>
+        </action>
+        <action id="abSpVwRm_exportTXFR">
+            <title>TXFR</title>
+            <command type="exportPanel" outputType="txfr" panelId="abSpVwRm_detailsPanel"/>
+        </action>    
+        <field name="bl_id" table="rm"/>
+        <field name="fl_id" table="rm"/>
+        <field name="rm_id" table="rm"/>
+        <field name="cap_em" table="rm"/>
+        <field name="syllabus_host_key" table="rm"/>
+        <field name="rm_use" table="rm"/>
+        <field name="reservable" table="rm"/>
+        <field name="fl_cover" table="rm"/>
+        <field name="fl_type" table="rm"/>
+        <field name="rm_std" table="rm"/>
+        <indexField table="rm" name="bl_id"/>
+    </panel>
+</view>

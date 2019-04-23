@@ -1,0 +1,269 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Historical Work Requests</title>
+    
+    <dataSource id="abHwrReview_ds_0">
+        <table name="hwr" role="main"/>
+        <field table="hwr" name="wr_id"/>
+        <field table="hwr" name="wo_id"/>
+        <field table="hwr" name="invoice_no"/>
+    
+    </dataSource>
+      
+    <panel type="grid" id="abHwrReview_treePanel" dataSource="abHwrReview_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Select Work Requests</title>
+        <action id="abHwrReview_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="abHwrReview_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="abHwrReview_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abHwrReview_treePanel"/>
+        </action>    
+        <field name="wr_id" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abHwrReview_detailsPanel"/>
+        </field>
+        <field name="wo_id" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abHwrReview_detailsPanel"/>
+        </field>
+        <field name="invoice_no" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abHwrReview_detailsPanel"/>
+        </field>
+        <indexField table="hwr" name="wr_id"/>
+    </panel>
+    
+    <dataSource id="abHwrReview_ds_1">
+        <table name="hwr" role="main"/>
+        <field table="hwr" name="wr_id"/>
+        <field table="hwr" name="ac_id"/>
+        <field table="hwr" name="accrual_batchno"/>
+        <field table="hwr" name="accrual_date"/>
+        <field table="hwr" name="act_labor_hours"/>
+        <field table="hwr" name="activity_log_id"/>
+        <field table="hwr" name="activity_type"/>
+        <field table="hwr" name="allow_work_on_holidays"/>
+        <field table="hwr" name="bl_id"/>
+        <field table="hwr" name="cause_type"/>
+        <field table="hwr" name="cc_id"/>
+        <field table="hwr" name="cf_notes"/>
+        <field table="hwr" name="closed_by"/>
+        <field table="hwr" name="comments"/>
+        <field table="hwr" name="completed_by"/>
+        <field table="hwr" name="cost_est_labor"/>
+        <field table="hwr" name="cost_est_other"/>
+        <field table="hwr" name="cost_est_parts"/>
+        <field table="hwr" name="cost_est_tools"/>
+        <field table="hwr" name="cost_est_total"/>
+        <field table="hwr" name="cost_labor"/>
+        <field table="hwr" name="cost_other"/>
+        <field table="hwr" name="cost_parts"/>
+        <field table="hwr" name="cost_tools"/>
+        <field table="hwr" name="cost_total"/>
+        <field table="hwr" name="curr_meter_val"/>
+        <field table="hwr" name="date_assigned"/>
+        <field table="hwr" name="date_closed"/>
+        <field table="hwr" name="date_completed"/>
+        <field table="hwr" name="date_esc_comp_orig"/>
+        <field table="hwr" name="date_esc_resp_orig"/>
+        <field table="hwr" name="date_escalation_completion"/>
+        <field table="hwr" name="date_escalation_response"/>
+        <field table="hwr" name="date_est_completion"/>
+        <field table="hwr" name="date_requested"/>
+        <field table="hwr" name="date_stat_chg"/>
+        <field table="hwr" name="desc_other_costs"/>
+        <field table="hwr" name="description"/>
+        <field table="hwr" name="dispatcher"/>
+        <field table="hwr" name="doc1"/>
+        <field table="hwr" name="doc2"/>
+        <field table="hwr" name="doc3"/>
+        <field table="hwr" name="doc4"/>
+        <field table="hwr" name="down_time"/>
+        <field table="hwr" name="dp_id"/>
+        <field table="hwr" name="dv_id"/>
+        <field table="hwr" name="eq_id"/>
+        <field table="hwr" name="escalated_completion"/>
+        <field table="hwr" name="escalated_response"/>
+        <field table="hwr" name="est_labor_hours"/>
+        <field table="hwr" name="fl_id"/>
+        <field table="hwr" name="geo_objectid"/>
+        <field table="hwr" name="gst_inclusive"/>
+        <field table="hwr" name="ifm_sd_attach_flags"/>
+        <field table="hwr" name="invoice_date"/>
+        <field table="hwr" name="invoice_file_location"/>
+        <field table="hwr" name="invoice_file_name"/>
+        <field table="hwr" name="invoice_no"/>
+        <field table="hwr" name="lat"/>
+        <field table="hwr" name="location"/>
+        <field table="hwr" name="lon"/>
+        <field table="hwr" name="manager"/>
+        <field table="hwr" name="msg_delivery_status"/>
+        <field table="hwr" name="option1"/>
+        <field table="hwr" name="option2"/>
+        <field table="hwr" name="parent_wr_id"/>
+        <field table="hwr" name="payment_batchno"/>
+        <field table="hwr" name="payment_date"/>
+        <field table="hwr" name="payment_proc_date"/>
+        <field table="hwr" name="payment_ref"/>
+        <field table="hwr" name="payment_type"/>
+        <field table="hwr" name="phone"/>
+        <field table="hwr" name="pmp_id"/>
+        <field table="hwr" name="pms_id"/>
+        <field table="hwr" name="po_no"/>
+        <field table="hwr" name="priority"/>
+        <field table="hwr" name="priority_label"/>
+        <field table="hwr" name="prob_type"/>
+        <field table="hwr" name="repair_type"/>
+        <field table="hwr" name="request_params_updated"/>
+        <field table="hwr" name="requestor"/>
+        <field table="hwr" name="res_id"/>
+        <field table="hwr" name="rm_id"/>
+        <field table="hwr" name="rmres_id"/>
+        <field table="hwr" name="rsres_id"/>
+        <field table="hwr" name="satisfaction"/>
+        <field table="hwr" name="satisfaction_notes"/>
+        <field table="hwr" name="serv_window_days"/>
+        <field table="hwr" name="serv_window_end"/>
+        <field table="hwr" name="serv_window_start"/>
+        <field table="hwr" name="site_id"/>
+        <field table="hwr" name="status"/>
+        <field table="hwr" name="step_status"/>
+        <field table="hwr" name="supervisor"/>
+        <field table="hwr" name="time_assigned"/>
+        <field table="hwr" name="time_completed"/>
+        <field table="hwr" name="time_esc_comp_orig"/>
+        <field table="hwr" name="time_esc_resp_orig"/>
+        <field table="hwr" name="time_escalation_completion"/>
+        <field table="hwr" name="time_escalation_response"/>
+        <field table="hwr" name="time_stat_chg"/>
+        <field table="hwr" name="tr_id"/>
+        <field table="hwr" name="vn_id"/>
+        <field table="hwr" name="wo_id"/>
+        <field table="hwr" name="work_team_id"/>
+    
+    </dataSource>
+      
+    <panel type="form" id="abHwrReview_detailsPanel" dataSource="abHwrReview_ds_1" showOnLoad="false" labelsPosition="top" columns="2" region="center">
+        <title translatable="true">Historical Work Requests</title>        
+        <action id="abHwrReview_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="abHwrReview_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abHwrReview_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="abHwrReview_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="abHwrReview_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abHwrReview_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="abHwrReview_detailsPanel" show="false"/>
+        </action>    
+        <field name="wr_id" table="hwr" showSelectValueAction=""/>
+        <field name="ac_id" table="hwr" showSelectValueAction=""/>
+        <field name="accrual_batchno" table="hwr" showSelectValueAction=""/>
+        <field name="accrual_date" table="hwr" showSelectValueAction=""/>
+        <field name="act_labor_hours" table="hwr" showSelectValueAction=""/>
+        <field name="activity_log_id" table="hwr" showSelectValueAction=""/>
+        <field name="activity_type" table="hwr" showSelectValueAction=""/>
+        <field name="allow_work_on_holidays" table="hwr" showSelectValueAction=""/>
+        <field name="bl_id" table="hwr" showSelectValueAction=""/>
+        <field name="cause_type" table="hwr" showSelectValueAction=""/>
+        <field name="cc_id" table="hwr" showSelectValueAction=""/>
+        <field name="cf_notes" table="hwr" showSelectValueAction=""/>
+        <field name="closed_by" table="hwr" showSelectValueAction=""/>
+        <field name="comments" table="hwr" showSelectValueAction=""/>
+        <field name="completed_by" table="hwr" showSelectValueAction=""/>
+        <field name="cost_est_labor" table="hwr" showSelectValueAction=""/>
+        <field name="cost_est_other" table="hwr" showSelectValueAction=""/>
+        <field name="cost_est_parts" table="hwr" showSelectValueAction=""/>
+        <field name="cost_est_tools" table="hwr" showSelectValueAction=""/>
+        <field name="cost_est_total" table="hwr" showSelectValueAction=""/>
+        <field name="cost_labor" table="hwr" showSelectValueAction=""/>
+        <field name="cost_other" table="hwr" showSelectValueAction=""/>
+        <field name="cost_parts" table="hwr" showSelectValueAction=""/>
+        <field name="cost_tools" table="hwr" showSelectValueAction=""/>
+        <field name="cost_total" table="hwr" showSelectValueAction=""/>
+        <field name="curr_meter_val" table="hwr" showSelectValueAction=""/>
+        <field name="date_assigned" table="hwr" showSelectValueAction=""/>
+        <field name="date_closed" table="hwr" showSelectValueAction=""/>
+        <field name="date_completed" table="hwr" showSelectValueAction=""/>
+        <field name="date_esc_comp_orig" table="hwr" showSelectValueAction=""/>
+        <field name="date_esc_resp_orig" table="hwr" showSelectValueAction=""/>
+        <field name="date_escalation_completion" table="hwr" showSelectValueAction=""/>
+        <field name="date_escalation_response" table="hwr" showSelectValueAction=""/>
+        <field name="date_est_completion" table="hwr" showSelectValueAction=""/>
+        <field name="date_requested" table="hwr" showSelectValueAction=""/>
+        <field name="date_stat_chg" table="hwr" showSelectValueAction=""/>
+        <field name="desc_other_costs" table="hwr" showSelectValueAction=""/>
+        <field name="description" table="hwr" showSelectValueAction=""/>
+        <field name="dispatcher" table="hwr" showSelectValueAction=""/>
+        <field name="doc1" table="hwr" showSelectValueAction=""/>
+        <field name="doc2" table="hwr" showSelectValueAction=""/>
+        <field name="doc3" table="hwr" showSelectValueAction=""/>
+        <field name="doc4" table="hwr" showSelectValueAction=""/>
+        <field name="down_time" table="hwr" showSelectValueAction=""/>
+        <field name="dp_id" table="hwr" showSelectValueAction=""/>
+        <field name="dv_id" table="hwr" showSelectValueAction=""/>
+        <field name="eq_id" table="hwr" showSelectValueAction=""/>
+        <field name="escalated_completion" table="hwr" showSelectValueAction=""/>
+        <field name="escalated_response" table="hwr" showSelectValueAction=""/>
+        <field name="est_labor_hours" table="hwr" showSelectValueAction=""/>
+        <field name="fl_id" table="hwr" showSelectValueAction=""/>
+        <field name="geo_objectid" table="hwr" showSelectValueAction=""/>
+        <field name="gst_inclusive" table="hwr" showSelectValueAction=""/>
+        <field name="ifm_sd_attach_flags" table="hwr" showSelectValueAction=""/>
+        <field name="invoice_date" table="hwr" showSelectValueAction=""/>
+        <field name="invoice_file_location" table="hwr" showSelectValueAction=""/>
+        <field name="invoice_file_name" table="hwr" showSelectValueAction=""/>
+        <field name="invoice_no" table="hwr" showSelectValueAction=""/>
+        <field name="lat" table="hwr" showSelectValueAction=""/>
+        <field name="location" table="hwr" showSelectValueAction=""/>
+        <field name="lon" table="hwr" showSelectValueAction=""/>
+        <field name="manager" table="hwr" showSelectValueAction=""/>
+        <field name="msg_delivery_status" table="hwr" showSelectValueAction=""/>
+        <field name="option1" table="hwr" showSelectValueAction=""/>
+        <field name="option2" table="hwr" showSelectValueAction=""/>
+        <field name="parent_wr_id" table="hwr" showSelectValueAction=""/>
+        <field name="payment_batchno" table="hwr" showSelectValueAction=""/>
+        <field name="payment_date" table="hwr" showSelectValueAction=""/>
+        <field name="payment_proc_date" table="hwr" showSelectValueAction=""/>
+        <field name="payment_ref" table="hwr" showSelectValueAction=""/>
+        <field name="payment_type" table="hwr" showSelectValueAction=""/>
+        <field name="phone" table="hwr" showSelectValueAction=""/>
+        <field name="pmp_id" table="hwr" showSelectValueAction=""/>
+        <field name="pms_id" table="hwr" showSelectValueAction=""/>
+        <field name="po_no" table="hwr" showSelectValueAction=""/>
+        <field name="priority" table="hwr" showSelectValueAction=""/>
+        <field name="priority_label" table="hwr" showSelectValueAction=""/>
+        <field name="prob_type" table="hwr" showSelectValueAction=""/>
+        <field name="repair_type" table="hwr" showSelectValueAction=""/>
+        <field name="request_params_updated" table="hwr" showSelectValueAction=""/>
+        <field name="requestor" table="hwr" showSelectValueAction=""/>
+        <field name="res_id" table="hwr" showSelectValueAction=""/>
+        <field name="rm_id" table="hwr" showSelectValueAction=""/>
+        <field name="rmres_id" table="hwr" showSelectValueAction=""/>
+        <field name="rsres_id" table="hwr" showSelectValueAction=""/>
+        <field name="satisfaction" table="hwr" showSelectValueAction=""/>
+        <field name="satisfaction_notes" table="hwr" showSelectValueAction=""/>
+        <field name="serv_window_days" table="hwr" showSelectValueAction=""/>
+        <field name="serv_window_end" table="hwr" showSelectValueAction=""/>
+        <field name="serv_window_start" table="hwr" showSelectValueAction=""/>
+        <field name="site_id" table="hwr" showSelectValueAction=""/>
+        <field name="status" table="hwr" showSelectValueAction=""/>
+        <field name="step_status" table="hwr" showSelectValueAction=""/>
+        <field name="supervisor" table="hwr" showSelectValueAction=""/>
+        <field name="time_assigned" table="hwr" showSelectValueAction=""/>
+        <field name="time_completed" table="hwr" showSelectValueAction=""/>
+        <field name="time_esc_comp_orig" table="hwr" showSelectValueAction=""/>
+        <field name="time_esc_resp_orig" table="hwr" showSelectValueAction=""/>
+        <field name="time_escalation_completion" table="hwr" showSelectValueAction=""/>
+        <field name="time_escalation_response" table="hwr" showSelectValueAction=""/>
+        <field name="time_stat_chg" table="hwr" showSelectValueAction=""/>
+        <field name="tr_id" table="hwr" showSelectValueAction=""/>
+        <field name="vn_id" table="hwr" showSelectValueAction=""/>
+        <field name="wo_id" table="hwr" showSelectValueAction=""/>
+        <field name="work_team_id" table="hwr" showSelectValueAction=""/>
+    </panel>
+</view>

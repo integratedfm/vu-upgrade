@@ -1,0 +1,61 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Edit SISfm Reports</title>
+    
+    <dataSource id="ifmSpSisfmReportsEdit_ds_0">
+        <table name="sisfm_reports" role="main"/>
+        <field table="sisfm_reports" name="id"/>
+		<field table="sisfm_reports" name="access_group"/>
+        <field table="sisfm_reports" name="report_name"/>
+		<sortField name="report_name" table="sisfm_reports" ascending="true"/>
+    </dataSource>
+      
+    <panel type="grid" id="ifmSpSisfmReportsEdit_treePanel" dataSource="ifmSpSisfmReportsEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">SISfm Reports</title>
+        <action id="ifmSpSisfmReportsEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="ifmSpSisfmReportsEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="ifmSpSisfmReportsEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="ifmSpSisfmReportsEdit_treePanel"/>
+        </action>    
+		<field name="id" table="sisfm_reports" hidden="true"/>
+        <field name="report_name" table="sisfm_reports" controlType="link">
+            <command type="showPanel" panelId="ifmSpSisfmReportsEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="access_group" table="sisfm_reports" controlType="link">
+            <command type="showPanel" panelId="ifmSpSisfmReportsEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+    </panel>
+    
+    <dataSource id="ifmSpSisfmReportsEdit_ds_1">
+        <table name="sisfm_reports" role="main"/>
+		<field table="sisfm_reports" name="id"/>
+        <field table="sisfm_reports" name="access_group"/>
+        <field table="sisfm_reports" name="report_name"/>
+    </dataSource>
+      
+    <panel type="form" id="ifmSpSisfmReportsEdit_detailsPanel" dataSource="ifmSpSisfmReportsEdit_ds_1" showOnLoad="false" labelsPosition="left" columns="1" region="center">
+        <title translatable="true">SISfm Report Details</title>        
+        <action id="ifmSpSisfmReportsEdit_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="ifmSpSisfmReportsEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpSisfmReportsEdit_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="ifmSpSisfmReportsEdit_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="ifmSpSisfmReportsEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpSisfmReportsEdit_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="ifmSpSisfmReportsEdit_detailsPanel" show="false"/>
+        </action>
+        <field name="id" table="sisfm_reports" readOnly="true"/>
+        <field name="report_name" table="sisfm_reports" showSelectValueAction=""/>
+        <field name="access_group" table="sisfm_reports" showSelectValueAction=""/>
+    </panel>
+</view>

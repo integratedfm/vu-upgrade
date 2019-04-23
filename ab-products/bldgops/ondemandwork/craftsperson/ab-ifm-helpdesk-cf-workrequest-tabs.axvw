@@ -1,0 +1,17 @@
+<view version="2.0">
+	<title translatable="true">Update Work Requests</title>
+	<tabs workflow="enforced" id="abHpdCfWorkRequestTabs">
+		<tab name="select" file="ab-ifm-helpdesk-cf-workrequest-select.axvw"
+			selected="true">
+			<title translatable="true">Select</title>
+		</tab>
+		<tab name="updateWrLabor"
+			file="ab-ifm-helpdesk-cf-workrequest-update-cf.axvw">
+			<title translatable="true">Update Labor Hours</title>
+		</tab>
+		<tab name="resources"
+			file="ab-ifm-helpdesk-cf-workrequest-update-resources.axvw">
+			<title translatable="true">Update Resources</title>
+		</tab>
+	</tabs>
+</view>

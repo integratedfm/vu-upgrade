@@ -1,0 +1,61 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Edit SISfm Person Admin</title>
+    
+    <dataSource id="ifmSpSisfmAdminCodeEdit_ds_0">
+        <table name="sisfm_personadmin" role="main"/>
+		<field table="sisfm_personadmin" name="id"/>
+        <field table="sisfm_personadmin" name="access_group"/>
+        <field table="sisfm_personadmin" name="admin_code"/>
+		<sortField name="admin_code" table="sisfm_personadmin" ascending="true"/>
+    </dataSource>
+      
+    <panel type="grid" id="ifmSpSisfmAdminCodeEdit_treePanel" dataSource="ifmSpSisfmAdminCodeEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">SISfm Person Admin</title>
+        <action id="ifmSpSisfmAdminCodeEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="ifmSpSisfmAdminCodeEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="ifmSpSisfmAdminCodeEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="ifmSpSisfmAdminCodeEdit_treePanel"/>
+        </action>
+		<field name="id" table="sisfm_personadmin" hidden="true"/>
+        <field name="admin_code" table="sisfm_personadmin" controlType="link">
+            <command type="showPanel" panelId="ifmSpSisfmAdminCodeEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="access_group" table="sisfm_personadmin" controlType="link">
+            <command type="showPanel" panelId="ifmSpSisfmAdminCodeEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+    </panel>
+    
+    <dataSource id="ifmSpSisfmAdminCodeEdit_ds_1">
+        <table name="sisfm_personadmin" role="main"/>
+        <field table="sisfm_personadmin" name="id"/>
+		<field table="sisfm_personadmin" name="access_group"/>
+        <field table="sisfm_personadmin" name="admin_code"/>
+    </dataSource>
+      
+    <panel type="form" id="ifmSpSisfmAdminCodeEdit_detailsPanel" dataSource="ifmSpSisfmAdminCodeEdit_ds_1" showOnLoad="false" labelsPosition="left" columns="1" region="center">
+        <title translatable="true">SISfm Person Admin Details</title>        
+        <action id="ifmSpSisfmAdminCodeEdit_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="ifmSpSisfmAdminCodeEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpSisfmAdminCodeEdit_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="ifmSpSisfmAdminCodeEdit_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="ifmSpSisfmAdminCodeEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpSisfmAdminCodeEdit_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="ifmSpSisfmAdminCodeEdit_detailsPanel" show="false"/>
+        </action>    
+        <field name="id" table="sisfm_personadmin" readOnly="true"/>
+        <field name="admin_code" table="sisfm_personadmin" showSelectValueAction=""/>
+		<field name="access_group" table="sisfm_personadmin" showSelectValueAction=""/>
+    </panel>
+</view>

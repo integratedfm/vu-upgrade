@@ -1,0 +1,35 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">View Room Use</title>
+    
+    <dataSource id="abSpVwRmUse_ds_0">
+        <table name="rmuse" role="main"/>
+        <field table="rmuse" name="rm_use"/>
+        <field table="rmuse" name="description"/>
+		<field table="rmuse" name="definition"/>
+    </dataSource>
+
+    <panel type="grid" id="abSpVwRmUse_detailsPanel" dataSource="abSpVwRmUse_ds_0" multipleSelectionEnabled="false">
+        <title translatable="true">Room Use</title>
+        
+        <action id="abSpVwRmUse_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abSpVwRmUse_detailsPanel"/>
+        </action>
+        <action id="abSpVwRmUse_exportDOCX">
+            <title>DOCX</title>
+            <command type="exportPanel" outputType="docx" panelId="abSpVwRmUse_detailsPanel"/>
+        </action>
+        <action id="abSpVwRmUse_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abSpVwRmUse_detailsPanel"/>
+        </action>
+        <action id="abSpVwRmUse_exportTXFR">
+            <title>DATA</title>
+            <command type="exportPanel" outputType="txfr" panelId="abSpVwRmUse_detailsPanel"/>
+        </action>    
+        <field table="rmuse" name="rm_use"/>
+        <field table="rmuse" name="description"/>
+		<field table="rmuse" name="definition"/>
+    </panel>
+</view>

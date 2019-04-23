@@ -1,0 +1,263 @@
+<view version="2.0">
+	<message name="businessUnit" translatable="true">Division</message>
+    <message name="division" translatable="true">Organisation Unit</message>
+    <message name="department" translatable="true">Department</message>
+    <message name="messageConfirmDelete" translatable="true">Are you sure you want to delete '{0}' ?</message>
+    <message name="errorDelete" translatable="true">Could not delete '{0}'.</message>
+    <message name="formSaved" translatable="true">Form saved successfully.</message>
+    <message name="selectTreeNode" translatable="true">Please select Division.</message>
+	<message name="noBusinessUnit" translatable="true">No Business Unit</message>
+    <layout type="borderLayout" id="mainLayout">
+        <north autoScroll="true" split="true" initialSize="90"/>
+        <center autoScroll="true"/>
+    </layout>
+    <layout type="borderLayout" id="centerLayout" containingLayout="mainLayout" region="center">
+        <west autoScroll="true" split="true" initialSize="35%"/>
+        <center autoScroll="true"/>
+    </layout>
+    <title translatable="true">Define Organizations</title>
+    
+    <dataSource id="ds_ab-sp-def-org_console_dv_dp">
+        <table name="dp" role="main"/>
+        <table name="dv" role="standard"/>
+        <field table="dv" name="bu_id" />
+        <field table="dp" name="dv_id"/>
+        <field table="dp" name="dp_id"/>
+    </dataSource>
+    
+    <panel type="console" columns="3" id="dvDpFilterPanel" labelsPosition="top" dataSource="ds_ab-sp-def-org_console_dv_dp" layout="mainLayout" region="north">
+        <title translatable="true">Filter</title>
+        <action id="show">
+            <title translatable="true">Show</title>
+        </action>
+        <action id="clear">
+            <title translatable="true">Clear</title>
+            <command type="clearPanel" panelId="dvDpFilterPanel"/>
+        </action>
+        
+        <field table="dv" name="bu_id"/>
+        <field table="dp" name="dv_id"/>
+        <field table="dp" name="dp_id">
+        	<action>
+        		<title translatable="false">...</title>
+				<command type="selectValue"
+					fieldNames="dp.dv_id, dp.dp_id"
+					selectFieldNames="dp.dv_id, dp.dp_id"
+					visibleFieldNames="dp.dv_id, dp.dp_id,dp.name">
+					<title>Department Code</title>
+				</command>
+        	</action>
+        </field>
+    </panel>
+    
+    <dataSource id="ds_ab-sp-def-org_tree_bu">
+    	<sql dialect="generic">
+    		(
+    		SELECT DISTINCT bu.bu_id ${sql.as} bu_id,
+					bu.name ${sql.as} name
+			FROM bu 
+			WHERE 
+	     		( NOT EXISTS(SELECT 1 FROM dv WHERE dv.bu_id=bu.bu_id) AND ${parameters['buOfNullDv']} )
+	     		OR
+	     		( NOT EXISTS(SELECT 1 FROM dv,dp WHERE dp.dv_id = dv.dv_id AND dv.bu_id=bu.bu_id) 
+				  AND EXISTS(SELECT 1 FROM dv WHERE dv.bu_id=bu.bu_id AND ${parameters['dvOfNullDp']} )  
+				  AND ${parameters['buOfNullDp']} ) 
+	     	)
+			UNION
+			(
+    			(SELECT DISTINCT bu.bu_id ${sql.as} bu_id,
+					bu.name ${sql.as} name
+				FROM dp,dv LEFT OUTER JOIN bu ON bu.bu_id = dv.bu_id
+				WHERE dp.dv_id =dv.dv_id AND dv.dv_id ${parameters['dvId']}
+			   		AND dp.dp_id ${parameters['dpId']} AND ${parameters['buId']}
+				)
+				UNION
+				(
+				SELECT DISTINCT bu.bu_id ${sql.as} bu_id,
+					bu.name ${sql.as} name
+				FROM dv LEFT OUTER JOIN bu ON bu.bu_id = dv.bu_id
+				WHERE NOT EXISTS(SELECT 1 FROM dp WHERE dp.dv_id = dv.dv_id)
+				     AND dv.dv_id ${parameters['dvId']} AND ${parameters['buId']}
+				)	
+			)	
+		</sql>
+        <table name="bu" role="main"/>
+        <field table="bu" name="bu_id" dataType="text"/>
+        <field table="bu" name="name" dataType="text"/>
+		<sortField table="bu" name="bu_id" ascending="true"/>
+		<parameter name="dvId" dataType="verbatim" value="IS NOT NULL"/>
+		<parameter name="dpId" dataType="verbatim" value="IS NOT NULL"/>
+		<parameter name="buId" dataType="verbatim" value=" 1=1 "/>
+        <parameter name="buOfNullDv" dataType="verbatim" value=" 1=1 "/>
+        <parameter name="dvOfNullDp" dataType="verbatim" value=" 1=1 "/>
+        <parameter name="buOfNullDp" dataType="verbatim" value=" 1=1 "/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-org_form_bu">
+        <table name="bu" role="main"/>
+        <field table="bu" name="bu_id"/>
+        <field table="bu" name="name"/>
+        <field table="bu" name="count_em"/>
+        <field table="bu" name="area_chargable"/>
+        <field table="bu" name="hpattern_acad"/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-org_tree_dv">
+        <sql dialect="generic">
+        	(SELECT DISTINCT dv.bu_id ${sql.as} bu_id,
+			        dv.dv_id ${sql.as} dv_id,
+					dv.name ${sql.as} name
+			FROM dv
+			WHERE NOT EXISTS(SELECT 1 FROM dp WHERE dp.dv_id=dv.dv_id)  AND dv.dv_id ${parameters['dvId']})
+			UNION ALL
+    		(SELECT DISTINCT dv.bu_id ${sql.as} bu_id,
+			        dv.dv_id ${sql.as} dv_id,
+					dv.name ${sql.as} name
+			FROM dp,dv
+			WHERE dp.dv_id =dv.dv_id 
+			   AND dv.dv_id ${parameters['dvId']}
+			   AND dp.dp_id ${parameters['dpId']})
+		</sql>
+        <table name="dv" role="main"/>
+		<field table="dv" name="bu_id" dataType="text"/>
+        <field table="dv" name="dv_id" dataType="text"/>
+        <field table="dv" name="name" dataType="text"/>
+		<sortField table="dv" name="dv_id" ascending="true"/>
+		<parameter name="dvId" dataType="verbatim" value="IS NOT NULL"/>
+		<parameter name="dpId" dataType="verbatim" value="IS NOT NULL"/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-org_form_dv">
+        <table name="dv" role="main"/>
+        <field table="dv" name="dv_id"/>
+        <field table="dv" name="name"/>
+        <field table="dv" name="head"/>
+        <field table="dv" name="bu_id"/>
+        <field table="dv" name="hpattern_acad"/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-org_tree_dp">
+    	<sql dialect="generic">
+    		SELECT dv.bu_id ${sql.as} bu_id,
+					dv.dv_id ${sql.as} dv_id, 
+			        dp.dp_id ${sql.as} dp_id,
+					dp.name ${sql.as} name
+			FROM dp,dv
+			WHERE dp.dv_id =dv.dv_id 
+			   AND dp.dp_id ${parameters['dpId']}
+		</sql>
+        <table name="dp" role="main"/>
+		<table name="dv" role="standard"/>
+		<field table="dv" name="bu_id" dataType="text"/>
+        <field table="dp" name="dv_id" dataType="text"/>
+        <field table="dp" name="dp_id" dataType="text"/>
+        <field table="dp" name="name" dataType="text"/>
+        <sortField table="dp" name="dp_id" ascending="true"/>
+		<parameter name="dpId" dataType="verbatim" value="IS NOT NULL"/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-def-org_form_dp">
+        <table name="dp" role="main"/>
+        <field table="dp" name="dv_id"/>
+        <field table="dp" name="dp_id"/>
+        <field table="dp" name="name"/>
+        <field table="dp" name="head"/>
+        <field table="dp" name="hpattern_acad"/>
+    </dataSource>
+    
+    <panel type="tree" id="bu_tree" dataSource="ds_ab-sp-def-org_tree_bu" layout="centerLayout" region="west">
+        <title translatable="true">Select Divisions, Organisation Unit or Departments</title>
+        <action id="addNew">
+            <title translatable="true">Add New</title>
+        </action>
+        <event type="onClickNode">
+            <command type="callFunction" functionName="onBusinessUnitClick"/>
+        </event>
+		<panel type="tree" id="dv_tree" dataSource="ds_ab-sp-def-org_tree_dv">
+            <event type="onClickNode">
+                <command type="selectTabPage" tabPanelId="dvDpDetailTabs" tabPageName="dvTab"/>
+                <command type="showPanel" panelId="dp_detail"/>
+                <command type="callFunction" functionName="onTreeviewClick"/>
+            </event>
+            <field table="dv" name="dv_id" dataType="text"/>
+            <field table="dv" name="name" dataType="text"/>
+        </panel>
+        <panel type="tree" id="dp_tree" dataSource="ds_ab-sp-def-org_tree_dp">
+            <event type="onClickNode">
+                <command type="selectTabPage" tabPanelId="dvDpDetailTabs" tabPageName="dpTab"/>
+                <command type="showPanel" panelId="dp_detail"/>
+                <command type="callFunction" functionName="onTreeviewClick"/>
+            </event>
+            <field table="dp" name="dp_id" dataType="text"/>
+            <field table="dp" name="name" dataType="text"/>
+        </panel>
+        <field table="bu" name="bu_id" dataType="text"/>
+        <field table="bu" name="name" dataType="text"/>
+    </panel>
+    
+    <tabs id="dvDpDetailTabs" workflow="enforced" cssClass="wizard" layout="centerLayout" region="center">
+    	<tab name="buTab" selected="true">
+            <title translatable="true">Division</title>
+            <panel type="form" id="bu_detail" showOnLoad="false" dataSource="ds_ab-sp-def-org_form_bu" columns="2">
+                <action id="save">
+                    <title translatable="true">Save</title>
+                </action>
+                <action id="delete">
+                    <title translatable="true">Delete</title>
+                </action>
+                <field table="bu" name="bu_id"/>
+                <field table="bu" name="name"/>
+                <field table="bu" name="count_em"/>
+                <field table="bu" name="area_chargable"/>
+                <field table="bu" name="hpattern_acad" readOnly="false">
+                    <action>
+                        <command type="callFunction" functionName="selectHpattern('bu_detail','bu.hpattern_acad')"/>
+                    </action>
+                </field>
+            </panel>
+        </tab>
+        <tab name="dvTab" selected="false">
+            <title translatable="true">Organisation Unit</title>
+            <panel type="form" id="dv_detail" showOnLoad="false" dataSource="ds_ab-sp-def-org_form_dv" columns="2">
+                <action id="save">
+                    <title translatable="true">Save</title>
+                </action>
+                <action id="delete">
+                    <title translatable="true">Delete</title>
+                </action>
+				<field table="dv" name="bu_id"/>
+                <field table="dv" name="dv_id"/>
+                <field table="dv" name="name"/>
+                <field table="dv" name="head"/>
+                <field table="dv" name="hpattern_acad" readOnly="false">
+                    <action>
+                        <command type="callFunction" functionName="selectHpattern('dv_detail','dv.hpattern_acad')"/>
+                    </action>
+                </field>
+				<field/>
+            </panel>
+        </tab>
+        <tab name="dpTab" selected="false">
+            <title translatable="true">Department</title>
+            <panel type="form" id="dp_detail" showOnLoad="false" dataSource="ds_ab-sp-def-org_form_dp" columns="2">
+                <action id="save">
+                    <title translatable="true">Save</title>
+                </action>
+                <action id="delete">
+                    <title translatable="true">Delete</title>
+                </action>
+                <field table="dp" name="dv_id" readOnly="true"/>
+                <field table="dp" name="dp_id"/>
+                <field table="dp" name="name"/>
+                <field table="dp" name="head"/>
+                <field table="dp" name="hpattern_acad" readOnly="false">
+                    <action>
+                         <command type="callFunction" functionName="selectHpattern('dp_detail','dp.hpattern_acad')"/>
+                    </action>
+                </field>
+				<field/>
+            </panel>
+        </tab>
+    </tabs>
+    <js file="ab-sp-def-org.js"/>
+</view>

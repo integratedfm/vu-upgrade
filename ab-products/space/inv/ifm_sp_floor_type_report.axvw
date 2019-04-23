@@ -1,0 +1,34 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">View Floor Type</title>
+    
+    <dataSource id="abSpVwFLT_ds_0">
+		<table name="ifm_fltype" role="main"/>
+        <field table="ifm_fltype" name="fl_type"/>
+        <field table="ifm_fltype" name="description"/>
+    </dataSource>
+
+    <panel type="grid" id="abSpVwFLT_detailsPanel" dataSource="abSpVwFLT_ds_0" multipleSelectionEnabled="false" recordLimit="10000">
+        <title translatable="true">Floor Type</title>
+        
+        <action id="abSpVwFLT_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abSpVwFLT_detailsPanel"/>
+        </action>
+        <action id="abSpVwFLT_exportDOCX">
+            <title>DOCX</title>
+            <command type="exportPanel" outputType="docx" panelId="abSpVwFLT_detailsPanel"/>
+        </action>
+        <action id="abSpVwFLT_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abSpVwFLT_detailsPanel"/>
+        </action>
+        <action id="abSpVwFLT_exportTXFR">
+            <title>DATA</title>
+            <command type="exportPanel" outputType="txfr" panelId="abSpVwFLT_detailsPanel"/>
+        </action>    
+		<field table="ifm_fltype" name="fl_type"/>
+        <field table="ifm_fltype" name="description"/>
+
+    </panel>
+</view>

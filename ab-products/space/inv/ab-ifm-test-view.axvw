@@ -1,0 +1,61 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">Title for View</title>
+    
+    <dataSource id="abViewdefReport_ds_0">
+        <table name="rm" role="main"/>
+        <table name="dv" role="standard"/>
+        <table name="dp" role="standard"/>
+        <table name="rmcat" role="standard"/>
+        <table name="rmtype" role="standard"/>
+        <field table="rm" name="bl_id"/>
+        <field table="rm" name="fl_id"/>
+        <field table="rm" name="rm_id"/>
+        <field table="rm" name="dv_id"/>
+        <field table="rm" name="dp_id"/>
+        <field table="rm" name="rm_cat"/>
+        <field table="rm" name="rm_type"/>
+        <field table="dv" name="name"/>
+        <field table="dp" name="name"/>
+        <field table="rmcat" name="description"/>
+        <field table="rmtype" name="description"/>
+    
+    </dataSource>
+
+    <panel type="grid" id="abViewdefReport_detailsPanel" dataSource="abViewdefReport_ds_0" multipleSelectionEnabled="false">
+        <title translatable="true">Rooms</title>
+        
+        <action id="abViewdefReport_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abViewdefReport_detailsPanel"/>
+        </action>     
+        <action id="abViewdefReport_exportDOCX">
+            <title>DOCX</title>
+            <command type="exportPanel" outputType="docx" panelId="abViewdefReport_detailsPanel"/>
+        </action>
+        <action id="abViewdefReport_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abViewdefReport_detailsPanel"/>
+        </action>
+        <action id="abViewdefReport_exportTXFR">
+            <title>TXFR</title>
+            <command type="exportPanel" outputType="txfr" panelId="abViewdefReport_detailsPanel"/>
+        </action>    
+        <field name="bl_id" table="rm"/>
+        <field name="fl_id" table="rm"/>
+        <field name="rm_id" table="rm"/>
+        <field name="dv_id" table="rm"/>
+        <field name="dp_id" table="rm"/>
+        <field name="rm_cat" table="rm"/>
+        <field name="rm_type" table="rm"/>
+        <field name="name" table="dv"/>
+        <field name="name" table="dp"/>
+        <field name="description" table="rmcat"/>
+        <field name="description" table="rmtype"/>
+        <sortField name="bl_id" table="rm" ascending="true" />
+        <sortField name="fl_id" table="rm" ascending="true" />
+        <sortField name="rm_id" table="rm" ascending="true" />
+        <indexField table="rm" name="bl_id"/>
+ 
+    </panel>
+</view>

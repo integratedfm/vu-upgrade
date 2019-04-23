@@ -1,0 +1,552 @@
+<view version="2.0">
+	<layout file="ifm3panels-stacked.axvw" />
+    <js file="ab-ifm-helpdesk-cf-workrequest-select.js"/>
+	<js file="ab-ondemand-common.js"/>
+    
+    <message name="substituteLegend" translatable="true">Work Orders assigned to you as substitute</message>
+ 
+	<dataSource id="orderDS">
+        <parameter name="cfWorkflowSubstitutes" dataType="verbatim" value="''"/>
+		<!-- IFM - converted to explicit SQL in order to join tables -->
+		<sql dialect="generic">
+		   SELECT wo.wo_id, wo.bl_id, site.name, wo.name_of_contact, wo.description, wo.date_created, wo.date_issued, wo.date_assigned, wo.date_completed,
+		   (SELECT COUNT(*) FROM wr wr1 WHERE wr1.date_escalation_completion  &lt; GETDATE() AND wr1.wo_id = wo.wo_id AND wr1.status IN ('I', 'CAI', 'Cai', 'HL','HA','HP')) ${sql.as} late_count
+		   FROM wo
+		      LEFT OUTER JOIN bl ON wo.bl_id = bl.bl_id
+		      LEFT OUTER JOIN site ON bl.site_id = site.site_id
+		   WHERE wo.date_completed IS NULL AND wo.date_issued IS NOT NULL
+                 AND wo.wo_id IN (SELECT wo_id FROM wr WHERE status IN ('I', 'CAI', 'Cai', 'HL','HA','HP') 
+                                AND wr_id IN (SELECT wr_id FROM wrcf WHERE cf_id IN (SELECT cf_id FROM cf WHERE email  =${sql.literal(user.email)})
+                                OR cf_id ${sql.concat} 'craftsperson' IN (${parameters['cfWorkflowSubstitutes']})))
+		</sql>
+		<table name="wo" role="main" />
+		<table name="bl" role="standard" />
+		<field table="wo" name="wo_id" />
+	    <field table="wo" name="bl_id"/>
+		<field table="site" name="name"/>
+		<field table="wo" name="name_of_contact" />
+		<field table="wo" name="description" />
+		<field table="wo" name="date_created" />
+		<field table="wo" name="date_issued" />
+        <field table="wo" name="date_assigned"/>
+        <field table="wo" name="date_completed"/>
+		<!--IFM Added -->
+		<field table="wo" name="late_count" dataType="number"/>
+		<!-- IFM
+		<restriction type="sql"
+			sql="wo.date_completed IS NULL AND wo.date_issued IS NOT NULL
+                 AND wo_id IN (SELECT wo_id FROM wr WHERE status = 'I' 
+                                AND wr_id IN (SELECT wr_id FROM wrcf WHERE cf_id IN (SELECT cf_id FROM cf WHERE email  =${sql.literal(user.email)})
+                                OR cf_id ${sql.concat} 'craftsperson' IN (${parameters['cfWorkflowSubstitutes']}))) ">
+		</restriction>  -->
+	</dataSource>
+
+	<panel type="grid" controlType="reportGrid" id="wo_report"
+		dataSource="orderDS" region="north">
+		<title translatable="true">Work Orders</title>
+		<sortField table="wo" name="date_issued" ascending="false" />
+		<sortField name="wo_id" table="wo" ascending="false" />
+		<field controlType="button">
+			<command type="showPanel" panelId="wr_report" />
+			<title translatable="true">Select</title>
+		</field>
+		<!-- IFM - hardcode new field title -->
+		<field table="wo" name="wo_id"  style="text-align: left;">
+		    <title translatable="true">Work Order</title>
+		</field>
+		<!-- IFM - Replace wo.bl_id with site.name field -->
+	    <!-- <field table="wo" name="bl_id" /> -->
+		<field table="site" name="name" />
+		<!-- IFM - Remove Contact, Description and Date_Created fields -->
+		<!-- <field table="wo" name="name_of_contact" /> -->
+		<!-- <field table="wo" name="description" /> -->
+		<!-- <field table="wo" name="date_created" /> -->
+		<field table="wo" name="date_issued" />
+	    <field table="wo" name="date_assigned" />
+	    <field table="wo" name="date_completed" />
+		<!--IFM Added  -->
+		<field table="wo" name="late_count" hidden="true"><title >Late Count</title></field>
+	</panel>
+
+	<dataSource id="requestDS">
+	    <parameter name="cfWorkflowSubstitutes" dataType="verbatim" value="''"/>
+		<!-- IFM - converted to explicit SQL in order to join tables -->
+		<sql dialect="generic">
+		   SELECT  wr.wr_id, wr.wo_id, wr.description, bl.name, wr.requestor, wr.phone, wr.prob_type, wr.status, wr.po_no,
+					wr.invoice_no, wr.invoice_file_name, wr.cost_total, wr.cai_contractor, wr.cai_user, wr.cost_est_total, wr.hold_date, wr.hold_end,  wr.cai_date,
+					wr.date_requested, wr.date_completed, wr.cai_approved_by,
+		           CAST(CAST(activity_log.date_required AS DATE) AS VARCHAR) ${sql.concat} ' ' ${sql.concat} COALESCE(CAST(CAST(activity_log.time_required AS TIME) AS VARCHAR), '') AS action_on,
+				   CAST(CAST(wr.date_escalation_completion AS DATE) AS VARCHAR) ${sql.concat} ' ' ${sql.concat} COALESCE(CAST(CAST(wr.time_escalation_completion AS TIME) AS VARCHAR), '') AS action_by
+		   FROM wr
+		      LEFT OUTER JOIN bl ON wr.bl_id = bl.bl_id
+		      LEFT OUTER JOIN activity_log ON wr.wr_id = activity_log.wr_id
+		    WHERE wr.status IN ('I', 'CAI', 'Cai', 'HL','HA','HP')
+			  AND wr.wr_id IN (SELECT wr_id FROM wrcf WHERE cf_id IN (SELECT cf_id FROM cf WHERE email  =${sql.literal(user.email)}) OR cf_id ${sql.concat} 'craftsperson' IN (${parameters['cfWorkflowSubstitutes']}))
+		</sql>
+		<sql dialect="sqlserver">
+		   SELECT  wr.wr_id, wr.wo_id, wr.description, bl.name, wr.requestor, wr.phone, wr.prob_type, wr.status, wr.po_no,
+				wr.invoice_no, wr.invoice_file_name, wr.cost_total, wr.cai_contractor, wr.cai_user, wr.cost_est_total, wr.hold_date, wr.hold_end, wr.cai_date, wr.date_requested, wr.date_completed, wr.cai_approved_by,
+		           FORMAT(activity_log.date_required, 'dd/MM/yyyy') + ' ' + FORMAT(activity_log.time_required, 'hh:mmtt') AS action_on,
+				   FORMAT(wr.date_escalation_completion, 'dd/MM/yyyy') + ' ' + FORMAT(wr.time_escalation_completion, 'hh:mmtt') AS action_by
+		   FROM wr
+		      LEFT OUTER JOIN bl ON wr.bl_id = bl.bl_id
+		      LEFT OUTER JOIN activity_log ON wr.wr_id = activity_log.wr_id
+		    WHERE wr.status IN ('I', 'CAI', 'Cai', 'HL','HA','HP')
+			  AND wr.wr_id IN (SELECT wr_id FROM wrcf WHERE cf_id IN (SELECT cf_id FROM cf WHERE email  =${sql.literal(user.email)}) OR cf_id ${sql.concat} 'craftsperson' IN (${parameters['cfWorkflowSubstitutes']}))
+		</sql>
+		<table name="wr" role="main" />
+		<field table="wr" name="wr_id" />
+		<field table="wr" name="wo_id" />
+		<!-- Add Description, Building Name and Requestor's Phone fields --> 
+		<field table="wr" name="description" />
+		<field table="wr" name="bl_id" />
+		<field table="bl" name="name" />
+		<field table="wr" name="requestor" />
+		<field table="wr" name="phone" />
+		<field table="wr" name="prob_type" />
+		<field table="wr" name="status" />
+		<field table="wr" name="date_requested" />
+		<!-- IFM - change wr to wo -->
+		<field table="wr" name="date_completed" />
+		<!-- Add Action_On and Action By fields --> 
+		<field table="wr" name="action_on" dataType = "text" />
+		<field table="wr" name="action_by" dataType = "text" />
+		<field table="wr" name="invoice_file_name" />
+		<field table="wr" name="invoice_no" />
+		<field table="wr" name="cost_total" />
+		
+		<field table="wr" name="cai_contractor" />
+		<field table="wr" name="cai_user" />
+		<field table="wr" name="cai_date" />
+		<field table="wr" name="cai_approved_by" />
+		<field table="wr" name="cost_est_total" />
+		
+		<field table="wr" name="hold_date" />
+		<field table="wr" name="hold_end" />
+		<field table="wr" name="po_no" />
+		
+	</dataSource>
+
+	<panel type="grid" controlType="reportGrid" id="wr_report"
+		multipleSelectionEnabled="true" showOnLoad="false"
+		dataSource="requestDS" region="center" showCounts="true" layoutRegion="row6col1">
+		<title translatable="true">Work Requests</title>
+		<!-- IFM Added -->
+		<actionbar>
+			<action id="hold" >
+					<title>Hold</title>
+			</action>
+			<action id="Cai" >
+					<title translatable="true">Completed Awaiting Invoice</title>
+			</action>
+			<action id = "completeSelected">
+				<title translatable="true">Complete Selected</title>
+			</action>
+
+		</actionbar>
+		
+		<sortField table="wr" name="name" ascending="true" />
+		<sortField table="wr" name="date_requested" ascending="false" />
+		<sortField table="wr" name="wr_id" ascending="false" />
+		<field controlType="button" id="wr_select_btn">
+			<!-- IFM - Select button navigates to new Panel rather than Tab -->
+			<!-- <command type="selectTabPage" tabPageName="updateWrLabor" /> -->
+			<command type="showPanel" panelId="requestdetailsPanel" />
+			<title translatable="true">Select</title>
+		</field>
+		
+		<field table="wr" name="wr_id" dataType="text" style="text-align:left" />
+		<!-- IFM - Hide the Work Order field -->
+		<!-- IFM - Add the Building Name and Requestor's Phone fields -->
+		<field table="bl" name="name" />
+		<field table="wr" name="phone" />
+		<field table="wr" name="wo_id" hidden="true"/>
+		<!-- IFM - Add the Description field -->
+		<field table="wr" name="description" />
+		<field table="wr" name="requestor" />
+		<field table="wr" name="prob_type" />
+		<field table="wr" name="status" />
+		<!-- IFM - Add the Action On field -->
+		<field table="wr" name="action_on" >
+		   <title translatable="true">Action On</title>
+		</field>
+		<!-- IFM - Add the Action By field -->
+		<field table="wr" name="action_by" >
+		   <title translatable="true">Action By</title>
+		</field>
+		<field table="wr" name="invoice_file_name"  hidden="true"/>
+		<field table="wr" name="invoice_no" hidden="true"/>
+		<field table="wr" name="cost_total" hidden="true"/>
+		<field table="wr" name="cost_est_total" hidden="true"/>
+		<field table="wr" name="cai_contractor" hidden="true"/>
+		<field table="wr" name="cai_approved_by" hidden="true"/>
+		
+		
+		<field table="wr" name="hold_date" hidden="true"/>
+		<field table="wr" name="hold_end" hidden="true"/>
+		<field table="wr" name="po_no" hidden="true"/>
+	</panel>
+
+	<!-- IFM - BELOW IS CODE ADDED FROM ab-helpdesk-cf-workrequest-update-details.axvw -->
+	
+	<dataSource id="detailDS">
+		<table name="wr" role="main" />
+		<table name="bl" role="standard" />
+		<table name="activity_log" role="standard" />
+		<field table="wr" name="wr_id" />
+		<field table="wr" name="wo_id" />
+		<field table="wr" name="requestor" />
+		<field table="wr" name="prob_type" />
+		<field table="wr" name="status" />
+		<field table="wr" name="date_requested" readOnly="true"/>
+		<field table="wr" name="time_requested" readOnly="true" />
+		<field table="wr" name="date_completed" />
+		<field table="wr" name="cause_type" />
+		<field table="wr" name="repair_type" />
+		<field table="wr" name="cf_notes" />
+		<field table="wr" name="doc1" />
+		<field table="wr" name="doc2" />
+		<field table="wr" name="doc3" />
+		<field table="wr" name="doc4" />
+		<field table="wr" name="date_est_completion" readOnly="true" />
+		<field table="wr" name="date_assigned" readOnly="true" />
+		<field table="wr" name="time_assigned" readOnly="true" />
+		<!-- IFM - Added date_required and time_required fields -->
+		<field table="activity_log" name="date_required" readOnly="true" />
+		<field table="activity_log" name="time_required" readOnly="true" />
+		<!-- IFM - Added date_escalation_completion and time_escalation_completion fields -->
+		<field table="wr" name="date_escalation_completion" readOnly="true" />
+		<field table="wr" name="time_escalation_completion" readOnly="true" />
+		<field table="wr" name="priority" readOnly="true" />
+		<field table="wr" name="priority_label" readOnly="true" />
+		<field table="bl" name="name" readOnly="true" />
+		<field table="wr" name="fl_id" readOnly="true" />
+		<field table="wr" name="rm_id" readOnly="true" />
+		<field table="wr" name="location" readOnly="true" />
+		<field table="wr" name="cause_type" readOnly="true" />
+		<field table="wr" name="repair_type" readOnly="true" />
+		<field table="wr" name="eq_id" readOnly="true" />
+		<field table="wr" name="dv_id" readOnly="true" />
+		<field table="wr" name="dp_id" readOnly="true" />
+		<field table="wr" name="ac_id" readOnly="true" />
+		<field table="wr" name="phone" readOnly="true" />
+		<field table="wr" name="down_time" readOnly="true" />
+		<field table="wr" name="pms_id" readOnly="true" />
+		<field table="wr" name="description" readOnly="true" />
+		<field table="wr" name="tr_id" readOnly="true" />
+		<field table="wr" name="cost_est_other" readOnly="true" />
+		<field table="wr" name="cost_est_labor" readOnly="true" />
+		<field table="wr" name="cost_est_parts" readOnly="true" />
+		<field table="wr" name="cost_est_total" readOnly="true" />
+		<field table="wr" name="cost_est_tools" readOnly="true" />
+		<field table="wr" name="cost_other" readOnly="true" />
+		<field table="wr" name="cost_labor" readOnly="true" />
+		<field table="wr" name="cost_parts" readOnly="true" />
+		<field table="wr" name="cost_total" readOnly="true" />
+		<field table="wr" name="cost_tools" readOnly="true" />
+		<field table="wr" name="desc_other_costs" />
+	    <field table="wr" name="curr_meter_val" />
+		<!-- IFM - Added Invoice and Purchase Order fields -->
+		<field table="wr" name="invoice_no" />
+		<field table="wr" name="invoice_date" />
+		<field table="wr" name="invoice_file_name" />		
+		<field table="wr" name="gst_inclusive" />       		
+		<field table="wr" name="po_no" />
+	</dataSource>
+
+	<panel type="form" columns="2" id="requestdetailsPanel"
+		dataSource="detailDS" region="south" showOnLoad="false"  >
+		<title translatable="true">Work Request Details</title>
+		<action id="update">
+			<title translatable="true">Update</title>
+			<command type="saveForm"/>
+			<command type="showPanel" panelId="requestdetailsPanel"/>
+		</action>
+
+		<field table="wr" name="wr_id" readOnly="true" />
+		<field table="wr" name="wo_id" readOnly="true" />
+		
+		<field table="wr" name="date_requested" readOnly="true" />
+		<field table="wr" name="time_requested" readOnly="true" />
+		
+		<field table="wr" name="requestor" readOnly="true" />
+		<field table="wr" name="phone" readOnly="true" />
+		
+		<field table="wr" name="prob_type" readOnly="true" />
+		<field table="wr" name="status" hidden="true" />
+		
+		<field table="wr" name="priority_label" readOnly="true" />
+		
+		<field table="wr" name="doc1" />
+		<field table="wr" name="doc2" />
+		<field table="wr" name="doc3" />
+		<field table="wr" name="doc4" />
+
+		<field table="wr" name="description" colspan="2" style="width:80%" readOnly="true" />
+		<field table="bl" name="name" readOnly="true" />
+		<field table="wr" name="fl_id" readOnly="true" />
+		<field table="wr" name="rm_id" readOnly="true" />
+		<field table="wr" name="eq_id" readOnly="true" />
+		
+		<field table="wr" name="cf_notes" colspan="2" style="width:80%" />
+		
+		<field table="activity_log" name="date_required" readOnly="true" >
+			<title translatable="true">Action On Date</title>
+		</field>
+		<field table="wr" name="date_escalation_completion" readOnly="true" >
+			<title translatable="true">Action By Date</title>
+		</field>
+		<field table="activity_log" name="time_required" readOnly="true" >
+			<title translatable="true">Action On Time</title>
+		</field>
+		<field table="wr" name="time_escalation_completion" readOnly="true" >
+			<title translatable="true">Action By Time</title>
+		</field>
+		<field>
+			<title translatable="true">Status</title>
+			<html>
+				<select id="selectStatus" name="selectStatus"></select>
+			</html>
+		</field>
+		<field > </field>
+		<!-- IFM Added -->
+		<field colspan="2" readOnly="true"><html><hr></hr></html></field>
+		
+		<!-- IFM - Added Invoice and Purchase Order fields -->
+		<field table="wr" name="invoice_no" />
+		<field table="wr" name="invoice_date"  />
+		<field table="wr" name="invoice_file_name"   />	
+		<field table="wr" name="po_no"  />
+		<field table="wr" name="gst_inclusive" />      
+		<field table="wr" name="cost_total" readOnly="true"/>
+		
+		<!--CF Panel Fields -->
+
+		<!--COST Panel Fields 
+		<field table="wr" name="cost_est_other" readOnly="true"/>
+		<field table="wr" name="cost_other" readOnly="true"/>
+		<field table="wr" name="cost_est_labor" readOnly="true"/>
+		<field table="wr" name="cost_labor" readOnly="true"/>
+		<field table="wr" name="cost_est_parts" readOnly="true"/>
+		<field table="wr" name="cost_parts" readOnly="true"/>
+		<field table="wr" name="cost_est_tools" readOnly="true"/>
+		<field table="wr" name="cost_tools" readOnly="true"/>
+		<field table="wr" name="cost_est_total" readOnly="true"/>
+		<field table="wr" name="desc_other_costs" colspan="2"
+			style="width:80%" />
+		-->
+		<field colspan="2" readOnly="true"><html><hr></hr></html></field>
+		<field table="wr" name="cause_type" />
+		<field table="wr" name="repair_type" />
+		
+		<field table="wr" name="curr_meter_val"/>
+
+	</panel>
+		
+	
+
+	<panel type="form" columns="2" id="hiddenPanel"
+		dataSource="detailDS" showOnLoad="false">
+		<field table="wr" name="status" />
+	</panel>
+	
+	<panel type="form" columns="2" id="costPanel"
+		dataSource="detailDS" showOnLoad="false">
+		<title translatable="true">Costs</title>
+
+		<field table="wr" name="cost_est_other" readOnly="true"/>
+		<field table="wr" name="cost_other" readOnly="true"/>
+		<field table="wr" name="cost_est_labor" readOnly="true"/>
+		<field table="wr" name="cost_labor" readOnly="true"/>
+		<field table="wr" name="cost_est_parts" readOnly="true"/>
+		<field table="wr" name="cost_parts" readOnly="true"/>
+		<field table="wr" name="cost_est_tools" readOnly="true"/>
+		<field table="wr" name="cost_tools" readOnly="true"/>
+		<field table="wr" name="cost_est_total" readOnly="true"/>
+		<field table="wr" name="cost_total" readOnly="true"/>
+		<field table="wr" name="desc_other_costs" colspan="2"
+			style="width:80%" />
+	</panel>
+
+	<panel type="form" columns="2" id="cfPanel" 
+		dataSource="detailDS" showOnLoad="false">
+		<title translatable="true">Craftspersons</title>
+		<field table="wr" name="wr_id" hidden="true"/>
+		<field table="wr" name="cause_type" />
+		<field table="wr" name="repair_type" />
+		<field table="wr" name="cf_notes" colspan="2"
+			style="width:80%" />
+		<field table="wr" name="doc1" />
+		<field table="wr" name="doc2" />
+		<field table="wr" name="doc3" />
+		<field table="wr" name="doc4" />
+	</panel>
+	 <!-- Quick panel for Hold action IFM Added -->
+    <panel type="form" id="holdPanel" dataSource="requestDS" showOnLoad="false" hidden="true" showLabels="true"  buttonsPosition="footer" afterRefresh="holdPanel_afterRefresh">
+        <instructions>This action puts a request on hold while waiting for parts, the appropriate trade, or security access. You can stop or complete a request that is on hold.</instructions>
+		<fieldset layout="fluid">
+            <field id="holdRadioEl">
+                <title>Reason for Hold:</title>
+                <html>
+                    <br/>
+                    <div>
+                        <input type="radio" name="holdRadio" value="HP" checked="1">
+                            <span translatable="true" style="padding-left:4px;">Hold for Parts</span>
+                        </input>
+                    </div>
+                    <br/>
+                    <div>
+                        <input type="radio" name="holdRadio" value="HL">
+                            <span translatable="true" style="padding-left:4px;">Hold for Labor</span>
+                        </input>
+                    </div>
+                    <br/>
+                    <div>
+                        <input type="radio" name="holdRadio" value="HA">
+                            <span translatable="true" style="padding-left:4px;">Hold for Access</span>
+                        </input>
+                    </div>
+                    <br/>
+                </html>
+            </field>
+            <field/>
+            <field/>
+            <field table="wr" name="wr_id" hidden="true"/>
+			<field table="wr" name="hold_date" hidden="true"/>
+		<field table="wr" name="hold_end" readOnly="false" required="true" />
+        
+        </fieldset>
+        <action id="holdYes" mainAction="true">
+            <title>Yes</title>
+        </action>
+        <action id="holdCancel">
+            <title>No</title>
+            <command type="closeDialog"/>
+        </action>
+		
+    </panel>
+	
+	<!-- Quick panel for IFM Completed Awaiting Invoice action -->
+    <panel type="form" id="caiPanel" dataSource="requestDS" showOnLoad="false" hidden="true" showLabels="true" buttonsPosition="footer" afterRefresh="caiPanel_afterRefresh">
+        <instructions>This action marks the request as Completed Awaiting Invoice. This action send email to Work Request Approver to inform of completion.</instructions>
+        <action id="caiYes" mainAction="true">
+            <title>Save</title>
+        </action>
+        <action id="caiNo">
+            <title>Cancel</title>
+            <command type="closeDialog"/>
+        </action>
+		<field table="wr" name="cai_contractor" readOnly="false" required="true">
+			<action>
+                <title translatable="false">...</title>
+                <command type="selectValue"
+                    fieldNames="wr.cai_contractor"
+                    selectFieldNames="cf.cf_id"
+					
+                    visibleFieldNames="cf.cf_id,cf.name,cf.email"/>
+            </action>
+		</field>
+		
+		<field table="wr" name="wr_id" hidden="true"/>
+		<field table="wr" name="cai_user" readOnly="true"/>
+		<field table="wr" name="cai_date" readOnly="true"/>
+		<field table="wr" name="cai_approved_by" readOnly="false" required="true">
+			<action>
+                <title translatable="false">...</title>
+                <command type="selectValue"
+                    fieldNames="wr.cai_approved_by"
+                    selectFieldNames="cf.cf_id"
+					restriction="cf.is_approver = 1"
+                    visibleFieldNames="cf.cf_id,cf.name,cf.email"/>
+            </action>
+		</field>
+		
+		
+    </panel>
+	
+	<!-- Quick panel for IFM Complete action -->
+    <panel type="form" id="completeSelectedPanel" dataSource="requestDS" showOnLoad="false" hidden="true" showLabels="true" buttonsPosition="footer">
+        <instructions>No invoice has been provided, no payment will go through</instructions>
+        <action id="csYes" mainAction="true">
+            <title>Continue</title>
+        </action>
+        <action id="csNo">
+            <title>Cancel</title>
+            <command type="closeDialog"/>
+        </action>
+		<field table="wr" name="invoice_file_name"  readOnly="true" />
+		<field table="wr" name="invoice_no" readOnly="true"/>
+		<field table="wr" name="cost_total" readOnly="true"/>
+    </panel>
+
+	
+	<!--IFM Added -->
+	<dataSource id="tpEmailDS">
+		<table name="cf" role="main"/>
+		<field  name="cf_id" />
+		<field  name="email" />
+		<field  name="name" />
+	
+	</dataSource>
+	
+	<!--IFM Added -->
+	<dataSource id="WRCFDS">
+		<table name="wrcf" role="main"/>
+		<table name="cf" role="standard"/>
+		
+		<field  table="wrcf" name="cf_id"  />
+		<field  table="wrcf" name="wr_id"   />
+		<field  table="wrcf" name="cost_estimated" />
+		
+		<field  table="cf" name="name"    />
+		<field  table="cf" name="email"   />
+		<field  table="cf" name="rate_hourly"   />
+	
+	</dataSource>
+	
+	<dataSource id="WRHold_DS">
+		<table name="wr" role="main"/>
+		<field table="wr" name="wr_id" />
+		<field table="wr" name="hold_date" />
+		<field table="wr" name="hold_end" />		
+	</dataSource>
+	
+	<dataSource id="WRCai_DS">
+		<table name="wr" role="main"/>
+		<field table="wr" name="wr_id" />
+		<field table="wr" name="cai_user" />
+		<field table="wr" name="cai_contractor" />
+		<field table="wr" name="cai_date" />	
+		<field table="wr" name="cai_approved_by" />	
+		<field table="wr" name="cost_est_total" />		
+	</dataSource>
+	
+	<panel type="grid" id="popupPanel" dataSource="requestDS" showOnLoad="false" hidden="true" showLabels="false" buttonsPosition="footer" >
+		<instructions>Work Request successfully updated.</instructions>
+        <action id="popupClose">
+            <title>Close</title>
+            <command type="closeDialog"/>
+        </action>
+		
+    </panel>
+
+	<dataSource id="wrotherDS">
+        <table name="wr_other" role="main"/>
+        <table name="wr" role="standard"/>
+        <field table="wr" name="status"/>
+        <field table="wr_other" name="wr_id"/>
+        <field table="wr_other" name="other_rs_type"/>
+        
+        <field table="wr_other" name="cost_estimated"/>
+        <field table="wr_other" name="qty_used"/>
+        <field table="wr_other" name="units_used"/>
+        <field table="wr_other" name="description"/>
+        <field table="wr_other" name="cost_total"/>
+		<!-- IFM Mehran Added for invoices 06-06-2017 and 23-06-2017 -->
+		<field name="invoice_file_name" table="wr_other" showCheckInDialog="true" readOnly="false"/>
+		
+
+    </dataSource>
+
+
+</view>

@@ -1,0 +1,59 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Floor Cover Edit</title>
+    
+    <dataSource id="ifmSpFloorCoverEdit_ds_0">
+        <table name="ifm_flcover" role="main"/>
+        <field table="ifm_flcover" name="fl_cover"/>
+        <field table="ifm_flcover" name="description"/>
+    
+    </dataSource>
+      
+    <panel type="grid" id="ifmSpFloorCoverEdit_treePanel" dataSource="ifmSpFloorCoverEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Floor Cover</title>
+        <action id="ifmSpFloorCoverEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="ifmSpFloorCoverEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="ifmSpFloorCoverEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="ifmSpFloorCoverEdit_treePanel"/>
+        </action>    
+        <field name="fl_cover" table="ifm_flcover" controlType="link">
+            <command type="showPanel" panelId="ifmSpFloorCoverEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="description" table="ifm_flcover" controlType="link">
+            <command type="showPanel" panelId="ifmSpFloorCoverEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <indexField table="ifm_flcover" name="fl_cover"/>
+    </panel>
+    
+    <dataSource id="ifmSpFloorCoverEdit_ds_1">
+        <table name="ifm_flcover" role="main"/>
+        <field table="ifm_flcover" name="fl_cover"/>
+        <field table="ifm_flcover" name="description"/>
+    
+    </dataSource>
+      
+    <panel type="form" id="ifmSpFloorCoverEdit_detailsPanel" dataSource="ifmSpFloorCoverEdit_ds_1" showOnLoad="false" labelsPosition="top" columns="2" region="center">
+        <title translatable="true">Floor Cover</title>        
+        <action id="ifmSpFloorCoverEdit_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="ifmSpFloorCoverEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpFloorCoverEdit_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="ifmSpFloorCoverEdit_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="ifmSpFloorCoverEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpFloorCoverEdit_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="ifmSpFloorCoverEdit_detailsPanel" show="false"/>
+        </action>    
+        <field name="fl_cover" table="ifm_flcover" showSelectValueAction=""/>
+        <field name="description" table="ifm_flcover" showSelectValueAction=""/>
+    </panel>
+</view>

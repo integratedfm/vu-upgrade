@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view version="2.0"><title>Division</title><designInfo isAlterable="true" pattern="ab-viewdef-grid" type="grid"/><dataSource id="ds_bu"><table name="bu" role="main"/><field name="name" table="bu"/><field name="bu_id" table="bu"/><field name="area_rm" table="bu"/><sortField name="area_rm" table="bu" ascending="true"/><sortField name="bu_id" table="bu" ascending="true"/></dataSource><panel id="bu_grid" type="grid" dataSource="ds_bu"><title>Division</title></panel></view>

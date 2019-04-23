@@ -1,0 +1,61 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Edit Sisfm Functions</title>
+    
+    <dataSource id="ifmSpSisfmFunctionEdit_ds_0">
+        <table name="sisfm_functions" role="main"/>
+		<field table="sisfm_functions" name="id"/>
+        <field table="sisfm_functions" name="access_group"/>
+        <field table="sisfm_functions" name="function_name"/>
+		<sortField name="function_name" table="sisfm_functions" ascending="true"/>
+    </dataSource>
+      
+    <panel type="grid" id="ifmSpSisfmFunctionEdit_treePanel" dataSource="ifmSpSisfmFunctionEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">SISfm Functions</title>
+        <action id="ifmSpSisfmFunctionEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="ifmSpSisfmFunctionEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="ifmSpSisfmFunctionEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="ifmSpSisfmFunctionEdit_treePanel"/>
+        </action>    
+		<field name="id" table="sisfm_functions" hidden="true"/>
+        <field name="function_name" table="sisfm_functions" controlType="link">
+            <command type="showPanel" panelId="ifmSpSisfmFunctionEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="access_group" table="sisfm_functions" controlType="link">
+            <command type="showPanel" panelId="ifmSpSisfmFunctionEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+    </panel>
+    
+    <dataSource id="ifmSpSisfmFunctionEdit_ds_1">
+        <table name="sisfm_functions" role="main"/>
+		<field table="sisfm_functions" name="id"/>
+        <field table="sisfm_functions" name="access_group"/>
+        <field table="sisfm_functions" name="function_name"/>
+    </dataSource>
+      
+    <panel type="form" id="ifmSpSisfmFunctionEdit_detailsPanel" dataSource="ifmSpSisfmFunctionEdit_ds_1" showOnLoad="false" labelsPosition="left" columns="1" region="center">
+        <title translatable="true">SISfm Function Details</title>        
+        <action id="ifmSpSisfmFunctionEdit_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="ifmSpSisfmFunctionEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpSisfmFunctionEdit_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="ifmSpSisfmFunctionEdit_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="ifmSpSisfmFunctionEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpSisfmFunctionEdit_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="ifmSpSisfmFunctionEdit_detailsPanel" show="false"/>
+        </action>    
+        <field name="id" table="sisfm_functions" readOnly="true"/>
+        <field name="function_name" table="sisfm_functions" showSelectValueAction=""/>
+		<field name="access_group" table="sisfm_functions" showSelectValueAction=""/>
+    </panel>
+</view>

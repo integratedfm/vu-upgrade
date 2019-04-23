@@ -1,0 +1,158 @@
+<view version="2.0">
+	<js file="../ab-ondemand-common.js" />
+	<js file="ab-ifm-helpdesk-cf-workrequest-update-resources.js" />
+
+	<dataSource id="requestDS">
+		<table name="wr" role="main" />
+
+		<field table="wr" name="wr_id" />
+		<field table="wr" name="requestor" readOnly="true" />
+		<field table="wr" name="prob_type" readOnly="true" />
+		<field table="wr" name="date_requested" readOnly="true" />
+	</dataSource>
+
+	<dataSource id="reportPartDS">
+		<table name="wrpt" role="main" />
+		<table name="wr" role="standard" />
+
+		<field table="wr" name="wr_id" />
+		<field table="wrpt" name="wr_id" />
+		<field table="wrpt" name="part_id" />
+		<field table="wrpt" name="qty_actual" />
+		<field table="wrpt" name="date_assigned" />
+		<field table="wrpt" name="time_assigned" />
+        <field table="wrpt" name="status"/>
+	</dataSource>
+
+	<dataSource id="reportToolDS">
+		<table name="wrtl" role="main" />
+		<table name="wr" role="standard" />
+
+		<field table="wr" name="wr_id" />
+		<field table="wrtl" name="wr_id" readOnly="true" />
+		<field table="wrtl" name="tool_id" readOnly="true" />
+		<field table="wrtl" name="cost_straight" readOnly="true" />
+		<field table="wrtl" name="hours_straight" readOnly="true" />
+		<field table="wrtl" name="date_assigned" readOnly="true" />
+		<field table="wrtl" name="time_assigned" readOnly="true" />
+	</dataSource>
+
+	<dataSource id="reportOtherDS">
+		<table name="wr_other" role="main" />
+		<table name="wr" role="standard" />
+
+		<field table="wr" name="wr_id" />
+		<field table="wr_other" name="wr_id" />
+		<field table="wr_other" name="date_used" />
+		<field table="wr_other" name="other_rs_type" />
+		<field table="wr_other" name="cost_estimated" />
+		<field table="wr_other" name="cost_total" />
+		<field table="wr_other" name="description" />
+		<field table="wr_other" name="qty_used" />
+		<field table="wr_other" name="units_used" />
+	</dataSource>
+
+	<panel type="form" columns="2" id="requestPanel"
+		dataSource="requestDS" showOnLoad="false">
+		<title translatable="true">Work Request</title>
+		<action id="prev">
+			<title translatable="true">&lt;&lt; Previous</title>
+			<command type="selectTabPage" tabPageName="updateWrLabor" />
+		</action>
+		<action id="next">
+			<title translatable="true">Next &gt;&gt;</title>
+			<command type="selectTabPage" tabPageName="details" />
+		</action>
+
+		<field table="wr" name="wr_id" />
+		<field table="wr" name="requestor" readOnly="true" />
+		<field table="wr" name="prob_type" readOnly="true" />
+		<field table="wr" name="date_requested" readOnly="true" />
+	</panel>
+
+	<panel type="grid" id="partReportGrid" controlType="reportGrid"
+		showOnLoad="false" multipleSelectionEnabled="true"
+		dataSource="reportPartDS">
+		<title translatable="true">Work Request Parts</title>
+		<sortField table="wrpt" name="wr_id" ascending="true" />
+		<sortField table="wrpt" name="part_id" ascending="true" />
+		<sortField table="wrpt" name="date_assigned" ascending="true" />
+		<sortField table="wrpt" name="time_assigned" ascending="true" />
+		<action id="addPart">
+			<title translatable="true">Add Part</title>
+		</action>
+		<action>
+			<title translatable="true">Delete Selected</title>
+			<command type="callFunction"
+				functionName="ABODC_deleteItems('partReportGrid', 'wrpt')" />
+		</action>
+		<field controlType="button">
+			<command type="openDialog"
+				viewName="ab-helpdesk-cf-workrequest-part.axvw" />
+			<title translatable="true">Edit</title>
+		</field>
+
+		<field table="wrpt" name="part_id" />
+		<field table="wrpt" name="wr_id" />
+		<field table="wrpt" name="qty_actual" />
+		<field table="wrpt" name="date_assigned" />
+		<field table="wrpt" name="time_assigned" />
+        <field table="wrpt" name="status"/>
+	</panel>
+
+
+	<panel type="grid" controlType="reportGrid" showOnLoad="false"
+		multipleSelectionEnabled="true" id="toolReportGrid"
+		dataSource="reportToolDS">
+		<title translatable="true">Work Request Tools</title>
+		<sortField table="wrtl" name="tool_id" ascending="true" />
+		<sortField table="wrtl" name="date_assigned" ascending="true" />
+		<action id="addTool">
+			<title translatable="true">Add Tool</title>
+		</action>
+		<action>
+			<title translatable="true">Delete Selected</title>
+			<command type="callFunction"
+				functionName="ABODC_deleteItems('toolReportGrid', 'wrtl')" />
+		</action>
+		<field controlType="button">
+			<command type="openDialog"
+				viewName="ab-helpdesk-workrequest-tool.axvw" />
+			<title translatable="true">Edit</title>
+		</field>
+
+		<field table="wrtl" name="wr_id" readOnly="true" />
+		<field table="wrtl" name="tool_id" />
+		<field table="wrtl" name="date_assigned" />
+		<field table="wrtl" name="time_assigned" hidden="true" />
+		<field table="wrtl" name="cost_straight" readOnly="true" />
+		<field table="wrtl" name="hours_straight" readOnly="true" />
+	</panel>
+
+	<panel type="grid" controlType="reportGrid" showOnLoad="false"
+		multipleSelectionEnabled="true" id="otherReportGrid"
+		dataSource="reportOtherDS">
+		<title translatable="true">Work Request Other costs</title>
+		<action id="addOther">
+			<title translatable="true">Add</title>
+		</action>
+		<action>
+			<title translatable="true">Delete Selected</title>
+			<command type="callFunction"
+				functionName="ABODC_deleteItems('otherReportGrid', 'wr_other')" />
+		</action>
+		<field controlType="button">
+			<command type="openDialog"
+				viewName="ab-helpdesk-cf-workrequest-other.axvw" />
+			<title translatable="true">Edit</title>
+		</field>
+
+		<field table="wr_other" name="wr_id" />
+		<field table="wr_other" name="date_used" />
+		<field table="wr_other" name="other_rs_type" />
+		<field table="wr_other" name="cost_total" />
+
+	</panel>
+
+
+</view>

@@ -1,0 +1,68 @@
+<view version="2.0">
+  <title translatable="true">Frequently Asked Questions (for Tradespersons)</title>
+
+  <panel type="html" id="instructionsPanel1">
+    <html>
+      <!-- <div id="instructions" class="instructions" style="height:20em;">  -->
+      <div>
+	    <p style="margin-left: 30px">
+          <br/>
+          <b>Background:</b>
+        </p>
+        <ul style="list-style-type:disc; list-style-position: inside; margin-left: 50px">
+          <li><a href="/archibus/schema/ab-core/files/Difference between WR vs WO.docx" title="Difference between WR vs WO" target="_blank">Difference between Work Request and Work Order</a></li>
+        </ul>
+
+        <p style="margin-left: 30px">
+          <br/>
+          <b>How to</b>
+		</p>
+        <ul style="list-style-type:disc; list-style-position: inside; margin-left: 50px">
+          <li><a href="/archibus/schema/ab-core/files/Completeing WR and WO.docx" title="Completeing WR and WO" target="_blank">Completing Work Requests and Work Orders</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Attach an invoice and required details.docx" title="Attach an invoice and required details" target="_blank">Attach an invoice and required details</a></li>
+          <li><a href="/archibus/schema/ab-core/files/SamplePDF.pdf" title="SampleVid" target="_blank">Placing Work Requests on hold</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Completing non-chargeable WR.docx" title="Completing non-chargeable WR" target="_blank">Completing non-chargeable Work Requests</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Check WOs for status and payments.docx" title="Check WOs for status and payments" target="_blank">Check Work Orders for status and payments</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Adding costs, parts and other resources to WRs.docx" title="Adding costs, parts and other resources to WRs" target="_blank">Adding costs, parts and other resources to Work Requests</a></li>
+        </ul>
+
+	    <p style="margin-left: 30px">
+          <br/>
+          <b>Other information</b>
+        </p>		
+        <ul style="list-style-type:disc; list-style-position: inside; margin-left: 50px">			
+          <li><a href="/archibus/schema/ab-core/files/SamplePDF.pdf" title="SamplePDF" target="_blank">Invoice queries or concerns</a></li>
+          <li><a href="/archibus/schema/ab-core/files/When will I be paid.docx" title="When will I be paid" target="_blank">When will I be paid</a></li>
+          <li><a href="/archibus/schema/ab-core/files/What should my invoice look like.docx" title="What should my invoice look like" target="_blank">What should my invoice look like</a></li>
+          <li><a href="/archibus/schema/ab-core/files/SamplePDF.pdf" title="SamplePDF" target="_blank">Priorities levels and SLAs</a></li>
+          <li><a href="/archibus/schema/ab-core/files/Who can I contact for support.docx" title="Who can I contact for support" target="_blank">Who can I contact for support</a></li>
+        </ul>
+        <br/>
+		<br/>
+      </div>
+
+      <table width="100%" cellpadding="2" cellspacing="2" border="0">
+        <tr>
+          <!-- IFM - "</img>" tag has been added to the following line based on advice from ARCHIBUS Tech Support -->
+          <!--       This resolves the issue of view error whenever ARCHIBUS is restarted -->
+          <td><img src="/archibus/schema/ab-core/graphics/blueline.gif" border="0" width="100%" height="6" alt="Blue Line"></img></td>
+        </tr>
+		<tr>
+          <td>
+            <p>
+            <b><a href="https://policy.vu.edu.au" title="Policies" target="_blank">Policies</a></b> | 
+            <b><a href="http://www.vu.edu.au/legal" title="Legal" target="_blank">Legal</a></b> | 
+            <b><a href="http://www.vu.edu.au/copyright-notice" title="Copyright Notice" target="_blank">Copyright Notice</a></b> | 
+            <b><a href="http://www.vu.edu.au/privacy" title="Privacy" target="_blank">Privacy</a></b> | 
+            <b><a href="http://www.vu.edu.au/contact-us" title="Contact Us" target="_blank">Contact Us</a></b> | 
+            <b><a href="?PrintFriendly=YesPlease" title="Print Friendly" target="_blank">Print Friendly</a></b> | 
+            <b><a href="http://www.vu.edu.au/feedback" title="Feedback" target="_blank">Feedback</a></b>
+            </p>
+            <p>Copyright © 2018. Victoria University CRICOS Provider No. 00124K (Melbourne) and CRICOS Provider No. 02475D (Sydney). RTO Code: 3113. ABN: 83 776 954 731</p>
+          </td>
+        </tr>
+      </table>
+      <!-- </div>  -->
+    </html>
+  </panel>
+</view>

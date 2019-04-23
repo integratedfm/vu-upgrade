@@ -1,0 +1,146 @@
+<view version="2.0">
+    <designInfo type="summary" pattern="ab-viewdef-summary-report-drilldown" isAlterable="false"/>
+    
+    <message name="summaryGridTitle" translatable="true">Summary for Building:</message>
+    
+    <layout type="borderLayout" id="mainLayout">
+        <west id="top" initialSize="40%" split="true"/>
+        <center autoScroll="true"/>
+    </layout>
+    
+    <title translatable="true">View Departments by Building</title>
+    
+    <dataSource id="ds_ab-sp-vw-dp-by-bl_grid_bl">
+        <table name="bl" role="main"/>
+        <field name="bl_id" table="bl"/>
+        <field name="name" table="bl"/>
+		<field name="area_rm_dp" table="bl"/>
+		<field name="area_gp_dp" table="bl"/>
+        <field name="area_usable" table="bl"/>
+        <restriction type="sql" sql=" EXISTS (SELECT 1 FROM rm LEFT JOIN rmcat ON rm.rm_cat =rmcat.rm_cat 
+										 WHERE ( (rm.rm_cat IS NULL) OR (rmcat.used_in_calcs IN ('all_totals', 'dp_comn_ocup_totals')) )
+										 AND rm.bl_id = bl.bl_id
+								  ) 
+						     OR EXISTS (SELECT 1 FROM gp WHERE gp.bl_id = bl.bl_id and  gp.portfolio_scenario_id IS NULL)"/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-vw-dp-by-bl_crosstable_gp_union_rm" type="grouping">
+        <sql dialect="generic">
+            SELECT
+	            CASE WHEN(dv.bu_id IS NULL) THEN '' ELSE dv.bu_id END ${sql.as} bu_id,
+	            CASE WHEN(rm.dv_id IS NULL) THEN '' ELSE rm.dv_id END ${sql.as} dv_id,
+	            CASE WHEN(rm.dp_id IS NULL) THEN '' ELSE rm.dp_id END ${sql.as} dp_id,
+	            rm.bl_id ${sql.as} bl_id,
+		        rm.fl_id ${sql.as} fl_id,
+	            rm.area  ${sql.as} area,
+	            rm.rm_id ${sql.as} gp_id,
+		   CASE WHEN ( (SELECT bl.area_rm_dp + bl.area_gp_dp FROM bl WHERE bl.bl_id = rm.bl_id)=0 ) THEN 0 
+		   ELSE 100*rm.area/ (SELECT bl.area_rm_dp + bl.area_gp_dp FROM bl WHERE bl.bl_id = rm.bl_id) END ${sql.as} area_pct
+            FROM rm  JOIN dv ON rm.dv_id=dv.dv_id WHERE rm.rm_cat IS NULL OR EXISTS (SELECT 1 FROM rmcat WHERE 
+			     rmcat.used_in_calcs IN ('all_totals', 'dp_comn_ocup_totals') AND rmcat.rm_cat = rm.rm_cat)
+            UNION ALL
+            SELECT
+	            CASE WHEN(dv.bu_id IS NULL) THEN '' ELSE dv.bu_id END ${sql.as} bu_id,
+	            CASE WHEN(gp.dv_id IS NULL) THEN '' ELSE gp.dv_id END ${sql.as} dv_id,
+	            CASE WHEN(gp.dp_id IS NULL) THEN '' ELSE gp.dp_id END ${sql.as} dp_id,
+	            gp.bl_id ${sql.as} bl_id,
+				gp.fl_id ${sql.as} fl_id,
+	            gp.area  ${sql.as} area,
+	            gp.gp_num ${sql.as} gp_id,
+		   CASE WHEN ( (SELECT bl.area_rm_dp + bl.area_gp_dp FROM bl WHERE bl.bl_id = gp.bl_id)=0 ) THEN 0 
+		   ELSE 100*gp.area/ (SELECT bl.area_rm_dp + bl.area_gp_dp FROM bl WHERE bl.bl_id = gp.bl_id) END ${sql.as} area_pct
+            FROM gp JOIN dv ON gp.dv_id=dv.dv_id	  where  gp.portfolio_scenario_id IS NULL
+        </sql>
+        <table name="gp" role="main"/>
+        <field name="bu_dv_dp" dataType="text" groupBy="true" baseField="gp.dp_id">
+            <title translatable="true">Business Unit, Division, Department</title>
+            <sql dialect="generic">RTRIM(gp.bu_id)${sql.concat}'-'${sql.concat}RTRIM(gp.dv_id)${sql.concat}'-'${sql.concat}RTRIM(gp.dp_id)</sql>
+        </field>
+         <field name="total_count"  dataType="number" decimals="0">
+            <title translatable="true">Total Count</title>
+			<sql dialect="generic">count(*)</sql>
+        </field>
+        <field name="total_area" formula="sum" baseField="gp.area" dataType="number" decimals="2">
+            <title translatable="true">Total Area</title>
+        </field>
+		<field name="pct_total" formula="sum" baseField="gp.area_pct" dataType="number" decimals="2">
+            <title translatable="true">Pct. of Total Building Dept.Area</title>
+        </field>
+        <sortField table="gp" name="bu_dv_dp" ascending="true"/>
+    </dataSource>
+    
+    <dataSource id="ds_ab-sp-vw-dp-by-bl_grid_gp_union_rm">
+        <sql dialect="generic">
+            SELECT
+	            RTRIM(CASE WHEN(dv.bu_id IS NULL) THEN '' ELSE dv.bu_id END)${sql.concat}'-'${sql.concat}RTRIM(CASE WHEN(rm.dv_id IS NULL) THEN '' ELSE rm.dv_id END)${sql.concat}'-'${sql.concat}RTRIM(CASE WHEN(rm.dp_id IS NULL) THEN '' ELSE rm.dp_id END) ${sql.as} bu_dv_dp,
+				rm.bl_id ${sql.as} bl_id,
+				rm.fl_id ${sql.as} fl_id,
+	            rm.rm_id ${sql.as} rm_id,
+	            NULL 	 ${sql.as} gp_id,
+	            rm.area  ${sql.as} area
+            FROM rm JOIN dv ON rm.dv_id=dv.dv_id WHERE rm.rm_cat IS NULL OR EXISTS (SELECT 1 FROM rmcat WHERE 
+			     rmcat.used_in_calcs IN ('all_totals', 'dp_comn_ocup_totals') AND rmcat.rm_cat = rm.rm_cat)
+            UNION ALL
+            SELECT
+	            RTRIM(CASE WHEN(dv.bu_id IS NULL) THEN '' ELSE dv.bu_id END)${sql.concat}'-'${sql.concat}RTRIM(CASE WHEN(gp.dv_id IS NULL) THEN '' ELSE gp.dv_id END)${sql.concat}'-'${sql.concat}RTRIM(CASE WHEN(gp.dp_id IS NULL) THEN '' ELSE gp.dp_id END) ${sql.as} bu_dv_dp,
+	            gp.bl_id ${sql.as} bl_id,
+	            gp.fl_id ${sql.as} fl_id,
+	            NULL 	 ${sql.as} rm_id,
+	            gp.gp_id ${sql.as} gp_id,
+	            gp.area  ${sql.as} area
+            FROM gp JOIN dv ON gp.dv_id=dv.dv_id	  where  gp.portfolio_scenario_id IS NULL
+        </sql>
+        <table name="gp" role="main"/>
+        <table name="dv" role="standard"/>
+        <field name="bu_dv_dp" dataType="text"/>
+        <field name="gp_id" dataType="text"/>
+        <field name="rm_id" dataType="text"/>
+        <field name="bl_id" dataType="text"/>
+        <field name="fl_id" dataType="text"/>
+        <field name="area" dataType="number" decimals="2"/>
+        <parameter name="blId" dataType="text" value=""/>
+        <parameter name="buDvDp" dataType="verbatim" value=""/>
+        <restriction type="sql" sql="${parameters['buDvDp']}  bl_id= ${parameters['blId']}"/>
+    </dataSource>
+    
+    <panel type="grid" id="abSpVwDpByBl_blGrid" dataSource="ds_ab-sp-vw-dp-by-bl_grid_bl" layout="mainLayout" region="west">
+        <title translatable="true">Select Building</title>
+		<sortField table="bl" name="bl_id" ascending="true"/>
+        <field name="bl_id" table="bl" controlType="link">
+            <command type="callFunction" functionName="refreshReport"/>
+        </field>
+        <field name="name" table="bl" controlType="link">
+            <command type="callFunction" functionName="refreshReport"/>
+        </field>
+        <field name="area_rm_dp" table="bl" controlType="link">
+            <command type="callFunction" functionName="refreshReport"/>
+        </field>
+		<field name="area_gp_dp" table="bl" controlType="link">
+            <command type="callFunction" functionName="refreshReport"/>
+        </field>
+		<field name="area_usable" table="bl" controlType="link">
+            <command type="callFunction" functionName="refreshReport"/>
+        </field>
+    </panel>
+    
+    <panel type="crossTable" id="abSpVwDpByBl_dpCrossTable" showOnLoad="false" dataSource="ds_ab-sp-vw-dp-by-bl_crosstable_gp_union_rm" layout="mainLayout" region="center">
+        <title translatable="true">Department Area Summary</title>
+        <event type="onClickItem">
+            <command type="callFunction" functionName="onCrossTableClick"/>
+        </event>
+    </panel>
+    <panel type="grid" id="abSpVwDpByBl_mixRmGpGrid" showOnLoad="false" dataSource="ds_ab-sp-vw-dp-by-bl_grid_gp_union_rm" hidden="true">
+        <sortField table="gp" name="bl_id" ascending="true"/>
+		<sortField table="gp" name="fl_id" ascending="true"/>
+		<sortField table="gp" name="gp_id" ascending="true"/>
+		<field name="bl_id" dataType="text"/>
+        <field name="fl_id" dataType="text"/>
+        <field name="gp_id" dataType="text"/>
+        <field name="rm_id" dataType="text">
+            <title translatable="true">Room Code</title>
+        </field>
+        <field name="area" dataType="number" decimals="2"/>
+    </panel>
+    <js file="ab-sp-vw-dp-by-bl.js"/>
+	<js file="ab-sp-common.js"/>
+</view>

@@ -1,0 +1,66 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Title for View</title>
+    
+    <dataSource id="lsCostcatGst_ds_0">
+        <table name="vat_percent" role="main"/>
+        <field table="vat_percent" name="cost_cat_id"/>
+        <field table="vat_percent" name="ctry_id"/>
+    
+        <restriction type="parsed">
+            <clause relop="AND" op="=" table="vat_percent" name="ctry_id" value="AUS" />
+        </restriction>
+    </dataSource>
+      
+    <panel type="grid" id="lsCostcatGst_treePanel" dataSource="lsCostcatGst_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">VAT Percentage Table</title>
+        <action id="lsCostcatGst_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="lsCostcatGst_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="lsCostcatGst_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="lsCostcatGst_treePanel"/>
+        </action>    
+        <field name="cost_cat_id" table="vat_percent" controlType="link">
+            <command type="showPanel" panelId="lsCostcatGst_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="ctry_id" table="vat_percent" controlType="link">
+            <command type="showPanel" panelId="lsCostcatGst_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <indexField table="vat_percent" name="cost_cat_id"/>
+    </panel>
+    
+    <dataSource id="lsCostcatGst_ds_1">
+        <table name="vat_percent" role="main"/>
+        <field table="vat_percent" name="cost_cat_id"/>
+        <field table="vat_percent" name="ctry_id"/>
+        <field table="vat_percent" name="is_exception"/>
+        <field table="vat_percent" name="vat_percent_value"/>
+    
+    </dataSource>
+      
+    <panel type="form" id="lsCostcatGst_detailsPanel" dataSource="lsCostcatGst_ds_1" showOnLoad="false" labelsPosition="top" columns="2" region="center">
+        <title translatable="true">VAT Percentage Table</title>        
+        <action id="lsCostcatGst_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="lsCostcatGst_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="lsCostcatGst_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="lsCostcatGst_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="lsCostcatGst_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="lsCostcatGst_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="lsCostcatGst_detailsPanel" show="false"/>
+        </action>    
+        <field name="cost_cat_id" table="vat_percent" showSelectValueAction=""/>
+        <field name="ctry_id" table="vat_percent" showSelectValueAction=""/>
+        <field name="is_exception" table="vat_percent" showSelectValueAction=""/>
+        <field name="vat_percent_value" table="vat_percent" showSelectValueAction=""/>
+    </panel>
+</view>

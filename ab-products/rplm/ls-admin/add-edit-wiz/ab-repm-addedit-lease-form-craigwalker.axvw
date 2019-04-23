@@ -1,0 +1,12 @@
+<view version="2.0">
+	<title translatable="true">Add/Edit Form - Complete</title>
+	
+    <tabs workflow="free" id="leaseTemplatesTabs" tabRefreshPolicy="refreshOnLoad">
+		<tab name="buildingTab" file="ab-repm-addedit-lease-in-a-building-tab.axvw" selected="true">
+		    <title translatable="true">Lease in a Building</title>
+	    </tab>
+		<tab name="propertyTab" file="ab-repm-addedit-lease-in-a-property-tab.axvw">
+		    <title translatable="true">Lease in a Property</title>
+	    </tab>
+	</tabs>
+</view>

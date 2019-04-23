@@ -1,0 +1,115 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">View Completed Work Requests</title>
+    
+    <dataSource id="abWrEdit_ds_0">
+        <table name="wr" role="main"/>
+        <field table="wr" name="wr_id"/>
+		<field table="wr" name="wo_id"/>
+        <field table="wr" name="invoice_no"/>
+		<restriction type="sql"
+			sql="wr.status='Com' AND wr_id IN (SELECT wr_id FROM wrcf WHERE cf_id IN (SELECT cf_id FROM cf WHERE email  =${sql.literal(user.email)}))">
+		</restriction>
+        <sortField name="wr_id" table="wr" ascending="false"/>
+    </dataSource>
+      
+    <panel type="grid" id="abWrEdit_treePanel" dataSource="abWrEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Select Work Requests</title>
+        <action id="abWrEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="abWrEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="abWrEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abWrEdit_treePanel"/>
+        </action>    
+        <field name="wr_id" table="wr" controlType="link">
+            <command type="showPanel" panelId="abWrEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+		        <field name="wo_id" table="wr" controlType="link">
+            <command type="showPanel" panelId="abWrEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="invoice_no" table="wr" controlType="link">
+            <command type="showPanel" panelId="abWrEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <indexField table="wr" name="wr_id"/>
+    </panel>
+    
+    <dataSource id="abWrEdit_ds_1">
+        <table name="wr" role="main"/>
+        <field table="wr" name="wr_id"/>
+        <field table="wr" name="wo_id"/>
+        <field table="wr" name="prob_type"/>
+        <field table="wr" name="priority_label"/>
+        <field table="wr" name="site_id"/>
+		<field table="wr" name="bl_id"/>
+		<field table="wr" name="rm_id"/>
+		<field table="wr" name="loc_code"/>
+		<field table="wr" name="eq_id"/>
+		<field table="wr" name="date_assigned"/>
+		<field table="wr" name="cai_date"/>
+		<field table="wr" name="date_completed"/>
+        <field table="wr" name="cost_total"/>
+		<field table="wr" name="gst_inclusive"/>
+        <field table="wr" name="invoice_no"/>
+        <field table="wr" name="invoice_date"/>
+        <field table="wr" name="invoice_file_name"/>
+		<field table="wr" name="po_no"/>
+		<field table="wr" name="description"/>
+		<field table="wr" name="cf_notes"/>
+    </dataSource>
+
+    <panel type="form" id="abWrEdit_detailsPanel" dataSource="abWrEdit_ds_1" showOnLoad="false" labelsPosition="left" columns="2" region="center">
+        <title translatable="true">Completed Work Requests</title>     
+        <field name="wr_id" table="wr" showSelectValueAction=""/>
+        <field name="wo_id" table="wr" showSelectValueAction=""/>
+		
+		<field name="site_id" table="wr" readOnly="true"/>
+		<field name="priority_label" table="wr" readOnly="true"/>
+		
+		<field name="bl_id" table="wr" readOnly="true"/>
+		<field name="rm_id" table="wr" readOnly="true"/>
+
+		<field name="prob_type" table="wr" readOnly="true"/>
+		<field name="eq_id" table="wr" readOnly="true"/>
+		
+		<field name="date_assigned" table="wr" readOnly="true" >
+		   <title translatable="true">Date Assigned</title>
+		</field>
+		<field name="cai_date" table="wr" readOnly="true" >
+		   <title translatable="true">Complete Awaiting Invoice Date</title>
+		</field>
+		
+		<field name="date_completed" table="wr" readOnly="true"/>
+		<field />
+
+		<!-- IFM - Draw a Horizontal Line -->
+		<field colspan="2" readOnly="true">
+		    <html>
+                <hr></hr>
+		    </html>
+		</field>
+
+        <field name="invoice_no" table="wr" readOnly="true"/>
+        <field name="invoice_date" table="wr" readOnly="true"/>
+
+		<field name="gst_inclusive" table="wr" readOnly="true"/>
+		<field name="po_no" table="wr" readOnly="true"/>
+
+        <field name="invoice_file_name" table="wr" readOnly="true"/>
+        <field name="cost_total" table="wr" readOnly="true"/>
+
+		<!-- IFM - Draw a Horizontal Line -->
+		<field colspan="2" readOnly="true">
+		    <html>
+                <hr></hr>
+		    </html>
+		</field>
+		
+		<field name="description" table="wr" readOnly="true" colspan="2" rowspan="3"/>
+		<field />
+		<field />
+		<field name="cf_notes" table="wr" readOnly="true" colspan="2" rowspan="3"/>
+    </panel>
+</view>

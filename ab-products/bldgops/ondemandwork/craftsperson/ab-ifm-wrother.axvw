@@ -1,0 +1,46 @@
+<!-- This view defines work request trade related panels. -->
+<view version="2.0">
+
+    <js file="ab-ifm-wother.js"/>
+    <js file="ab-bldgops-console-common.js"/>
+    
+    <message name="editOtherCost" translatable="true">Edit Other Cost</message>
+
+    <dataSource id="wrotherDS">
+        <table name="wr_other" role="main"/>
+        <table name="wr" role="standard"/>
+        <field table="wr" name="status"/>
+        <field table="wr_other" name="wr_id"/>
+        <field table="wr_other" name="other_rs_type"/>
+        <field table="wr_other" name="date_used"/>
+        <field table="wr_other" name="cost_estimated"/>
+        <field table="wr_other" name="qty_used"/>
+        <field table="wr_other" name="units_used"/>
+        <field table="wr_other" name="description"/>
+        <field table="wr_other" name="cost_total"/>
+		<!-- IFM Mehran Added for invoices 06-06-2017 and 23-06-2017 -->
+		<field name="invoice_file_name" table="wr_other"  readOnly="false"/>
+    </dataSource>
+	
+    <panel type="form" id="wrotherForm" dataSource="wrotherDS" showOnLoad="true" hidden="false" buttonsPosition="footer">
+        <field table="wr_other" name="wr_id" hidden="true"/>
+		<title translatable="true">Add Other Cost</title>
+		<!-- IFM Mehran Added for invoices 06-06-2017 23-06-2017-->
+		<field name="invoice_file_name" table="wr_other" hidden="true"/>
+        <field table="wr_other" name="other_rs_type" value="INVOICE"/>
+        <field table="wr_other" name="date_used" hidden="true"/>
+        <field table="wr_other" name="description" value="Invoice" />
+        <field table="wr_other" name="qty_used"/>
+        <field table="wr_other" name="units_used"/>
+        <field table="wr_other" name="cost_estimated" hidden="true"/>
+        <field table="wr_other" name="cost_total"/>
+		<action id="saveOtherRes">
+            <title>Save</title>
+			<command type="saveForm" />
+        </action>
+        <action id="cancelWrOtherCosts">
+            <title>Cancel</title>
+            <command type="closeDialog"/>
+        </action>
+    </panel>
+</view>

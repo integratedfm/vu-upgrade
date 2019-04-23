@@ -1,0 +1,147 @@
+<view version="2.0">
+    <designInfo type="column" pattern="ab-viewdef-columnreport-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Title for View</title>
+    
+    <dataSource id="ab058264197374091836130_ds_0">
+        <table name="bl" role="main"/>
+        <table name="site" role="standard"/>
+        <field table="bl" name="bl_id"/>
+        <field table="bl" name="area_gross_ext"/>
+        <field table="bl" name="area_gross_int"/>
+        <field table="bl" name="build_no"/>
+        <field table="bl" name="campus_id"/>
+        <field table="bl" name="site_id"/>
+        <field table="site" name="area_rm"/>
+    
+    </dataSource>
+ 
+    <panel type="grid" id="ab058264197374091836130_treePanel" dataSource="ab058264197374091836130_ds_0" showOnLoad="true" selectionEnabled="true" region="west"> 
+        <title translatable="true">Lody test view</title>
+        <action id="ab058264197374091836130_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="ab058264197374091836130_treePanel"/>
+        </action>    
+        <field name="bl_id" table="bl" controlType="link">
+            <command type="showPanel" panelId="ab058264197374091836130_detailsPanel">
+            </command>
+        </field>
+        <field name="area_gross_ext" table="bl" controlType="link">
+            <command type="showPanel" panelId="ab058264197374091836130_detailsPanel">
+            </command>
+        </field>
+        <field name="area_gross_int" table="bl" controlType="link">
+            <command type="showPanel" panelId="ab058264197374091836130_detailsPanel">
+            </command>
+        </field>
+        <field name="build_no" table="bl" controlType="link">
+            <command type="showPanel" panelId="ab058264197374091836130_detailsPanel">
+            </command>
+        </field>
+        <field name="campus_id" table="bl" controlType="link">
+            <command type="showPanel" panelId="ab058264197374091836130_detailsPanel">
+            </command>
+        </field>
+        <field name="site_id" table="bl" controlType="link">
+            <command type="showPanel" panelId="ab058264197374091836130_detailsPanel">
+            </command>
+        </field>
+        <field name="area_rm" table="site" controlType="link">
+            <command type="showPanel" panelId="ab058264197374091836130_detailsPanel">
+            </command>
+        </field>
+        <sortField name="bl_id" table="bl" ascending="false" />
+        <sortField name="campus_id" table="bl" ascending="false" />
+        <sortField name="site_id" table="bl" ascending="true" />
+        <sortField name="build_no" table="bl" ascending="false" />
+        <sortField name="area_gross_ext" table="bl" ascending="false" />
+        <sortField name="area_gross_int" table="bl" ascending="false" />
+    </panel>
+    
+    <dataSource id="ab058264197374091836130_ds_1">
+        <table name="rm" role="main"/>
+        <table name="bl" role="standard"/>
+        <table name="fl" role="standard"/>
+        <table name="rmcat" role="standard"/>
+        <table name="rmtype" role="standard"/>
+        <table name="rmuse" role="standard"/>
+        <field table="rm" name="bl_id"/>
+        <field table="rm" name="fl_id"/>
+        <field table="rm" name="rm_id"/>
+        <field table="rm" name="area"/>
+        <field table="rm" name="dp_id"/>
+        <field table="rm" name="dv_id"/>
+        <field table="rm" name="rm_cat"/>
+        <field table="bl" name="address1"/>
+        <field table="fl" name="area_gross_ext"/>
+        <field table="fl" name="area_gross_int"/>
+        <field table="fl" name="bl_id"/>
+        <field table="rmcat" name="area"/>
+        <field table="rmtype" name="rm_cat"/>
+        <field table="rmtype" name="rm_type"/>
+        <field table="rmuse" name="description"/>
+        <field table="rmuse" name="rm_use"/>
+    
+    </dataSource>
+ 
+    <panel type="columnReport" id="ab058264197374091836130_detailsPanel" dataSource="ab058264197374091836130_ds_1" showOnLoad="false" labelsPosition="top" columns="2" region="center">
+        <title translatable="true">Rooms</title>        
+        <action id="ab058264197374091836130_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="ab058264197374091836130_detailsPanel"/>
+        </action>    
+        <field name="bl_id" table="rm">
+            <title translatable="true">Building  Code</title>
+        </field>
+        <field name="fl_id" table="rm">
+            <title translatable="true">Floor  Code</title>
+        </field>
+        <field name="rm_id" table="rm">
+            <title translatable="true">Room Code</title>
+        </field>
+        <field name="area" table="rm">
+            <title translatable="true">Room Area</title>
+        </field>
+        <field name="dp_id" table="rm">
+            <title translatable="true">Department  Code</title>
+        </field>
+        <field name="dv_id" table="rm">
+            <title translatable="true">Organisation Unit</title>
+        </field>
+        <field name="rm_cat" table="rm">
+            <title translatable="true">Room  Category</title>
+        </field>
+        <field name="address1" table="bl">
+            <title translatable="true">Address 1</title>
+        </field>
+        <field name="area_gross_ext" table="fl">
+            <title translatable="true">Ext. Gross Area</title>
+        </field>
+        <field name="area_gross_int" table="fl">
+            <title translatable="true">Floor GFA Area</title>
+        </field>
+        <field name="bl_id" table="fl">
+            <title translatable="true">Building  Code</title>
+        </field>
+        <field name="area" table="rmcat">
+            <title translatable="true">Total  Area</title>
+        </field>
+        <field name="rm_cat" table="rmtype">
+            <title translatable="true">Room  Category</title>
+        </field>
+        <field name="rm_type" table="rmtype">
+            <title translatable="true">Room  Type</title>
+        </field>
+        <field name="description" table="rmuse"/>
+        <field name="rm_use" table="rmuse">
+            <title translatable="true">Room Function</title>
+        </field>
+        <sortField name="bl_id" table="rm" ascending="false" />
+        <sortField name="fl_id" table="rm" ascending="false" />
+        <sortField name="rm_id" table="rm" ascending="false" />
+        <sortField name="dp_id" table="rm" ascending="false" />
+        <sortField name="dv_id" table="rm" ascending="false" />
+        <sortField name="rm_cat" table="rm" ascending="false" />
+        <sortField name="area" table="rm" ascending="false" />
+    </panel>
+</view>

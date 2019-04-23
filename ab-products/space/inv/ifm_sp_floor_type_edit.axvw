@@ -1,0 +1,59 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Floor Type Edit</title>
+    
+    <dataSource id="ifmSpFloorTypeEdit_ds_0">
+        <table name="ifm_fltype" role="main"/>
+        <field table="ifm_fltype" name="fl_type"/>
+        <field table="ifm_fltype" name="description"/>
+    
+    </dataSource>
+      
+    <panel type="grid" id="ifmSpFloorTypeEdit_treePanel" dataSource="ifmSpFloorTypeEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Floor Type</title>
+        <action id="ifmSpFloorTypeEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="ifmSpFloorTypeEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="ifmSpFloorTypeEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="ifmSpFloorTypeEdit_treePanel"/>
+        </action>    
+        <field name="fl_type" table="ifm_fltype" controlType="link">
+            <command type="showPanel" panelId="ifmSpFloorTypeEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="description" table="ifm_fltype" controlType="link">
+            <command type="showPanel" panelId="ifmSpFloorTypeEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <indexField table="ifm_fltype" name="fl_type"/>
+    </panel>
+    
+    <dataSource id="ifmSpFloorTypeEdit_ds_1">
+        <table name="ifm_fltype" role="main"/>
+        <field table="ifm_fltype" name="fl_type"/>
+        <field table="ifm_fltype" name="description"/>
+    
+    </dataSource>
+      
+    <panel type="form" id="ifmSpFloorTypeEdit_detailsPanel" dataSource="ifmSpFloorTypeEdit_ds_1" showOnLoad="false" labelsPosition="top" columns="2" region="center">
+        <title translatable="true">Floor Type</title>        
+        <action id="ifmSpFloorTypeEdit_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="ifmSpFloorTypeEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpFloorTypeEdit_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="ifmSpFloorTypeEdit_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="ifmSpFloorTypeEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpFloorTypeEdit_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="ifmSpFloorTypeEdit_detailsPanel" show="false"/>
+        </action>    
+        <field name="fl_type" table="ifm_fltype" showSelectValueAction=""/>
+        <field name="description" table="ifm_fltype" showSelectValueAction=""/>
+    </panel>
+</view>

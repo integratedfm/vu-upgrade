@@ -1,0 +1,55 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">Teaching Spaces</title>
+    
+    <dataSource id="abSpacereportTeachingspaces_ds_0">
+        <table name="rm" role="main"/>
+        <table name="bl" role="standard"/>
+        <table name="dp" role="standard"/>
+        <table name="rmtype" role="standard"/>
+        <table name="rmcat" role="standard"/>
+        <field table="bl" name="site_id"/>
+        <field table="bl" name="name"/>
+        <field table="rm" name="rm_id"/>
+        <field table="rmtype" name="description"/>
+        <field table="rmcat" name="description"/>
+        <field table="rm" name="cap_em"/>
+        <field table="dp" name="name"/>
+        <field table="rm" name="area"/>
+    
+        <restriction type="parsed">
+            <clause relop="AND" op="=" table="rmtype" name="description" value="Lecture room/Seminar/Tutorial/Classroom 15&lt;70" />
+            <clause relop="OR" op="=" table="rmtype" name="description" value="Lab - Clinical" />
+            <clause relop="OR" op="=" table="rmtype" name="description" value="Lab - Computer" />
+        </restriction>
+    </dataSource>
+
+    <panel type="grid" id="abSpacereportTeachingspaces_detailsPanel" dataSource="abSpacereportTeachingspaces_ds_0" multipleSelectionEnabled="false">
+        <title translatable="true">Rooms</title>
+        
+        <action id="abSpacereportTeachingspaces_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abSpacereportTeachingspaces_detailsPanel"/>
+        </action>     
+        <action id="abSpacereportTeachingspaces_exportDOCX">
+            <title>DOCX</title>
+            <command type="exportPanel" outputType="docx" panelId="abSpacereportTeachingspaces_detailsPanel"/>
+        </action>
+        <action id="abSpacereportTeachingspaces_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abSpacereportTeachingspaces_detailsPanel"/>
+        </action>
+        <action id="abSpacereportTeachingspaces_exportTXFR">
+            <title>TXFR</title>
+            <command type="exportPanel" outputType="txfr" panelId="abSpacereportTeachingspaces_detailsPanel"/>
+        </action>    
+        <field name="site_id" table="bl"/>
+        <field name="name" table="bl"/>
+        <field name="rm_id" table="rm"/>
+        <field name="description" table="rmtype"/>
+        <field name="description" table="rmcat"/>
+        <field name="cap_em" table="rm"/>
+        <field name="name" table="dp"/>
+        <field name="area" table="rm"/>
+    </panel>
+</view>

@@ -1,0 +1,91 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">Title for View</title>
+    
+    <dataSource id="ab168079919260901807685_ds_0">
+        <table name="wr" role="main"/>
+        <table name="wo" role="standard"/>
+        <field table="wr" name="wr_id"/>
+        <field table="wr" name="ac_id"/>
+        <field table="wr" name="bl_id"/>
+        <field table="wr" name="cc_id"/>
+        <field table="wr" name="completed_by"/>
+        <field table="wr" name="cost_est_total" showTotals="true"/>
+        <field table="wr" name="cost_total" showTotals="true"/>
+        <field table="wr" name="date_assigned"/>
+        <field table="wr" name="date_closed"/>
+        <field table="wr" name="date_completed"/>
+        <field table="wr" name="date_requested"/>
+        <field table="wr" name="description"/>
+        <field table="wr" name="dp_id"/>
+        <field table="wr" name="dv_id"/>
+        <field table="wr" name="fl_id"/>
+        <field table="wr" name="gst_inclusive"/>
+        <field table="wr" name="invoice_date"/>
+        <field table="wr" name="invoice_no"/>
+        <field table="wr" name="pmp_id"/>
+        <field table="wr" name="po_no"/>
+        <field table="wr" name="priority"/>
+        <field table="wr" name="priority_label"/>
+        <field table="wr" name="prob_type"/>
+        <field table="wr" name="repair_type"/>
+        <field table="wr" name="requestor"/>
+        <field table="wr" name="rm_id"/>
+        <field table="wr" name="site_id"/>
+        <field table="wr" name="status"/>
+        <field table="wr" name="tr_id"/>
+        <field table="wr" name="work_team_id"/>
+        <field table="wo" name="wo_id"/>
+    
+    </dataSource>
+
+    <panel type="grid" id="ab168079919260901807685_detailsPanel" dataSource="ab168079919260901807685_ds_0" multipleSelectionEnabled="false" showCounts="true">
+        <title translatable="true">Title for Panel</title>
+        
+        <action id="ab168079919260901807685_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="ab168079919260901807685_detailsPanel"/>
+        </action>     
+        <action id="ab168079919260901807685_exportDOCX">
+            <title>DOCX</title>
+            <command type="exportPanel" outputType="docx" panelId="ab168079919260901807685_detailsPanel"/>
+        </action>
+        <action id="ab168079919260901807685_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="ab168079919260901807685_detailsPanel"/>
+        </action>    
+        <field name="wr_id" table="wr"/>
+        <field name="ac_id" table="wr"/>
+        <field name="bl_id" table="wr"/>
+        <field name="cc_id" table="wr"/>
+        <field name="completed_by" table="wr"/>
+        <field name="cost_est_total" table="wr" showTotals="true"/>
+        <field name="cost_total" table="wr" showTotals="true"/>
+        <field name="date_assigned" table="wr"/>
+        <field name="date_closed" table="wr"/>
+        <field name="date_completed" table="wr"/>
+        <field name="date_requested" table="wr"/>
+        <field name="description" table="wr"/>
+        <field name="dp_id" table="wr"/>
+        <field name="dv_id" table="wr"/>
+        <field name="fl_id" table="wr"/>
+        <field name="gst_inclusive" table="wr"/>
+        <field name="invoice_date" table="wr"/>
+        <field name="invoice_no" table="wr"/>
+        <field name="pmp_id" table="wr"/>
+        <field name="po_no" table="wr"/>
+        <field name="priority" table="wr"/>
+        <field name="priority_label" table="wr"/>
+        <field name="prob_type" table="wr"/>
+        <field name="repair_type" table="wr"/>
+        <field name="requestor" table="wr"/>
+        <field name="rm_id" table="wr"/>
+        <field name="site_id" table="wr"/>
+        <field name="status" table="wr"/>
+        <field name="tr_id" table="wr"/>
+        <field name="work_team_id" table="wr"/>
+        <field name="wo_id" table="wo"/>
+        <indexField table="wr" name="wr_id"/>
+        <sortField name="wr_id" table="wr" ascending="true" />
+    </panel>
+</view>

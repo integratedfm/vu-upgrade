@@ -1,0 +1,70 @@
+<view version="2.0">
+	<js file="ab-ifm-helpdesk-cf-workrequest-update-cf.js"/>
+	
+	<dataSource id="requestDS">
+		<table name="wr" role="main" />
+		<field table="wr" name="wr_id" />
+		<field table="wr" name="requestor" readOnly="true" />
+		<field table="wr" name="prob_type" readOnly="true" />
+		<field table="wr" name="date_requested" readOnly="true" />
+		<field table="wr" name="supervisor" />
+	</dataSource>
+
+	<dataSource id="cfAssignDS">
+		<table name="wrcf" role="main" />
+		<table name="wr" role="standard" />
+
+		<field table="wr" name="wr_id" />
+		<field table="wrcf" name="wr_id" />
+		<field table="wrcf" name="cf_id" />
+		<field table="wrcf" name="date_assigned" />
+		<field table="wrcf" name="time_assigned" />
+		<field table="wrcf" name="date_start" />
+		<field table="wrcf" name="hours_total" />
+		<field table="wrcf" name="cost_total" />
+		<field table="wrcf" name="work_type" />
+        <parameter name="cfWorkflowSubstitutes" dataType="verbatim" value="''"/>
+
+		<restriction type="sql"
+			sql="cf_id IN (SELECT cf_id FROM cf WHERE email = ${sql.literal(user.email)}) OR wr.supervisor = ${sql.literal(user.employee.id)} 
+            OR cf_id ${sql.concat} 'craftsperson' IN (${parameters['cfWorkflowSubstitutes']})" />
+
+	</dataSource>
+
+	<panel id="requestPanel" type="form" columns="2"
+		 dataSource="requestDS" showOnLoad="false" >
+		<title translatable="true">Work Request</title>
+		<action id="next">
+			<title translatable="true">Next &gt;&gt;</title>
+			<command type="selectTabPage" tabPageName="resources" />
+		</action>
+
+		<field table="wr" name="wr_id" />
+		<field table="wr" name="requestor" readOnly="true" />
+		<field table="wr" name="prob_type" readOnly="true" />
+		<field table="wr" name="date_requested" readOnly="true" />
+		<field table="wr" name="supervisor" hidden="true"/>
+	</panel>
+
+	<panel type="grid" id="requestReportGrid" controlType="reportGrid"
+		dataSource="cfAssignDS" showOnLoad="false" >
+		<title translatable="true">Craftspersons Assignments</title>
+		<action id="addCfToWr">
+			<title translatable="true">Add</title>
+		</action>
+
+		<field controlType="button">
+			<command type="openDialog"
+				viewName="ab-helpdesk-cf-workrequest-cf.axvw" />
+			<title translatable="true">Edit</title>
+		</field>
+		<field table="wrcf" name="cf_id" />
+		<field table="wrcf" name="date_assigned" />
+		<field table="wrcf" name="time_assigned" />
+		<field table="wrcf" name="date_start" />
+		<field table="wrcf" name="hours_total" />
+		<field table="wrcf" name="cost_total" />
+		
+		<field table="wrcf" name="wr_id"/>
+	</panel>
+</view>

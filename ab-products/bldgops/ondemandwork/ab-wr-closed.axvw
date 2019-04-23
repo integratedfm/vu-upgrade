@@ -1,0 +1,244 @@
+<view version="2.0">
+<js file="ab-wr-closed.js" />
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Edit Closed Work Requests</title>
+    
+    <dataSource id="abViewdefEditformDrilldown_ds_0">
+        <table name="hwr" role="main"/>
+        <field table="hwr" name="wr_id"/>
+        <field table="hwr" name="cc_id"/>
+        <field table="hwr" name="ac_id"/>
+        <field table="hwr" name="cost_est_total"/>
+        <field table="hwr" name="cost_total"/>
+    </dataSource>
+      
+    <panel type="grid" id="abViewdefEditformDrilldown_treePanel" dataSource="abViewdefEditformDrilldown_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Select Work Requests</title>
+        <action id="abViewdefEditformDrilldown_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel"/>
+        </action>    
+        <field name="wr_id" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="cc_id" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="ac_id" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="cost_est_total" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="cost_total" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <indexField table="hwr" name="wr_id"/>
+    </panel>
+    
+    <dataSource id="abViewdefEditformDrilldown_ds_1">
+        <table name="hwr" role="main"/>
+		<!-- IFM - ifm_costcentre table, ac table and hactivity_log table -->
+		<table name="ifm_costcentre" role="standard"/>
+		<table name="ac" role="standard"/>
+		<table name="hactivity_log" role="standard"/>
+        <field table="hwr" name="wr_id"/>
+        <field table="hwr" name="wo_id"/>
+        <field table="hwr" name="invoice_no"/>
+        <field table="hwr" name="invoice_date"/>
+        <field table="hwr" name="invoice_file_name"/>
+        <field table="hwr" name="invoice_file_location"/>
+        <field table="hwr" name="cc_id"/>
+		<field table="ifm_costcentre" name="name"/>
+        <field table="hwr" name="ac_id"/>
+        <field table="ac" name="description"/>
+		<field table="hwr" name="closed_by"/> 
+		<field table="hactivity_log" name="date_closed"/>
+		<field table="hwr" name="date_completed"/>
+		<field table="hwr" name="status"/>
+		<field table="hwr" name="priority_label"/>
+		<field table="hwr" name="site_id"/>
+		<field table="hwr" name="bl_id"/>
+		<field table="hwr" name="rm_id"/>
+		<field table="hwr" name="loc_code"/>
+		<field table="hwr" name="prob_type"/>
+		<field table="hwr" name="eq_id"/>
+		<field table="hwr" name="cause_type"/>
+		<field table="hwr" name="repair_type"/>
+		<field table="hwr" name="requestor"/>
+		<field table="hwr" name="date_requested"/>
+		<field table="hwr" name="date_assigned"/>
+		<field table="hwr" name="cai_date"/>
+		<field table="hwr" name="doc1"/>
+		<field table="hwr" name="doc2"/>
+		<field table="hwr" name="doc3"/>
+		<field table="hwr" name="doc4"/>
+		<field table="hwr" name="cost_other"/>
+        <field table="hwr" name="cost_total"/>
+        <field table="hwr" name="cost_est_other"/>
+        <field table="hwr" name="cost_est_total"/>
+        <field table="hwr" name="po_no"/>
+		<field table="hwr" name="gst_inclusive"/>
+        <field table="hwr" name="payment_date"/>
+        <field table="hwr" name="payment_batchno"/>
+        <field table="hwr" name="accrual_date"/>
+        <field table="hwr" name="accrual_batchno"/>
+		<!-- Virtual Field for Contractor Name -->
+        <field table="hwr" name="cf_name" dataType="text">
+            <sql dialect="generic">(SELECT TOP 1 cf.name FROM cf, hwrcf WHERE hwr.wr_id = hwrcf.wr_id AND hwrcf.cf_id = cf.cf_id ORDER BY hwrcf.cf_id)</sql>
+        </field>
+		<!-- Virtual Field for Supplier ID -->
+        <field table="hwr" name="supplier_id" dataType="text">
+            <sql dialect="generic">(SELECT TOP 1 cf.supplier_id FROM cf, hwrcf WHERE hwr.wr_id = hwrcf.wr_id AND hwrcf.cf_id = cf.cf_id ORDER BY hwrcf.cf_id)</sql>
+        </field>
+    </dataSource>
+      
+    <panel type="form" id="abViewdefEditformDrilldown_detailsPanel" dataSource="abViewdefEditformDrilldown_ds_1" showOnLoad="false" labelsPosition="left" columns="2" region="center">
+        <title translatable="true">Closed Work Requests</title>        
+        <action id="abViewdefEditformDrilldown_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abViewdefEditformDrilldown_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="abViewdefEditformDrilldown_detailsPanel" show="false"/>
+        </action>    
+        <field name="wr_id" table="hwr" showSelectValueAction=""/>
+        <field name="wo_id" table="hwr" showSelectValueAction=""/>
+
+        <field name="cc_id" table="hwr" readOnly="false" >
+		<action>
+            <title>...</title>
+			<tooltip>Select Value - Cost Centre</tooltip>
+		    <command type= "selectValue" 
+		     fieldNames= "hwr.cc_id, ifm_costcentre.name" 
+		     selectFieldNames= "ifm_costcentre.cc_id, ifm_costcentre.name" 
+			 visibleFieldNames= "ifm_costcentre.cc_id, ifm_costcentre.name" >
+			<title>Cost Centre</title>
+			</command>
+			</action>
+		</field>
+		<field name="name" table="ifm_costcentre" readOnly="true"/>
+		
+		<field name="ac_id" table="hwr" readOnly="false" >
+		<action>
+            <title>...</title>
+			<tooltip>Select Value - Account Code</tooltip>
+		    <command type= "selectValue" 
+		     fieldNames= "hwr.ac_id, ac.description" 
+		     selectFieldNames= "ac.ac_id, ac.description" 
+			 visibleFieldNames= "ac.ac_id, ac.description" >
+			<title>Account Code</title>
+			</command>
+			</action>
+		</field>
+		<field name="description" table="ac" readOnly="true"/>
+		
+        <!--  <field name="cc_id" table="hwr" showSelectValueAction=""/>   -->
+        <!--  <field name="ac_id" table="hwr" showSelectValueAction=""/>   -->
+
+		<field name="cf_name" table="hwr" readOnly="true">
+		    <title translatable="true">Contractor Name</title>
+        </field>
+		<field name="supplier_id" table="hwr" readOnly="true">
+		    <title translatable="true">Supplier ID</title>
+        </field>
+
+		<field name="status" table="hwr" readOnly="true"/>
+		<field name="priority_label" table="hwr" readOnly="true"/>
+		
+		<field name="site_id" table="hwr" readOnly="true"/>
+		<field name="bl_id" table="hwr" readOnly="true"/>
+
+		<field name="rm_id" table="hwr" readOnly="true"/>
+		<field name="loc_code" table="hwr" readOnly="true"/>
+		
+		<field name="prob_type" table="hwr" readOnly="true"/>
+		<field name="eq_id" table="hwr" readOnly="true"/>
+		
+		<field name="cause_type" table="hwr" readOnly="true"/>
+		<field name="repair_type" table="hwr" readOnly="true"/>
+
+		<field name="requestor" table="hwr" readOnly="true"/>
+		<field name="date_requested" table="hwr" readOnly="true"/>
+
+		<field name="date_assigned" table="hwr" readOnly="true" >
+		   <title translatable="true">Date Assigned</title>
+		</field>
+		<field name="cai_date" table="hwr" readOnly="true" >
+		   <title translatable="true">Complete Awaiting Invoice Date</title>
+		</field>
+		
+		<field name="date_completed" table="hwr" readOnly="true"/>
+		<field name="date_closed" table="hactivity_log" readOnly="true"/>
+
+		<field name="closed_by" table="hwr" readOnly="true"/>
+		<field />
+		
+		<field name="doc1" table="hwr" readOnly="true"/>
+		<field name="doc2" table="hwr" readOnly="true"/>
+		
+		<field name="doc3" table="hwr" readOnly="true"/>
+		<field name="doc4" table="hwr" readOnly="true"/>
+		
+		<!-- IFM - Draw a Horizontal Line -->
+		<field colspan="2" readOnly="true">
+		    <html>
+                <hr></hr>
+		    </html>
+		</field>
+		
+		<field name="cost_other" table="hwr" readOnly="true"/>
+        <field name="cost_total" table="hwr" readOnly="false"/>
+        <field name="cost_est_other" table="hwr" readOnly="true"/>
+        <field name="cost_est_total" table="hwr" readOnly="true"/>
+
+		<!-- IFM - Draw a Horizontal Line -->
+		<field colspan="2" readOnly="true">
+		    <html>
+                <hr></hr>
+		    </html>
+		</field>
+
+        <field name="invoice_no" table="hwr" readOnly="false"/>
+        <field name="invoice_date" table="hwr" readOnly="false"/>
+
+        <field name="invoice_file_name" table="hwr" readOnly="false"/>
+		<field name="po_no" table="hwr" readOnly="false"/>
+		
+		<field name="gst_inclusive" table="hwr" readOnly="false"/>
+		<field />
+
+		<!-- IFM - Draw a Horizontal Line -->
+		<field colspan="2" readOnly="true">
+		    <html>
+                <hr></hr>
+		    </html>
+		</field>
+		
+        <field name="accrual_batchno" table="hwr" readOnly="true" required="false"/>
+		<field name="accrual_date" table="hwr" readOnly="true" required="false"/>
+		<field name="payment_batchno" table="hwr" readOnly="true" required="false" />
+		<field name="payment_date" table="hwr" readOnly="true" required="false"/>	
+    </panel>
+	
+	<!-- IFM Mehran added for checking to allow change of the invoice to po no -->        
+	<panel type="form" columns="2" id="wrDetails" dataSource="abViewdefEditformDrilldown_ds_1"  hidden="true">
+        <field name="wr_id" table="hwr" hidden="true"/>
+        <field table="hwr" name="invoice_no" hidden="true"/>
+        <field table="hwr" name="po_no" hidden="true"/>
+    </panel>
+
+</view>

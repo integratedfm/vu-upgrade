@@ -1,0 +1,186 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+	<js file="ab-hwr-cf-review.js"/>
+    <title translatable="true">View Historical Work Requests</title>
+    
+    <dataSource id="abHwrEdit_ds_0">
+        <table name="hwr" role="main"/>
+        <field table="hwr" name="wr_id"/>
+		<field table="hwr" name="wo_id"/>
+        <field table="hwr" name="invoice_no"/>
+		<field table="hwr" name="status"/>
+        <sortField name="wr_id" table="hwr" ascending="false"/>
+		<restriction type="sql" sql="hwr.wo_id IS NOT NULL AND hwr.wr_id IN (SELECT wr_id FROM hwrcf WHERE cf_id IN (SELECT cf_id FROM cf WHERE email = ${sql.literal(user.email)}))" />
+    </dataSource>
+
+    <panel type="grid" id="abHwrEdit_treePanel" dataSource="abHwrEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Select Work Requests</title>
+        <action id="abHwrEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="abHwrEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abHwrEdit_treePanel"/>
+        </action>    
+        <field name="wr_id" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+		<field name="wo_id" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="invoice_no" table="hwr" controlType="link">
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+		<field name="status" table="hwr" hidden="true" />
+        <indexField table="hwr" name="wr_id"/>
+    </panel>
+    
+    <dataSource id="abHwrEdit_ds_1">
+        <table name="hwr" role="main"/>
+		<table name="hactivity_log" role="standard"/>
+        <field table="hwr" name="wr_id"/>
+        <field table="hwr" name="wo_id"/>
+		<field table="hwr" name="prob_type"/>
+        <field table="hwr" name="priority_label"/>
+        <field table="hwr" name="site_id"/>
+		<field table="hwr" name="bl_id"/>
+		<field table="hwr" name="rm_id"/>
+		<field table="hwr" name="loc_code"/>
+        <field table="hwr" name="cost_other"/>
+        <field table="hwr" name="cost_total"/>
+		<field table="hwr" name="cost_est_total"/>
+		<field table="hwr" name="gst_inclusive"/>
+        <field table="hwr" name="invoice_no"/>
+        <field table="hwr" name="invoice_date"/>
+        <field table="hwr" name="invoice_file_name"/>
+		<field table="hwr" name="po_no"/>
+		<field table="hwr" name="accrual_batchno"/>
+		<field table="hwr" name="accrual_date"/>
+		<field table="hwr" name="payment_batchno"/>
+		<field table="hwr" name="payment_date"/>
+		<field table="hwr" name="payment_proc_date"/>
+		<field table="hwr" name="description"/>
+		<field table="hwr" name="closed_by"/> 
+		<field table="hactivity_log" name="date_closed"/>
+		<field table="hwr" name="date_completed"/>
+		<field table="hwr" name="status"/>
+		<field table="hwr" name="eq_id"/>
+		<field table="hwr" name="cause_type"/>
+		<field table="hwr" name="repair_type"/>
+		<field table="hwr" name="requestor"/>
+		<field table="hwr" name="date_requested"/>
+		<field table="hwr" name="date_assigned"/>
+		<field table="hwr" name="cai_date"/>
+		<field table="hwr" name="doc1"/>
+		<field table="hwr" name="doc2"/>
+		<field table="hwr" name="doc3"/>
+		<field table="hwr" name="doc4"/>
+		<field table="hwr" name="comments"/>
+		<field table="hwr" name="cf_notes"/>
+    </dataSource>
+      
+    <panel type="form" id="abHwrEdit_detailsPanel" dataSource="abHwrEdit_ds_1" showOnLoad="false" labelsPosition="left" columns="2" region="center">
+        <title translatable="true">Historical Work Requests</title>     
+		<!-- IFM - Removed the save and delete actions
+        <action id="abHwrEdit_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="abHwrEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="abHwrEdit_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" show="true"/>
+            <command type="showPanel" panelId="abHwrEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+		-->	
+		
+        <action id="abHwrEdit_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="abHwrEdit_detailsPanel" show="false"/>
+        </action>
+		
+        <field name="wr_id" table="hwr" showSelectValueAction=""/>
+        <field name="wo_id" table="hwr" showSelectValueAction=""/>
+
+		<!-- IFM - Set background colour (bgColor) highlighting field if  Status values is "S", "Can" and "Rej" -->
+		<field name="status" table="hwr" readOnly="true"/>
+		<field name="priority_label" table="hwr" readOnly="true"/>
+		
+		<field name="site_id" table="hwr" readOnly="true"/>
+		<field name="bl_id" table="hwr" readOnly="true"/>
+
+		<field name="rm_id" table="hwr" readOnly="true"/>
+		<field name="loc_code" table="hwr" readOnly="true"/>
+		
+		<field name="prob_type" table="hwr" readOnly="true"/>
+		<field name="eq_id" table="hwr" readOnly="true"/>
+		
+		<field name="cause_type" table="hwr" readOnly="true"/>
+		<field name="repair_type" table="hwr" readOnly="true"/>
+
+		<field name="requestor" table="hwr" readOnly="true"/>
+		<field name="date_requested" table="hwr" readOnly="true"/>
+
+		<field name="date_assigned" table="hwr" readOnly="true" >
+		  <title translatable="true">Date Assigned</title>
+		</field>
+		<field name="cai_date" table="hwr" readOnly="true" >
+		   <title translatable="true">Complete Awaiting Invoice Date</title>
+		</field>
+		
+		<field name="date_completed" table="hwr" readOnly="true"/>
+		<field name="date_closed" table="hactivity_log" readOnly="true"/>
+		
+		<field name="doc1" table="hwr" readOnly="true"/>
+		<field name="doc2" table="hwr" readOnly="true"/>
+		
+		<field name="doc3" table="hwr" readOnly="true"/>
+		<field name="doc4" table="hwr" readOnly="true"/>
+		
+		<!-- IFM - Draw a Horizontal Line -->
+		<field colspan="2" readOnly="true">
+		    <html>
+                <hr></hr>
+		    </html>
+		</field>
+
+        <field name="invoice_no" table="hwr" readOnly="true"/>
+        <field name="invoice_date" table="hwr" readOnly="true"/>
+
+        <field name="invoice_file_name" table="hwr" readOnly="true"/>
+		<field name="po_no" table="hwr" readOnly="true"/>
+		
+		<field name="gst_inclusive" table="hwr" readOnly="true"/>
+		<field />
+
+        <field name="cost_total" table="hwr" readOnly="true"/>
+        <field />
+
+		<!-- IFM - Draw a Horizontal Line -->
+		<field colspan="2" readOnly="true">
+		    <html>
+                <hr></hr>
+		    </html>
+		</field>
+
+		<field name="payment_batchno" table="hwr" readOnly="true"/>
+		<field name="payment_proc_date" table="hwr" readOnly="true"/>
+		<field name="payment_date" table="hwr" readOnly="true"/>
+		<field />
+		
+		<!-- IFM - Draw a Horizontal Line -->
+		<field colspan="2" readOnly="true">
+		    <html>
+                <hr></hr>
+		    </html>
+		</field>
+		
+		<field name="description" table="hwr" readOnly="true" colspan="2" rowspan="3"/>
+		<field />
+		<field />
+		<field name="cf_notes" table="hwr" readOnly="true" colspan="2" rowspan="3"/>
+    </panel>
+</view>

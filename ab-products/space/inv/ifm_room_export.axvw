@@ -1,0 +1,96 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Export Room Details</title>
+    
+    <dataSource id="abRoomExport_ds_0">
+        <table name="rm" role="main"/>
+        <field table="rm" name="bl_id"/>
+        <field table="rm" name="fl_id"/>
+		
+    </dataSource>
+    
+    <panel type="grid" id="abRoomExport_treePanel" dataSource="abRoomExport_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">Rooms</title>
+        <action id="abRoomExport_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abRoomExport_treePanel"/>
+        </action>    
+        <field name="bl_id" table="rm" controlType="link">
+            <command type="showPanel" panelId="abRoomExport_detailsPanel"/>
+        </field>
+        <field name="fl_id" table="rm" controlType="link">
+            <command type="showPanel" panelId="abRoomExport_detailsPanel"/>
+        </field>
+        <indexField table="rm" name="bl_id"/>
+        <sortField name="bl_id" table="rm" ascending="true" />
+        <sortField name="fl_id" table="rm" ascending="true" />
+    </panel>
+    
+    <dataSource id="abRoomExport_ds_1">
+        <table name="rm" role="main"/>
+        <field table="rm" name="loc_code"/>
+        <field table="rm" name="bl_id"/>
+        <field table="rm" name="fl_id"/>
+        <field table="rm" name="rm_id"/>
+        <field table="rm" name="name"/>
+        <field table="rm" name="rm_cat"/>
+        <field table="rm" name="rm_type"/>
+        <field table="rm" name="rm_use"/>
+        <field table="rm" name="dv_id"/>
+        <field table="rm" name="dp_id"/>
+        <field table="rm" name="cc_id"/>
+        <field table="rm" name="area"/>
+        <field table="rm" name="cap_em"/>
+        <field table="rm" name="capacity_exam"/>
+        <field table="rm" name="capacity"/>
+        <field table="rm" name="fl_cover"/>
+        <field table="rm" name="fl_type"/>
+        <field table="rm" name="syllabus_host_key"/>
+        <field table="rm" name="rm_comments"/>
+        <field table="rm" name="dwgname"/>
+        <field table="rm" name="layer_name"/>
+    
+    </dataSource>
+
+    <panel type="grid" id="abRoomExport_detailsPanel" dataSource="abRoomExport_ds_1" showOnLoad="true" selectionEnabled="true" region="center">
+        <title translatable="true">Rooms</title>
+        <action id="abRoomExport_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abRoomExport_detailsPanel"/>
+        </action>
+        <action id="abRoomExport_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abRoomExport_detailsPanel"/>
+        </action>
+        <action id="abRoomExport_exportTXFR">
+            <title>DATA</title>
+            <command type="exportPanel" outputType="txfr" panelId="abRoomExport_detailsPanel"/>
+        </action>    
+        <field name="loc_code" table="rm"/>
+        <field name="bl_id" table="rm"/>
+        <field name="fl_id" table="rm"/>
+        <field name="rm_id" table="rm"/>
+        <field name="name" table="rm"/>
+        <field name="rm_cat" table="rm"/>
+        <field name="rm_type" table="rm"/>
+        <field name="rm_use" table="rm"/>
+        <field name="dv_id" table="rm"/>
+        <field name="dp_id" table="rm"/>
+        <field name="cc_id" table="rm"/>
+        <field name="area" table="rm"/>
+        <field name="cap_em" table="rm"/>
+        <field name="capacity_exam" table="rm"/>
+        <field name="capacity" table="rm"/>
+        <field name="fl_cover" table="rm"/>
+        <field name="fl_type" table="rm"/>
+        <field name="syllabus_host_key" table="rm"/>
+        <field name="rm_comments" table="rm"/>
+        <field name="dwgname" table="rm"/>
+        <field name="layer_name" table="rm"/>
+        <indexField table="rm" name="bl_id"/>
+        <sortField name="bl_id" table="rm" ascending="true" />
+        <sortField name="fl_id" table="rm" ascending="true" />
+        <sortField name="rm_id" table="rm" ascending="true" />
+    </panel>
+</view>

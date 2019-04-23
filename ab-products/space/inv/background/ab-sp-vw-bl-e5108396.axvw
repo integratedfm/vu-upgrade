@@ -1,0 +1,41 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">View Buildings</title>
+    
+    <dataSource id="abSpVwBl_ds_0">
+        <table name="bl" role="main"/>
+        <field table="bl" name="bl_id"/>
+        <field table="bl" name="bl_cond"/>
+        <field table="bl" name="bl_func"/>
+        <field table="bl" name="campus"/>
+        <field table="bl" name="name"/>
+    
+    </dataSource>
+
+    <panel type="grid" id="abSpVwBl_detailsPanel" dataSource="abSpVwBl_ds_0" multipleSelectionEnabled="false">
+        <title translatable="true">Buildings</title>
+        
+        <action id="abSpVwBl_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abSpVwBl_detailsPanel"/>
+        </action>     
+        <action id="abSpVwBl_exportDOCX">
+            <title>DOCX</title>
+            <command type="exportPanel" outputType="docx" panelId="abSpVwBl_detailsPanel"/>
+        </action>
+        <action id="abSpVwBl_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abSpVwBl_detailsPanel"/>
+        </action>
+        <action id="abSpVwBl_exportTXFR">
+            <title>TXFR</title>
+            <command type="exportPanel" outputType="txfr" panelId="abSpVwBl_detailsPanel"/>
+        </action>    
+        <field name="bl_id" table="bl"/>
+        <field name="bl_cond" table="bl"/>
+        <field name="bl_func" table="bl"/>
+        <field name="campus" table="bl"/>
+        <field name="name" table="bl"/>
+        <indexField table="bl" name="bl_id"/>
+    </panel>
+</view>

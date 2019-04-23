@@ -1,0 +1,35 @@
+<view version="2.0">
+    <designInfo type="report" pattern="ab-viewdef-report" isAlterable="true"/>
+    <title translatable="true">View Cost Centre</title>
+    
+    <dataSource id="abSpVwCC_ds_0">
+       <table name="ifm_costcentre" role="main"/>
+        <field table="ifm_costcentre" name="cc_id"/>
+        <field table="ifm_costcentre" name="name"/>
+		<field table="ifm_costcentre" name="dp_id"/>
+    </dataSource>
+
+    <panel type="grid" id="abSpVwCC_detailsPanel" dataSource="abSpVwCC_ds_0" multipleSelectionEnabled="false" recordLimit="10000">
+        <title translatable="true">Cost Centre</title>
+        
+        <action id="abSpVwCC_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="abSpVwCC_detailsPanel"/>
+        </action>
+        <action id="abSpVwCC_exportDOCX">
+            <title>DOCX</title>
+            <command type="exportPanel" outputType="docx" panelId="abSpVwCC_detailsPanel"/>
+        </action>
+        <action id="abSpVwCC_export:XLS">
+            <title>XLS</title>
+            <command type="exportPanel" outputType="xls" panelId="abSpVwCC_detailsPanel"/>
+        </action>
+        <action id="abSpVwCC_exportTXFR">
+            <title>DATA</title>
+            <command type="exportPanel" outputType="txfr" panelId="abSpVwCC_detailsPanel"/>
+        </action>    
+		<field table="ifm_costcentre" name="cc_id"/>
+        <field table="ifm_costcentre" name="name"/>
+		<field table="ifm_costcentre" name="dp_id"/>
+    </panel>
+</view>

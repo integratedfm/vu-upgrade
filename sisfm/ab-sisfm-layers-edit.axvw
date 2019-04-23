@@ -1,0 +1,68 @@
+<view version="2.0">
+    <designInfo type="edit" pattern="ab-viewdef-editform-drilldown" isAlterable="true"/>
+    <layout file="pkey-tree.axvw"/>
+    <title translatable="true">Edit SISfm Layers</title>
+    
+    <dataSource id="ifmSpSisfmLayerEdit_ds_0">
+        <table name="sisfm_layers" role="main"/>
+		<field table="sisfm_layers" name="id"/>
+        <field table="sisfm_layers" name="access_group"/>
+        <field table="sisfm_layers" name="layer_name"/>
+		<field table="sisfm_layers" name="map_name"/>
+		<sortField name="map_name" table="sisfm_layers" ascending="true"/>
+		<sortField name="layer_name" table="sisfm_layers" ascending="true"/>
+    </dataSource>
+      
+    <panel type="grid" id="ifmSpSisfmLayerEdit_treePanel" dataSource="ifmSpSisfmLayerEdit_ds_0" showOnLoad="true" selectionEnabled="true" region="west">
+        <title translatable="true">SISfm Layers</title>
+        <action id="ifmSpSisfmLayerEdit_addNew">
+            <title translatable="true">Add New</title>
+            <command type="showPanel" panelId="ifmSpSisfmLayerEdit_detailsPanel" newRecord="true"/>
+        </action>
+        <action id="ifmSpSisfmLayerEdit_refresh">
+            <title translatable="true">Refresh</title>
+            <command type="showPanel" panelId="ifmSpSisfmLayerEdit_treePanel"/>
+        </action>
+        <field name="id" table="sisfm_layers" hidden="true"/>		
+        <field name="map_name" table="sisfm_layers" controlType="link">
+            <command type="showPanel" panelId="ifmSpSisfmLayerEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+        <field name="layer_name" table="sisfm_layers" controlType="link">
+            <command type="showPanel" panelId="ifmSpSisfmLayerEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+		<field name="access_group" table="sisfm_layers" controlType="link">
+            <command type="showPanel" panelId="ifmSpSisfmLayerEdit_detailsPanel" showSelectValueAction=""/>
+        </field>
+    </panel>
+    
+    <dataSource id="ifmSpSisfmLayerEdit_ds_1">
+        <table name="sisfm_layers" role="main"/>
+		<field table="sisfm_layers" name="id"/>
+        <field table="sisfm_layers" name="access_group"/>
+        <field table="sisfm_layers" name="layer_name"/>
+		<field table="sisfm_layers" name="map_name"/>
+    </dataSource>
+      
+    <panel type="form" id="ifmSpSisfmLayerEdit_detailsPanel" dataSource="ifmSpSisfmLayerEdit_ds_1" showOnLoad="false" labelsPosition="left" columns="1" region="center">
+        <title translatable="true">SISfm Layers Details</title>        
+        <action id="ifmSpSisfmLayerEdit_save">
+            <title translatable="true">Save</title>
+            <command type="saveForm"/>
+            <command type="showPanel" panelId="ifmSpSisfmLayerEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpSisfmLayerEdit_delete">
+            <title translatable="true">Delete</title>
+            <command type="deleteRecord"/>
+            <command type="showPanel" panelId="ifmSpSisfmLayerEdit_detailsPanel" show="false"/>
+            <command type="showPanel" panelId="ifmSpSisfmLayerEdit_treePanel" applyParentRestriction="false"/>
+        </action>
+        <action id="ifmSpSisfmLayerEdit_cancel">
+            <title translatable="true">Cancel</title>
+            <command type="showPanel" panelId="ifmSpSisfmLayerEdit_detailsPanel" show="false"/>
+        </action>    
+        <field name="id" table="sisfm_layers" readOnly="true"/>
+		<field name="map_name" table="sisfm_layers"/>
+        <field name="layer_name" table="sisfm_layers" showSelectValueAction=""/>
+        <field name="access_group" table="sisfm_layers" showSelectValueAction=""/>
+    </panel>
+</view>
